@@ -32,13 +32,13 @@ This contract sets out shared expectations and commitments for how our team will
 
 ---
 
-## d) Decision Making
+### d) Decision Making
 
 - Decisions about the team project will be made by majority vote.
 
 ---
 
-## e) Work Quality
+### e) Work Quality
 
 - All deliverables should be tested, of high qualitly, and completed on time.
 - Members agree to review each other’s work constructively before submission.
