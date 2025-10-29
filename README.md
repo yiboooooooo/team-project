@@ -15,7 +15,7 @@ at the end of the term.
 **Application Summary:**
 The application, StakeMate, is a sports betting application which will be implemented as an educational, play-money sports-betting exchange. It will be an application where users place and match orders on game outcomes using a daily-updated data feed (24-hour API refresh) and automatic post-game settlement.
 
-**User Stories:**
+**User Stories:** <br>
 User Story 1 (implemeneted by Firas Adnan Jalil): As a sports bettor, I wish to see continuously updated data, so that I can stay informed about the market.
 
 User Story 2 (implemented by Gary Choi): As a sports bettor, I want to browse active matches, see each market's live order book, and use clear buy/sell controls, so that I can place (fake-money) bets quickly and know when a market closes.
