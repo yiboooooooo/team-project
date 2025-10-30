@@ -37,7 +37,7 @@ Main Service Provided:<br>
 - In-play and pre-match event list (IDs, teams, start time), no odds (free/no quota)<br>
 - Odds for a single event; accepts many market keys<br>
 - Available market keys per bookmaker for that event<br>
-- Teams/players for a sport (participant list)<br><br>
+- Teams/players for a sport (participant list)<br>
 
 Status: Successfully tested with OkHttp in Java
 
