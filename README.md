@@ -38,6 +38,7 @@ Main Service Provided:<br>
 - Odds for a single event; accepts many market keys<br>
 - Available market keys per bookmaker for that event<br>
 - Teams/players for a sport (participant list)<br><br>
+
 Status: Successfully tested with OkHttp in Java
 
 **Screenshots or Animations of Current Functionality:**
