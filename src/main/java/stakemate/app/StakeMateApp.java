@@ -2,7 +2,8 @@ package stakemate.app;
 
 import javax.swing.SwingUtilities;
 
-import stakemate.data_access.csv.CsvUserDataAccess;
+import stakemate.data_access.supabase.SupabaseClientFactory;
+import stakemate.data_access.supabase.SupabaseUserDataAccess;
 
 import stakemate.data_access.in_memory.FakeOrderBookGateway;
 import stakemate.data_access.in_memory.InMemoryMarketRepository;
@@ -24,6 +25,7 @@ import stakemate.use_case.view_market.ViewMarketInteractor;
 import stakemate.view.MarketsFrame;
 import stakemate.view.LoginFrame;
 import stakemate.view.SignupFrame;
+
 
 public final class StakeMateApp {
 
@@ -56,10 +58,11 @@ public final class StakeMateApp {
             marketsFrame.setController(marketController);
 
             // ==============================
-            // User repository (login + signup)
+            // DB initialization and user stuff
             // ==============================
 
-            CsvUserDataAccess userRepo = new CsvUserDataAccess("users.csv");
+            SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
+            SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
             // ==============================
             // Login & Signup frames
