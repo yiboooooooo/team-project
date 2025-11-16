@@ -2,7 +2,8 @@ package stakemate.app;
 
 import javax.swing.SwingUtilities;
 
-import stakemate.data_access.csv.CsvUserDataAccess;
+import stakemate.data_access.supabase.SupabaseClientFactory;
+import stakemate.data_access.supabase.SupabaseUserDataAccess;
 
 import stakemate.data_access.in_memory.*;
 
@@ -43,12 +44,11 @@ public final class StakeMateApp {
             // Infrastructure for markets
             // ==============================
 
-
             InMemoryMatchRepository matchRepository = new InMemoryMatchRepository();
             InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
-            FakeOrderBookGateway   orderBookGateway  = new FakeOrderBookGateway();
+            FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
 
-            betRepo    = new InMemoryBetRepository();
+            betRepo = new InMemoryBetRepository();
             InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
             accountRepo = new InMemoryAccountRepository();
 
@@ -75,11 +75,10 @@ public final class StakeMateApp {
 
             // Demo data: two users and two bets on the same market
             accountRepo.addDemoUser(new User("alice", "password", 1000));
-            accountRepo.addDemoUser(new User("bob",   "password", 1000));
+            accountRepo.addDemoUser(new User("bob", "password", 1000));
 
             betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, 50, 0.6));
-            betRepo.addDemoBet(new Bet("bob",   "M1-ML", Side.SELL, 50, 0.4));
-
+            betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, 50, 0.4));
 
             SwingSettleMarketPresenter settlePresenter =
                     new SwingSettleMarketPresenter(marketsFrame);
@@ -92,16 +91,17 @@ public final class StakeMateApp {
             marketsFrame.setSettleMarketController(settleController);
 
             // ==============================
-            // User repository (login + signup)
+            // DB initialization and user stuff
             // ==============================
 
-            CsvUserDataAccess userRepo = new CsvUserDataAccess("users.csv");
+            SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
+            SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
             // ==============================
             // Login & Signup frames
             // ==============================
 
-            LoginFrame loginFrame   = new LoginFrame(marketsFrame);
+            LoginFrame loginFrame = new LoginFrame(marketsFrame);
             SignupFrame signupFrame = new SignupFrame(loginFrame);
 
             // ----- Login wiring -----
