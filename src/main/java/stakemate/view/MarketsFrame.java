@@ -8,6 +8,8 @@ import stakemate.use_case.view_market.MarketsResponseModel;
 import stakemate.use_case.view_market.OrderBookResponseModel;
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
+import stakemate.interface_adapter.view_market.SettleMarketView;
+import stakemate.interface_adapter.controllers.SettleMarketController;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -16,9 +18,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class MarketsFrame extends JFrame implements MarketsView {
+public class MarketsFrame extends JFrame implements MarketsView, SettleMarketView {
 
     private ViewMarketController controller;
+    private SettleMarketController settleMarketController;
 
     private final DefaultListModel<MatchSummary> matchesListModel =
             new DefaultListModel<>();
@@ -40,6 +43,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
     private final JButton buyButton = new JButton("Buy");
     private final JButton sellButton = new JButton("Sell");
     private final JButton refreshButton = new JButton("Refresh");
+    private final JButton settleButton = new JButton("Settle");
 
     private MarketSummary currentlySelectedMarket;
 
@@ -51,6 +55,10 @@ public class MarketsFrame extends JFrame implements MarketsView {
     public void setController(ViewMarketController controller) {
         this.controller = controller;
         hookEvents();
+    }
+
+    public void setSettleMarketController(SettleMarketController controller) {
+        this.settleMarketController = controller;
     }
 
     private void initUi() {
@@ -95,8 +103,10 @@ public class MarketsFrame extends JFrame implements MarketsView {
         JPanel buySellPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buyButton.setEnabled(false);
         sellButton.setEnabled(false);
+        settleButton.setEnabled(false);
         buySellPanel.add(buyButton);
         buySellPanel.add(sellButton);
+        buySellPanel.add(settleButton);
 
         JPanel rightPanel = new JPanel(new BorderLayout(4, 4));
         rightPanel.add(marketsPanel, BorderLayout.NORTH);
@@ -155,6 +165,25 @@ public class MarketsFrame extends JFrame implements MarketsView {
                         "Sell clicked. (Use Case 4 will handle order placement.)"
                 )
         );
+
+        // UC6: settle selected market
+        settleButton.addActionListener(e -> {
+            if (settleMarketController == null || currentlySelectedMarket == null) {
+                return;
+            }
+
+            int choice = JOptionPane.showConfirmDialog(
+                    MarketsFrame.this,
+                    "Did the HOME team win this market?",
+                    "Settle Market",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (choice == JOptionPane.YES_OPTION || choice == JOptionPane.NO_OPTION) {
+                boolean homeTeamWon = (choice == JOptionPane.YES_OPTION);
+                settleMarketController.settleMarket(currentlySelectedMarket.getId(), homeTeamWon);
+            }
+        });
     }
 
     // ---- MarketsView implementation ----
@@ -198,6 +227,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
         orderBookEmptyLabel.setText("Select a market to see orders.");
         buyButton.setEnabled(false);
         sellButton.setEnabled(false);
+        settleButton.setEnabled(false);
     }
 
     @Override
@@ -235,11 +265,46 @@ public class MarketsFrame extends JFrame implements MarketsView {
 
         buyButton.setEnabled(enableBuySell);
         sellButton.setEnabled(enableBuySell);
+        settleButton.setEnabled(enableBuySell);
     }
 
     @Override
     public void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // ---- SettleMarketView (UC6) ----
+
+    @Override
+    public void showSettlementResult(String message) {
+        statusLabel.setText(message);
+
+        // TEMP DEBUG: show account balances after settlement
+        String alice = "";
+        String bob = "";
+        String you = "";
+
+        try {
+            alice = "Alice: " + stakemate.app.StakeMateApp.accountRepo
+                    .findByUsername("alice").getBalance();
+            bob = "Bob:   " + stakemate.app.StakeMateApp.accountRepo
+                    .findByUsername("bob").getBalance();
+            you = "You (ryth): " + stakemate.app.StakeMateApp.accountRepo
+                    .findByUsername("ryth").getBalance();
+        } catch (Exception ignored) {}
+
+        JOptionPane.showMessageDialog(
+                this,
+                message + "\n\nAccount Balances:\n" + alice + "\n" + bob + "\n" + you,
+                "Settlement Complete",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    @Override
+    public void showSettlementError(String errorMessage) {
+        JOptionPane.showMessageDialog(this, errorMessage,
+                "Settlement Error", JOptionPane.ERROR_MESSAGE);
     }
 
     // ---- Order Book Table Model ----

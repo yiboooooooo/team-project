@@ -4,10 +4,10 @@ import javax.swing.SwingUtilities;
 
 import stakemate.data_access.csv.CsvUserDataAccess;
 
-import stakemate.data_access.in_memory.FakeOrderBookGateway;
-import stakemate.data_access.in_memory.InMemoryMarketRepository;
-import stakemate.data_access.in_memory.InMemoryMatchRepository;
+import stakemate.data_access.in_memory.*;
 
+import stakemate.entity.Side;
+import stakemate.entity.User;
 import stakemate.interface_adapter.controllers.LoginController;
 import stakemate.interface_adapter.controllers.SignupController;
 
@@ -15,6 +15,8 @@ import stakemate.interface_adapter.view_login.SwingLoginPresenter;
 import stakemate.interface_adapter.view_signup.SwingSignupPresenter;
 
 import stakemate.use_case.login.LoginInteractor;
+import stakemate.use_case.settle_market.Bet;
+import stakemate.use_case.settle_market.SettleMarketInteractor;
 import stakemate.use_case.signup.SignupInteractor;
 
 import stakemate.interface_adapter.view_market.SwingViewMarketsPresenter;
@@ -25,7 +27,13 @@ import stakemate.view.MarketsFrame;
 import stakemate.view.LoginFrame;
 import stakemate.view.SignupFrame;
 
+// NEW for UC6 GUI wiring
+import stakemate.interface_adapter.view_market.SwingSettleMarketPresenter;
+import stakemate.interface_adapter.controllers.SettleMarketController;
+
 public final class StakeMateApp {
+    public static InMemoryAccountRepository accountRepo;
+    public static InMemoryBetRepository betRepo;
 
     private StakeMateApp() {}
 
@@ -35,11 +43,17 @@ public final class StakeMateApp {
             // Infrastructure for markets
             // ==============================
 
+
             InMemoryMatchRepository matchRepository = new InMemoryMatchRepository();
             InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
-            FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
+            FakeOrderBookGateway   orderBookGateway  = new FakeOrderBookGateway();
+
+            betRepo    = new InMemoryBetRepository();
+            InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
+            accountRepo = new InMemoryAccountRepository();
 
             MarketsFrame marketsFrame = new MarketsFrame();
+
             SwingViewMarketsPresenter marketsPresenter =
                     new SwingViewMarketsPresenter(marketsFrame);
 
@@ -56,6 +70,28 @@ public final class StakeMateApp {
             marketsFrame.setController(marketController);
 
             // ==============================
+            // UC6 Settlement (using same repos)
+            // ==============================
+
+            // Demo data: two users and two bets on the same market
+            accountRepo.addDemoUser(new User("alice", "password", 1000));
+            accountRepo.addDemoUser(new User("bob",   "password", 1000));
+
+            betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, 50, 0.6));
+            betRepo.addDemoBet(new Bet("bob",   "M1-ML", Side.SELL, 50, 0.4));
+
+
+            SwingSettleMarketPresenter settlePresenter =
+                    new SwingSettleMarketPresenter(marketsFrame);
+
+            SettleMarketInteractor settleInteractor =
+                    new SettleMarketInteractor(betRepo, accountRepo, recordRepo, settlePresenter);
+
+            SettleMarketController settleController =
+                    new SettleMarketController(settleInteractor);
+            marketsFrame.setSettleMarketController(settleController);
+
+            // ==============================
             // User repository (login + signup)
             // ==============================
 
@@ -65,8 +101,7 @@ public final class StakeMateApp {
             // Login & Signup frames
             // ==============================
 
-            // Create frames first, so we can pass references:
-            LoginFrame loginFrame   = new LoginFrame(marketsFrame); // you might also pass signup later
+            LoginFrame loginFrame   = new LoginFrame(marketsFrame);
             SignupFrame signupFrame = new SignupFrame(loginFrame);
 
             // ----- Login wiring -----
@@ -80,8 +115,7 @@ public final class StakeMateApp {
                     new LoginController(loginInteractor);
 
             loginFrame.setController(loginController);
-            // Make loginFrame aware of signupFrame (e.g. for a "Sign up" button)
-            loginFrame.setSignupFrame(signupFrame);   // Add this setter in LoginFrame
+            loginFrame.setSignupFrame(signupFrame);
 
             // ----- Signup wiring -----
             SwingSignupPresenter signupPresenter =
