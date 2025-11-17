@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="comment entity">
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/CommentRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/PostCommentInputData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/PostCommentOutputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/PostCommentOutputData.java" afterDir="false" />
+    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="use case part 1">
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/PostCommentInteractor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/ViewCommentsInteractor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/ViewCommentsOutputBoundary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/ViewCommentsOutputData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -189,7 +189,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763411977871</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="use case part 1">
+      <option name="closed" value="true" />
+      <created>1763412876446</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763412876446</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,6 +206,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="my changes" />
     <MESSAGE value="comment entity" />
-    <option name="LAST_COMMIT_MESSAGE" value="comment entity" />
+    <MESSAGE value="use case part 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="use case part 1" />
   </component>
 </project>
