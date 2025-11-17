@@ -42,16 +42,20 @@ public class OddsApiResponseAdapter {
             return null;
         }
         
-        // Generate UUID for the game
-        UUID gameId = UUID.randomUUID();
+        // Generate deterministic UUID based on external API ID
+        UUID gameId = UUID.nameUUIDFromBytes(event.getId().getBytes());
         
         // For now, we'll generate a market ID (in a real scenario, you might
         // want to create markets based on the event data)
-        UUID marketId = UUID.randomUUID();
+        UUID marketId = UUID.nameUUIDFromBytes((event.getId() + "_market").getBytes());
         
         // Normalize team names (trim whitespace, handle nulls)
         String teamA = normalizeTeamName(event.getHomeTeam());
         String teamB = normalizeTeamName(event.getAwayTeam());
+        
+        if ("Unknown".equals(teamA) || "Unknown".equals(teamB)) {
+            return null; // Skip events with missing team names
+        }
         
         // Map API status to GameStatus enum
         GameStatus status = mapStatus(event);
@@ -62,8 +66,7 @@ public class OddsApiResponseAdapter {
         // Get commence time
         LocalDateTime gameTime = event.getCommenceTime();
         if (gameTime == null) {
-            // Skip events without a valid time
-            return null;
+            return null; // Skip events without valid time
         }
         
         return new Game(

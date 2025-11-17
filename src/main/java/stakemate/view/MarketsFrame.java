@@ -132,7 +132,8 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private void hookEvents() {
         refreshButton.addActionListener(e -> {
             if (controller != null) {
-                controller.refresh();
+                // Use API refresh to get real data instead of hardcoded matches
+                controller.refreshWithApi();
             }
         });
 

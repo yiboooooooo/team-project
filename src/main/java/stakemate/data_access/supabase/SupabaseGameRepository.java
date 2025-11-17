@@ -214,26 +214,28 @@ public class SupabaseGameRepository implements GameRepository {
     
     /**
      * Maps GameStatus enum to database enum string.
+     * Database enum values: pending, in_progress, finished, cancelled
      */
     private String mapGameStatusToDb(GameStatus status) {
         if (status == null) {
-            return "upcoming";
+            return "pending";
         }
         
         switch (status) {
             case UPCOMING:
-                return "upcoming";
+                return "pending";        // upcoming -> pending
             case LIVE:
-                return "live";
+                return "in_progress";    // live -> in_progress
             case FINISHED:
-                return "finished";
+                return "finished";       // finished -> finished
             default:
-                return "upcoming";
+                return "pending";
         }
     }
     
     /**
      * Maps database enum string to GameStatus enum.
+     * Database enum values: pending, in_progress, finished, cancelled
      */
     private GameStatus mapDbStatusToGameStatus(String statusStr) {
         if (statusStr == null) {
@@ -241,12 +243,14 @@ public class SupabaseGameRepository implements GameRepository {
         }
         
         switch (statusStr.toLowerCase()) {
-            case "upcoming":
-                return GameStatus.UPCOMING;
-            case "live":
-                return GameStatus.LIVE;
+            case "pending":
+                return GameStatus.UPCOMING;    // pending -> UPCOMING
+            case "in_progress":
+                return GameStatus.LIVE;        // in_progress -> LIVE
             case "finished":
-                return GameStatus.FINISHED;
+                return GameStatus.FINISHED;    // finished -> FINISHED
+            case "cancelled":
+                return GameStatus.FINISHED;    // cancelled -> FINISHED (no CANCELLED in Java enum)
             default:
                 return GameStatus.UPCOMING;
         }

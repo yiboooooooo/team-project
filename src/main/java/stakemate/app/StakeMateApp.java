@@ -4,6 +4,15 @@ import javax.swing.SwingUtilities;
 
 import stakemate.data_access.supabase.SupabaseClientFactory;
 import stakemate.data_access.supabase.SupabaseUserDataAccess;
+import stakemate.data_access.supabase.SupabaseGameRepository;
+
+// API fetching classes
+import stakemate.data_access.api.OddsApiGatewayImpl;
+import stakemate.data_access.api.OddsApiResponseAdapter;
+import stakemate.use_case.fetch_games.FetchGamesInteractor;
+import stakemate.use_case.fetch_games.FetchGamesOutputBoundary;
+import stakemate.use_case.fetch_games.FetchGamesResponseModel;
+import stakemate.entity.Game;
 
 import stakemate.data_access.in_memory.*;
 
@@ -39,12 +48,58 @@ public final class StakeMateApp {
     private StakeMateApp() {}
 
     public static void main(String[] args) {
+        // Load .env file if it exists
+        loadEnvFile();
+        
         SwingUtilities.invokeLater(() -> {
             // ==============================
             // Infrastructure for markets
             // ==============================
 
-            InMemoryMatchRepository matchRepository = new InMemoryMatchRepository();
+            // Create Supabase factory for games
+            SupabaseClientFactory gamesSupabaseFactory = new SupabaseClientFactory();
+            SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
+
+            // Create API fetching components
+            String apiKey = getEnvVar("ODDS_API_KEY");
+            if (apiKey == null || apiKey.isEmpty()) {
+                System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
+            }
+            
+            FetchGamesInteractor fetchGamesInteractor = null;
+            if (apiKey != null && !apiKey.isEmpty()) {
+                OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
+                OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
+                
+                // Simple presenter that logs results
+                FetchGamesOutputBoundary presenter = new FetchGamesOutputBoundary() {
+                    @Override
+                    public void presentFetchInProgress() {
+                        System.out.println("Fetching games from API...");
+                    }
+                    
+                    @Override
+                    public void presentFetchSuccess(FetchGamesResponseModel response) {
+                        System.out.println("API fetch completed: " + response.getMessage());
+                    }
+                    
+                    @Override
+                    public void presentFetchError(String error) {
+                        System.err.println("API fetch error: " + error);
+                    }
+                    
+                    @Override
+                    public void presentSearchResults(java.util.List<Game> games, String query) {
+                        System.out.println("Search found " + games.size() + " games for: " + query);
+                    }
+                };
+                
+                fetchGamesInteractor = new FetchGamesInteractor(
+                    apiGateway, responseAdapter, gameRepository, presenter
+                );
+            }
+
+            InMemoryMatchRepository matchRepository = new InMemoryMatchRepository(gameRepository, fetchGamesInteractor);
             InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
             FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
 
@@ -91,7 +146,7 @@ public final class StakeMateApp {
             marketsFrame.setSettleMarketController(settleController);
 
             // ==============================
-            // DB initialization and user stuff
+            // User data access 
             // ==============================
 
             SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
@@ -136,5 +191,55 @@ public final class StakeMateApp {
             loginFrame.setVisible(true);
             // Markets will be shown *after* login inside LoginFrame.onLoginSuccess()
         });
+    }
+    
+    /**
+     * Loads environment variables from .env file in project root.
+     * Format: KEY=value (one per line, no quotes needed)
+     */
+    private static void loadEnvFile() {
+        try {
+            java.io.File envFile = new java.io.File(".env");
+            if (!envFile.exists()) {
+                return; // No .env file, use system env vars only
+            }
+            
+            java.io.BufferedReader reader = new java.io.BufferedReader(
+                new java.io.FileReader(envFile)
+            );
+            
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) {
+                    continue; // Skip empty lines and comments
+                }
+                
+                int equalIndex = line.indexOf('=');
+                if (equalIndex > 0) {
+                    String key = line.substring(0, equalIndex).trim();
+                    String value = line.substring(equalIndex + 1).trim();
+                    
+                    // Only set if not already in system env
+                    if (System.getenv(key) == null) {
+                        System.setProperty(key, value);
+                    }
+                }
+            }
+            reader.close();
+        } catch (java.io.IOException e) {
+            System.err.println("Warning: Could not read .env file: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Gets environment variable from system env or system properties (.env file).
+     */
+    private static String getEnvVar(String key) {
+        String value = System.getenv(key);
+        if (value == null) {
+            value = System.getProperty(key);
+        }
+        return value;
     }
 }

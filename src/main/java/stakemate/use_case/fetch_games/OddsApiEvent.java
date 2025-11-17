@@ -1,5 +1,6 @@
 package stakemate.use_case.fetch_games;
 
+import com.google.gson.annotations.SerializedName;
 import java.time.LocalDateTime;
 
 /**
@@ -7,10 +8,19 @@ import java.time.LocalDateTime;
  * This is a raw representation before conversion to domain entities.
  */
 public class OddsApiEvent {
+    @SerializedName("id")
     private String id;
+    
+    @SerializedName("sport_key")
     private String sportKey;
+    
+    @SerializedName("commence_time")
     private LocalDateTime commenceTime;
+    
+    @SerializedName("home_team")
     private String homeTeam;
+    
+    @SerializedName("away_team")
     private String awayTeam;
 
     public OddsApiEvent() {

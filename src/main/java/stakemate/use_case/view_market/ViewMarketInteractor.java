@@ -54,6 +54,21 @@ public class ViewMarketInteractor implements
     }
 
     @Override
+    public void refreshFromApi() {
+        try {
+            // If the repository supports API sync, trigger it
+            if (matchRepository instanceof stakemate.data_access.in_memory.InMemoryMatchRepository) {
+                ((stakemate.data_access.in_memory.InMemoryMatchRepository) matchRepository).syncWithApiData();
+            }
+            
+            // Then load the refreshed matches
+            loadMatches();
+        } catch (RepositoryException e) {
+            presenter.presentError("Error refreshing from API: " + e.getMessage());
+        }
+    }
+
+    @Override
     public void matchSelected(String matchId) {
         Match match = matchesById.get(matchId);
         String title = match != null
