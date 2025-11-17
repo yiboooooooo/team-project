@@ -4,18 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="use case part 2">
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/CommentRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInputData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInteractor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsInputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsInputData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsInteractor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsOutputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsOutputData.java" afterDir="false" />
+    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="use case final fix">
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/PostCommentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/SwingPostCommentPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/SwingViewCommentsPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/ViewCommentsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/CommentsPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -212,7 +206,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763413331670</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="use case final fix">
+      <option name="closed" value="true" />
+      <created>1763416154949</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1763416154949</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -223,6 +225,7 @@
     <MESSAGE value="comment entity" />
     <MESSAGE value="use case part 1" />
     <MESSAGE value="use case part 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="use case part 2" />
+    <MESSAGE value="use case final fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="use case final fix" />
   </component>
 </project>
