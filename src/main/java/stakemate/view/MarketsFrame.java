@@ -39,7 +39,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private final JButton buyButton = new JButton("Buy");
     private final JButton sellButton = new JButton("Sell");
     private final JButton refreshButton = new JButton("Refresh");
-    private final JButton settleButton = new JButton("Settle");
 
     private final JButton myProfileButton = new JButton("My Profile");
     private final JButton settleButton = new JButton("Settle");
