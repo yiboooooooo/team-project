@@ -8,6 +8,8 @@ import stakemate.use_case.view_market.MarketsResponseModel;
 import stakemate.use_case.view_market.OrderBookResponseModel;
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
+import stakemate.interface_adapter.view_market.SettleMarketView;
+import stakemate.interface_adapter.controllers.SettleMarketController;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -16,9 +18,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class MarketsFrame extends JFrame implements MarketsView {
+public class MarketsFrame extends JFrame implements MarketsView, SettleMarketView {
 
     private ViewMarketController controller;
+    private SettleMarketController settleMarketController;
 
     private final DefaultListModel<MatchSummary> matchesListModel = new DefaultListModel<>();
     private final JList<MatchSummary> matchesList = new JList<>(matchesListModel);
@@ -36,6 +39,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
     private final JButton buyButton = new JButton("Buy");
     private final JButton sellButton = new JButton("Sell");
     private final JButton refreshButton = new JButton("Refresh");
+    private final JButton settleButton = new JButton("Settle");
 
     private final JButton myProfileButton = new JButton("My Profile");
     private final JButton settleButton = new JButton("Settle");
@@ -114,8 +118,10 @@ public class MarketsFrame extends JFrame implements MarketsView {
         JPanel buySellPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buyButton.setEnabled(false);
         sellButton.setEnabled(false);
+        settleButton.setEnabled(false);
         buySellPanel.add(buyButton);
         buySellPanel.add(sellButton);
+        buySellPanel.add(settleButton);
 
         JPanel rightPanel = new JPanel(new BorderLayout(4, 4));
         rightPanel.add(marketsPanel, BorderLayout.NORTH);
@@ -237,6 +243,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
         orderBookEmptyLabel.setText("Select a market to see orders.");
         buyButton.setEnabled(false);
         sellButton.setEnabled(false);
+        settleButton.setEnabled(false);
     }
 
     @Override
@@ -273,6 +280,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
 
         buyButton.setEnabled(enableBuySell);
         sellButton.setEnabled(enableBuySell);
+        settleButton.setEnabled(enableBuySell);
     }
 
     @Override

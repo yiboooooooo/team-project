@@ -16,6 +16,10 @@ public class ViewMarketController {
         inputBoundary.loadMatches();
     }
 
+    public void refreshWithApi() {
+        inputBoundary.refreshFromApi();
+    }
+
     public void onMatchSelected(MatchSummary matchSummary) {
         if (matchSummary != null) {
             inputBoundary.matchSelected(matchSummary.getId());

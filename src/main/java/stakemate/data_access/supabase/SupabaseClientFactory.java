@@ -12,7 +12,7 @@ public class SupabaseClientFactory {
     
     // Default values (can be overridden by environment variables)
     private static final String DEFAULT_HOST = "aws-1-ca-central-1.pooler.supabase.com";
-    private static final String DEFAULT_PORT = "5432";
+    private static final String DEFAULT_PORT = "6543";
     private static final String DEFAULT_DATABASE = "postgres";
     
     private final String host;
@@ -57,15 +57,20 @@ public class SupabaseClientFactory {
      * @throws SQLException if connection fails
      */
     public Connection createConnection() throws SQLException {
-        String jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
+        String jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s?prepareThreshold=0&preparedStatementCacheQueries=0", 
+                                     host, port, database);
         return DriverManager.getConnection(jdbcUrl, user, password);
     }
     
     /**
      * Gets environment variable or returns default value.
+     * Checks both system environment and system properties (.env file support).
      */
     private String getEnvOrDefault(String envVar, String defaultValue) {
         String value = System.getenv(envVar);
+        if (value == null) {
+            value = System.getProperty(envVar);
+        }
         return value != null ? value : defaultValue;
     }
 }

@@ -1,14 +1,27 @@
 package stakemate.use_case.fetch_games;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Data Transfer Object representing a sport from the Odds API.
  */
 public class OddsApiSport {
+    @SerializedName("key")
     private String key;
+    
+    @SerializedName("group")
     private String group;
+    
+    @SerializedName("title")
     private String title;
+    
+    @SerializedName("description")
     private String description;
+    
+    @SerializedName("active")
     private boolean active;
+    
+    @SerializedName("has_outrights")
     private boolean hasOutrights;
 
     public OddsApiSport() {
