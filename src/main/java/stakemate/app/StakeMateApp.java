@@ -26,7 +26,6 @@ import stakemate.view.MarketsFrame;
 import stakemate.view.LoginFrame;
 import stakemate.view.SignupFrame;
 
-
 public final class StakeMateApp {
 
     private StakeMateApp() {
@@ -38,52 +37,11 @@ public final class StakeMateApp {
 
         SwingUtilities.invokeLater(() -> {
             // ==============================
+            // ==============================
             // Infrastructure for markets
             // ==============================
 
-            // Create Supabase factory for games
-            SupabaseClientFactory gamesSupabaseFactory = new SupabaseClientFactory();
-            SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
-
-            // Create API fetching components
-            String apiKey = getEnvVar("ODDS_API_KEY");
-            if (apiKey == null || apiKey.isEmpty()) {
-                System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
-            }
-
-            FetchGamesInteractor fetchGamesInteractor = null;
-            if (apiKey != null && !apiKey.isEmpty()) {
-                OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
-                OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
-
-                // Simple presenter that logs results
-                FetchGamesOutputBoundary presenter = new FetchGamesOutputBoundary() {
-                    @Override
-                    public void presentFetchInProgress() {
-                        System.out.println("Fetching games from API...");
-                    }
-
-                    @Override
-                    public void presentFetchSuccess(FetchGamesResponseModel response) {
-                        System.out.println("API fetch completed: " + response.getMessage());
-                    }
-
-                    @Override
-                    public void presentFetchError(String error) {
-                        System.err.println("API fetch error: " + error);
-                    }
-
-                    @Override
-                    public void presentSearchResults(java.util.List<Game> games, String query) {
-                        System.out.println("Search found " + games.size() + " games for: " + query);
-                    }
-                };
-
-                fetchGamesInteractor = new FetchGamesInteractor(
-                        apiGateway, responseAdapter, gameRepository, presenter);
-            }
-
-            InMemoryMatchRepository matchRepository = new InMemoryMatchRepository(gameRepository, fetchGamesInteractor);
+            InMemoryMatchRepository matchRepository = new InMemoryMatchRepository();
             InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
             FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
 
@@ -128,30 +86,11 @@ public final class StakeMateApp {
             marketsFrame.setProfileController(profileController);
 
             // ==============================
-            // UC6 Settlement (using same repos)
-            // ==============================
-
-            // Demo data: two users and two bets on the same market
-            accountRepo.addDemoUser(new User("alice", "password", 1000));
-            accountRepo.addDemoUser(new User("bob", "password", 1000));
-
-            betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, 50, 0.6));
-            betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, 50, 0.4));
-
-            SwingSettleMarketPresenter settlePresenter = new SwingSettleMarketPresenter(marketsFrame);
-
-            SettleMarketInteractor settleInteractor = new SettleMarketInteractor(betRepo, accountRepo, recordRepo,
-                    settlePresenter);
-
-            SettleMarketController settleController = new SettleMarketController(settleInteractor);
-            marketsFrame.setSettleMarketController(settleController);
-
-            // ==============================
             // Login & Signup frames
             // ==============================
 
             // Create frames first, so we can pass references:
-            LoginFrame loginFrame   = new LoginFrame(marketsFrame); // you might also pass signup later
+            LoginFrame loginFrame = new LoginFrame(marketsFrame); // you might also pass signup later
             SignupFrame signupFrame = new SignupFrame(loginFrame);
 
             // ----- Login wiring -----
@@ -163,7 +102,7 @@ public final class StakeMateApp {
 
             loginFrame.setController(loginController);
             // Make loginFrame aware of signupFrame (e.g. for a "Sign up" button)
-            loginFrame.setSignupFrame(signupFrame);   // Add this setter in LoginFrame
+            loginFrame.setSignupFrame(signupFrame); // Add this setter in LoginFrame
 
             // ----- Signup wiring -----
             SwingSignupPresenter signupPresenter = new SwingSignupPresenter(signupFrame);
