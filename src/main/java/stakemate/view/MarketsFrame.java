@@ -20,16 +20,12 @@ public class MarketsFrame extends JFrame implements MarketsView {
 
     private ViewMarketController controller;
 
-    private final DefaultListModel<MatchSummary> matchesListModel =
-            new DefaultListModel<>();
-    private final JList<MatchSummary> matchesList =
-            new JList<>(matchesListModel);
+    private final DefaultListModel<MatchSummary> matchesListModel = new DefaultListModel<>();
+    private final JList<MatchSummary> matchesList = new JList<>(matchesListModel);
     private final JLabel matchesEmptyLabel = new JLabel(" ");
 
-    private final DefaultListModel<MarketSummary> marketsListModel =
-            new DefaultListModel<>();
-    private final JList<MarketSummary> marketsList =
-            new JList<>(marketsListModel);
+    private final DefaultListModel<MarketSummary> marketsListModel = new DefaultListModel<>();
+    private final JList<MarketSummary> marketsList = new JList<>(marketsListModel);
     private final JLabel marketsEmptyLabel = new JLabel(" ");
 
     private final OrderBookTableModel orderBookTableModel = new OrderBookTableModel();
@@ -41,7 +37,13 @@ public class MarketsFrame extends JFrame implements MarketsView {
     private final JButton sellButton = new JButton("Sell");
     private final JButton refreshButton = new JButton("Refresh");
 
+    private final JButton myProfileButton = new JButton("My Profile");
+    private final JButton settleButton = new JButton("Settle");
+
     private MarketSummary currentlySelectedMarket;
+    private ProfileFrame profileFrame;
+    private stakemate.interface_adapter.view_profile.ViewProfileController profileController;
+    private String currentUser;
 
     public MarketsFrame() {
         super("StakeMate - Markets & Order Book");
@@ -53,6 +55,22 @@ public class MarketsFrame extends JFrame implements MarketsView {
         hookEvents();
     }
 
+    public void setSettleMarketController(SettleMarketController controller) {
+        this.settleMarketController = controller;
+    }
+
+    public void setProfileFrame(ProfileFrame profileFrame) {
+        this.profileFrame = profileFrame;
+    }
+
+    public void setProfileController(stakemate.interface_adapter.view_profile.ViewProfileController profileController) {
+        this.profileController = profileController;
+    }
+
+    public void setLoggedInUser(String username) {
+        this.currentUser = username;
+    }
+
     private void initUi() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(950, 600);
@@ -62,6 +80,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
         root.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        topBar.add(myProfileButton);
         topBar.add(refreshButton);
 
         matchesEmptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -106,8 +125,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 leftPanel,
-                rightPanel
-        );
+                rightPanel);
         splitPane.setDividerLocation(280);
 
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -122,7 +140,18 @@ public class MarketsFrame extends JFrame implements MarketsView {
     private void hookEvents() {
         refreshButton.addActionListener(e -> {
             if (controller != null) {
-                controller.refresh();
+                controller.refreshWithApi();
+            }
+        });
+
+        myProfileButton.addActionListener(e -> {
+            if (profileFrame != null) {
+                if (currentUser != null && profileController != null) {
+                    profileController.execute(currentUser);
+                }
+                profileFrame.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Profile frame not connected.");
             }
         });
 
@@ -142,19 +171,31 @@ public class MarketsFrame extends JFrame implements MarketsView {
             }
         });
 
-        buyButton.addActionListener(e ->
-                JOptionPane.showMessageDialog(
-                        MarketsFrame.this,
-                        "Buy clicked. (Use Case 4 will handle order placement.)"
-                )
-        );
+        buyButton.addActionListener(e -> JOptionPane.showMessageDialog(
+                MarketsFrame.this,
+                "Buy clicked. (Use Case 4 will handle order placement.)"));
 
-        sellButton.addActionListener(e ->
-                JOptionPane.showMessageDialog(
-                        MarketsFrame.this,
-                        "Sell clicked. (Use Case 4 will handle order placement.)"
-                )
-        );
+        sellButton.addActionListener(e -> JOptionPane.showMessageDialog(
+                MarketsFrame.this,
+                "Sell clicked. (Use Case 4 will handle order placement.)"));
+
+        // UC6: settle selected market
+        settleButton.addActionListener(e -> {
+            if (settleMarketController == null || currentlySelectedMarket == null) {
+                return;
+            }
+
+            int choice = JOptionPane.showConfirmDialog(
+                    MarketsFrame.this,
+                    "Did the HOME team win this market?",
+                    "Settle Market",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (choice == JOptionPane.YES_OPTION || choice == JOptionPane.NO_OPTION) {
+                boolean homeTeamWon = (choice == JOptionPane.YES_OPTION);
+                settleMarketController.settleMarket(currentlySelectedMarket.getId(), homeTeamWon);
+            }
+        });
     }
 
     // ---- MarketsView implementation ----
@@ -164,8 +205,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
         matchesListModel.clear();
         if (matches == null || matches.isEmpty()) {
             matchesEmptyLabel.setText(
-                    emptyStateMessage != null ? emptyStateMessage : "No matches."
-            );
+                    emptyStateMessage != null ? emptyStateMessage : "No matches.");
         } else {
             for (MatchSummary m : matches) {
                 matchesListModel.addElement(m);
@@ -184,8 +224,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
             marketsEmptyLabel.setText(
                     responseModel.getEmptyStateMessage() != null
                             ? responseModel.getEmptyStateMessage()
-                            : "No markets for this match."
-            );
+                            : "No markets for this match.");
         } else {
             for (MarketSummary m : responseModel.getMarkets()) {
                 marketsListModel.addElement(m);
@@ -220,8 +259,7 @@ public class MarketsFrame extends JFrame implements MarketsView {
             orderBookEmptyLabel.setText(
                     responseModel.getMessage() != null
                             ? responseModel.getMessage()
-                            : "No orders yet"
-            );
+                            : "No orders yet");
         } else if (!responseModel.isReconnecting()) {
             orderBookEmptyLabel.setText(" ");
         }
@@ -240,6 +278,40 @@ public class MarketsFrame extends JFrame implements MarketsView {
     @Override
     public void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // ---- SettleMarketView (UC6) ----
+
+    @Override
+    public void showSettlementResult(String message) {
+        statusLabel.setText(message);
+
+        // TEMP DEBUG: show account balances after settlement
+        String alice = "";
+        String bob = "";
+        String you = "";
+
+        try {
+            alice = "Alice: " + stakemate.app.StakeMateApp.accountRepo
+                    .findByUsername("alice").getBalance();
+            bob = "Bob:   " + stakemate.app.StakeMateApp.accountRepo
+                    .findByUsername("bob").getBalance();
+            you = "You (ryth): " + stakemate.app.StakeMateApp.accountRepo
+                    .findByUsername("ryth").getBalance();
+        } catch (Exception ignored) {
+        }
+
+        JOptionPane.showMessageDialog(
+                this,
+                message + "\n\nAccount Balances:\n" + alice + "\n" + bob + "\n" + you,
+                "Settlement Complete",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    @Override
+    public void showSettlementError(String errorMessage) {
+        JOptionPane.showMessageDialog(this, errorMessage,
+                "Settlement Error", JOptionPane.ERROR_MESSAGE);
     }
 
     // ---- Order Book Table Model ----

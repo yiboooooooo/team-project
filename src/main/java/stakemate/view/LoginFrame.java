@@ -8,14 +8,14 @@ import java.awt.*;
 
 public class LoginFrame extends JFrame implements LoginView {
 
-    private LoginController controller;            // injected later
-    private final MarketsFrame marketsFrame;       // we'll show this after login
+    private LoginController controller; // injected later
+    private final MarketsFrame marketsFrame; // we'll show this after login
 
     private SignupFrame signupFrame;
 
     // Buttons as FIELDS so we can access them in hookEvents()
     private final JButton signupButton = new JButton("Sign Up");
-    private final JButton loginButton  = new JButton("Login");
+    private final JButton loginButton = new JButton("Login");
 
     private final JTextField usernameField = new JTextField(15);
     private final JPasswordField passwordField = new JPasswordField(15);
@@ -79,8 +79,8 @@ public class LoginFrame extends JFrame implements LoginView {
         // Sign Up button
         signupButton.addActionListener(e -> {
             if (signupFrame != null) {
-                this.setVisible(false);        // hide login window
-                signupFrame.setVisible(true);  // open signup window
+                this.setVisible(false); // hide login window
+                signupFrame.setVisible(true); // open signup window
             }
         });
     }
@@ -98,6 +98,7 @@ public class LoginFrame extends JFrame implements LoginView {
         this.setVisible(false);
         this.dispose();
 
+        marketsFrame.setLoggedInUser(username);
         marketsFrame.setVisible(true);
         // Optional: if you want, you can trigger an initial refresh here
         // (assuming you can get a reference to the ViewMarketController)
