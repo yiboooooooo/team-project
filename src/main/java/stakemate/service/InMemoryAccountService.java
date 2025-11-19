@@ -41,6 +41,11 @@ public class InMemoryAccountService implements AccountService {
     }
 
     // demo helper methods
-    public void deposit(String user, double amount) { balances.put(user, balances.getOrDefault(user,0.0) + amount); }
-    public double getBalance(String user) { return balances.getOrDefault(user, 0.0); }
+    public void deposit(String user, double amount) {
+        balances.put(user, balances.getOrDefault(user, 0.0) + amount);
+    }
+
+    public double getBalance(String user) {
+        return balances.getOrDefault(user, 0.0);
+    }
 }

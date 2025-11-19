@@ -1,12 +1,12 @@
 package stakemate.data_access.in_memory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import stakemate.entity.Market;
 import stakemate.entity.MarketStatus;
 import stakemate.use_case.view_market.MarketRepository;
 import stakemate.use_case.view_market.RepositoryException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InMemoryMarketRepository implements MarketRepository {
 

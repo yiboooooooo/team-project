@@ -20,6 +20,8 @@ public class LoginFrame extends JFrame implements LoginView {
     private final JTextField usernameField = new JTextField(15);
     private final JPasswordField passwordField = new JPasswordField(15);
     private final JLabel errorLabel = new JLabel(" ");
+    private LoginController controller;            // injected later
+    private SignupFrame signupFrame;
 
     public LoginFrame(MarketsFrame marketsFrame) {
         super("StakeMate - Login");

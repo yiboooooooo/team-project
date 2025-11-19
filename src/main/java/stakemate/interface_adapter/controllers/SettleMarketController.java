@@ -1,7 +1,8 @@
 package stakemate.interface_adapter.controllers;
 
 
-import stakemate.use_case.settle_market.*;
+import stakemate.use_case.settle_market.SettleMarketInputBoundary;
+import stakemate.use_case.settle_market.SettleMarketRequestModel;
 
 public class SettleMarketController {
 
