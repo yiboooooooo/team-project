@@ -1,7 +1,7 @@
 package stakemate.interface_adapter.view_market;
 
-import stakemate.use_case.view_market.MatchSummary;
 import stakemate.use_case.view_market.MarketSummary;
+import stakemate.use_case.view_market.MatchSummary;
 import stakemate.use_case.view_market.ViewMarketInputBoundary;
 
 public class ViewMarketController {

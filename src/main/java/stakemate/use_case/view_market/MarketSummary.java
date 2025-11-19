@@ -16,13 +16,21 @@ public class MarketSummary {
         this.buySellEnabled = buySellEnabled;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getStatusLabel() { return statusLabel; }
+    public String getStatusLabel() {
+        return statusLabel;
+    }
 
-    public boolean isBuySellEnabled() { return buySellEnabled; }
+    public boolean isBuySellEnabled() {
+        return buySellEnabled;
+    }
 
     @Override
     public String toString() {

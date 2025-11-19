@@ -1,14 +1,14 @@
 package stakemate.use_case.view_market;
 
+import stakemate.entity.Market;
+import stakemate.entity.MarketStatus;
+import stakemate.entity.Match;
+import stakemate.entity.OrderBook;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import stakemate.entity.Match;
-import stakemate.entity.Market;
-import stakemate.entity.MarketStatus;
-import stakemate.entity.OrderBook;
 
 public class ViewMarketInteractor implements
         ViewMarketInputBoundary,
@@ -60,7 +60,7 @@ public class ViewMarketInteractor implements
             if (matchRepository instanceof stakemate.data_access.in_memory.InMemoryMatchRepository) {
                 ((stakemate.data_access.in_memory.InMemoryMatchRepository) matchRepository).syncWithApiData();
             }
-            
+
             // Then load the refreshed matches
             loadMatches();
         } catch (RepositoryException e) {

@@ -1,56 +1,47 @@
 package stakemate.app;
 
-import javax.swing.SwingUtilities;
-
-import stakemate.data_access.supabase.SupabaseClientFactory;
-import stakemate.data_access.supabase.SupabaseUserDataAccess;
-import stakemate.data_access.supabase.SupabaseGameRepository;
-
-// API fetching classes
 import stakemate.data_access.api.OddsApiGatewayImpl;
 import stakemate.data_access.api.OddsApiResponseAdapter;
-import stakemate.use_case.fetch_games.FetchGamesInteractor;
-import stakemate.use_case.fetch_games.FetchGamesOutputBoundary;
-import stakemate.use_case.fetch_games.FetchGamesResponseModel;
-import stakemate.entity.Game;
-
 import stakemate.data_access.in_memory.*;
-
+import stakemate.data_access.supabase.SupabaseClientFactory;
+import stakemate.data_access.supabase.SupabaseGameRepository;
+import stakemate.data_access.supabase.SupabaseUserDataAccess;
+import stakemate.entity.Game;
 import stakemate.entity.Side;
 import stakemate.entity.User;
 import stakemate.interface_adapter.controllers.LoginController;
+import stakemate.interface_adapter.controllers.SettleMarketController;
 import stakemate.interface_adapter.controllers.SignupController;
-
 import stakemate.interface_adapter.view_login.SwingLoginPresenter;
+import stakemate.interface_adapter.view_market.SwingSettleMarketPresenter;
+import stakemate.interface_adapter.view_market.SwingViewMarketsPresenter;
+import stakemate.interface_adapter.view_market.ViewMarketController;
 import stakemate.interface_adapter.view_signup.SwingSignupPresenter;
-
+import stakemate.use_case.fetch_games.FetchGamesInteractor;
+import stakemate.use_case.fetch_games.FetchGamesOutputBoundary;
+import stakemate.use_case.fetch_games.FetchGamesResponseModel;
 import stakemate.use_case.login.LoginInteractor;
 import stakemate.use_case.settle_market.Bet;
 import stakemate.use_case.settle_market.SettleMarketInteractor;
 import stakemate.use_case.signup.SignupInteractor;
-
-import stakemate.interface_adapter.view_market.SwingViewMarketsPresenter;
-import stakemate.interface_adapter.view_market.ViewMarketController;
 import stakemate.use_case.view_market.ViewMarketInteractor;
-
-import stakemate.view.MarketsFrame;
 import stakemate.view.LoginFrame;
+import stakemate.view.MarketsFrame;
 import stakemate.view.SignupFrame;
 
-// NEW for UC6 GUI wiring
-import stakemate.interface_adapter.view_market.SwingSettleMarketPresenter;
-import stakemate.interface_adapter.controllers.SettleMarketController;
+import javax.swing.*;
 
 public final class StakeMateApp {
     public static InMemoryAccountRepository accountRepo;
     public static InMemoryBetRepository betRepo;
 
-    private StakeMateApp() {}
+    private StakeMateApp() {
+    }
 
     public static void main(String[] args) {
         // Load .env file if it exists
         loadEnvFile();
-        
+
         SwingUtilities.invokeLater(() -> {
             // ==============================
             // Infrastructure for markets
@@ -65,37 +56,37 @@ public final class StakeMateApp {
             if (apiKey == null || apiKey.isEmpty()) {
                 System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
             }
-            
+
             FetchGamesInteractor fetchGamesInteractor = null;
             if (apiKey != null && !apiKey.isEmpty()) {
                 OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
                 OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
-                
+
                 // Simple presenter that logs results
                 FetchGamesOutputBoundary presenter = new FetchGamesOutputBoundary() {
                     @Override
                     public void presentFetchInProgress() {
                         System.out.println("Fetching games from API...");
                     }
-                    
+
                     @Override
                     public void presentFetchSuccess(FetchGamesResponseModel response) {
                         System.out.println("API fetch completed: " + response.getMessage());
                     }
-                    
+
                     @Override
                     public void presentFetchError(String error) {
                         System.err.println("API fetch error: " + error);
                     }
-                    
+
                     @Override
                     public void presentSearchResults(java.util.List<Game> games, String query) {
                         System.out.println("Search found " + games.size() + " games for: " + query);
                     }
                 };
-                
+
                 fetchGamesInteractor = new FetchGamesInteractor(
-                    apiGateway, responseAdapter, gameRepository, presenter
+                        apiGateway, responseAdapter, gameRepository, presenter
                 );
             }
 
@@ -192,7 +183,7 @@ public final class StakeMateApp {
             // Markets will be shown *after* login inside LoginFrame.onLoginSuccess()
         });
     }
-    
+
     /**
      * Loads environment variables from .env file in project root.
      * Format: KEY=value (one per line, no quotes needed)
@@ -203,23 +194,23 @@ public final class StakeMateApp {
             if (!envFile.exists()) {
                 return; // No .env file, use system env vars only
             }
-            
+
             java.io.BufferedReader reader = new java.io.BufferedReader(
-                new java.io.FileReader(envFile)
+                    new java.io.FileReader(envFile)
             );
-            
+
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (line.isEmpty() || line.startsWith("#")) {
                     continue; // Skip empty lines and comments
                 }
-                
+
                 int equalIndex = line.indexOf('=');
                 if (equalIndex > 0) {
                     String key = line.substring(0, equalIndex).trim();
                     String value = line.substring(equalIndex + 1).trim();
-                    
+
                     // Only set if not already in system env
                     if (System.getenv(key) == null) {
                         System.setProperty(key, value);
@@ -231,7 +222,7 @@ public final class StakeMateApp {
             System.err.println("Warning: Could not read .env file: " + e.getMessage());
         }
     }
-    
+
     /**
      * Gets environment variable from system env or system properties (.env file).
      */

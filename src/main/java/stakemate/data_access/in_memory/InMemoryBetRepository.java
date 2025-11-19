@@ -1,9 +1,10 @@
 package stakemate.data_access.in_memory;
-import java.util.ArrayList;
-import java.util.List;
 
 import stakemate.use_case.settle_market.Bet;
 import stakemate.use_case.settle_market.BetRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InMemoryBetRepository implements BetRepository {
 

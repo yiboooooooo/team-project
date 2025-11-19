@@ -13,11 +13,19 @@ public class Market {
         this.status = status;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getMatchId() { return matchId; }
+    public String getMatchId() {
+        return matchId;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public MarketStatus getStatus() { return status; }
+    public MarketStatus getStatus() {
+        return status;
+    }
 }
