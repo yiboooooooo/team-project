@@ -18,11 +18,19 @@ public class OrderBookResponseModel {
         this.message = message;
     }
 
-    public OrderBook getOrderBook() { return orderBook; }
+    public OrderBook getOrderBook() {
+        return orderBook;
+    }
 
-    public boolean isEmpty() { return empty; }
+    public boolean isEmpty() {
+        return empty;
+    }
 
-    public boolean isReconnecting() { return reconnecting; }
+    public boolean isReconnecting() {
+        return reconnecting;
+    }
 
-    public String getMessage() { return message; }
+    public String getMessage() {
+        return message;
+    }
 }

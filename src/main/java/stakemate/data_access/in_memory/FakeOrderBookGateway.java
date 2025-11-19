@@ -1,14 +1,14 @@
 package stakemate.data_access.in_memory;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.entity.Side;
 import stakemate.use_case.view_market.OrderBookGateway;
 import stakemate.use_case.view_market.OrderBookSubscriber;
 import stakemate.use_case.view_market.RepositoryException;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FakeOrderBookGateway implements OrderBookGateway {
 

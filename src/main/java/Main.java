@@ -1,9 +1,9 @@
 // package org.example; // Package name is still removed
 
 // Import the official Java SQL libraries
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Main {

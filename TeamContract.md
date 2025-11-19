@@ -1,6 +1,8 @@
 ## 1. Purpose of this Contract
 
-This contract sets out shared expectations and commitments for how our team will collaborate during the course. It is designed to promote accountability, professionalism, and mutual support as we complete individual preparation, readiness assurance tests, in-class activities, and our course project.
+This contract sets out shared expectations and commitments for how our team will collaborate during the course. It is
+designed to promote accountability, professionalism, and mutual support as we complete individual preparation, readiness
+assurance tests, in-class activities, and our course project.
 
 ---
 
@@ -10,8 +12,10 @@ This contract sets out shared expectations and commitments for how our team will
 
 - Each team member commits to keeping up with course material (i.e. not falling behind).
 - Each team member commits to completing all iRATs and tRATs.
-- Members agree to have a solid understanding of the concepts taught in the course so that they can contribute meaningfully to the project.
-- Members who miss agreed-upon project milestone completion deadlines will be held accountable in their peer evaluation scores.
+- Members agree to have a solid understanding of the concepts taught in the course so that they can contribute
+  meaningfully to the project.
+- Members who miss agreed-upon project milestone completion deadlines will be held accountable in their peer evaluation
+  scores.
 
 ---
 
@@ -20,7 +24,8 @@ This contract sets out shared expectations and commitments for how our team will
 - We will use Discord to communicate about the course project.
 - We agree to respond to messages in at most one day.
 - Teammates should notify one each other if they are unable to meet a project deadline for extenuating circumstances.
-- To promote a respectful and inclusive team environment, we will actively listen to each other's ideas and give everyone a chance to make meanginful contributions to the project.
+- To promote a respectful and inclusive team environment, we will actively listen to each other's ideas and give
+  everyone a chance to make meanginful contributions to the project.
 
 ---
 
@@ -48,7 +53,8 @@ This contract sets out shared expectations and commitments for how our team will
 
 ## 3. Conflict resolution
 
-- Our team will resolve conflicts by listening to each other's arguments and attempting to reach a mutual agreement or compromise.
+- Our team will resolve conflicts by listening to each other's arguments and attempting to reach a mutual agreement or
+  compromise.
 - If the group cannot reach a resolution, we will consult a TA or instructor for assistance.
 
 ---
@@ -64,7 +70,8 @@ This contract sets out shared expectations and commitments for how our team will
 
 ## 5. Signatures
 
-By signing below, we acknowledge that we have read, discussed, and agreed to these terms. We understand that this contract is binding for the duration of the course and may be revised with the agreement of all team members.
+By signing below, we acknowledge that we have read, discussed, and agreed to these terms. We understand that this
+contract is binding for the duration of the course and may be revised with the agreement of all team members.
 
 Team Member Signatures:
 

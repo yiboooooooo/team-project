@@ -11,9 +11,15 @@ public class OrderBookEntry {
         this.quantity = quantity;
     }
 
-    public Side getSide() { return side; }
+    public Side getSide() {
+        return side;
+    }
 
-    public double getPrice() { return price; }
+    public double getPrice() {
+        return price;
+    }
 
-    public double getQuantity() { return quantity; }
+    public double getQuantity() {
+        return quantity;
+    }
 }

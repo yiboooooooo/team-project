@@ -1,10 +1,10 @@
 package stakemate.data_access.in_memory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import stakemate.entity.User;
 import stakemate.use_case.settle_market.AccountRepository;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class InMemoryAccountRepository implements AccountRepository {
 

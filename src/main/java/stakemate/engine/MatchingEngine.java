@@ -20,7 +20,8 @@ public class MatchingEngine {
     // keep trades for display
     private final List<Trade> trades = new ArrayList<>();
 
-    public MatchingEngine() { }
+    public MatchingEngine() {
+    }
 
     /**
      * Place an order (limit or market). Returns list of trades executed (may be empty).
@@ -113,10 +114,16 @@ public class MatchingEngine {
     // helper to reduce the actual resting order in real lists (not the sorted copy)
     private void reduceResting(String restingId, double qty) {
         for (BookOrder o : bids) {
-            if (o.getId().equals(restingId)) { o.reduce(qty); return; }
+            if (o.getId().equals(restingId)) {
+                o.reduce(qty);
+                return;
+            }
         }
         for (BookOrder o : asks) {
-            if (o.getId().equals(restingId)) { o.reduce(qty); return; }
+            if (o.getId().equals(restingId)) {
+                o.reduce(qty);
+                return;
+            }
         }
     }
 
@@ -150,9 +157,16 @@ public class MatchingEngine {
         return new OrderBook(marketId, bidEntries, askEntries);
     }
 
-    public List<Trade> getTrades() { return Collections.unmodifiableList(trades); }
+    public List<Trade> getTrades() {
+        return Collections.unmodifiableList(trades);
+    }
 
     // convenience getters for demo/UI
-    public List<BookOrder> getBids() { return Collections.unmodifiableList(bids); }
-    public List<BookOrder> getAsks() { return Collections.unmodifiableList(asks); }
+    public List<BookOrder> getBids() {
+        return Collections.unmodifiableList(bids);
+    }
+
+    public List<BookOrder> getAsks() {
+        return Collections.unmodifiableList(asks);
+    }
 }

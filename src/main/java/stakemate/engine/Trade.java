@@ -22,13 +22,33 @@ public class Trade {
         this.timestamp = Instant.now();
     }
 
-    public String getId() { return id; }
-    public String getMarketId() { return marketId; }
-    public String getBuyOrderId() { return buyOrderId; }
-    public String getSellOrderId() { return sellOrderId; }
-    public double getPrice() { return price; }
-    public double getSize() { return size; }
-    public Instant getTimestamp() { return timestamp; }
+    public String getId() {
+        return id;
+    }
+
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public String getBuyOrderId() {
+        return buyOrderId;
+    }
+
+    public String getSellOrderId() {
+        return sellOrderId;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
 
     @Override
     public String toString() {
