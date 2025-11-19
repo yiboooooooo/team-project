@@ -44,6 +44,7 @@ public final class StakeMateApp {
 
         SwingUtilities.invokeLater(() -> {
             // ==============================
+            // ==============================
             // Infrastructure for markets
             // ==============================
 
@@ -144,6 +145,26 @@ public final class StakeMateApp {
             SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
             // ==============================
+            // Profile Frame
+            // ==============================
+            stakemate.view.ProfileFrame profileFrame = new stakemate.view.ProfileFrame();
+
+            stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel = new stakemate.interface_adapter.view_profile.ProfileViewModel();
+            profileFrame.setViewModel(profileViewModel);
+
+            stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter = new stakemate.interface_adapter.view_profile.ViewProfilePresenter(
+                    profileViewModel);
+
+            stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor = new stakemate.use_case.view_profile.ViewProfileInteractor(
+                    userRepo, profilePresenter);
+
+            stakemate.interface_adapter.view_profile.ViewProfileController profileController = new stakemate.interface_adapter.view_profile.ViewProfileController(
+                    profileInteractor);
+
+            marketsFrame.setProfileFrame(profileFrame);
+            marketsFrame.setProfileController(profileController);
+
+            // ==============================
             // Login & Signup frames
             // ==============================
 
@@ -151,27 +172,21 @@ public final class StakeMateApp {
             SignupFrame signupFrame = new SignupFrame(loginFrame);
 
             // ----- Login wiring -----
-            SwingLoginPresenter loginPresenter =
-                    new SwingLoginPresenter(loginFrame);
+            SwingLoginPresenter loginPresenter = new SwingLoginPresenter(loginFrame);
 
-            LoginInteractor loginInteractor =
-                    new LoginInteractor(userRepo, loginPresenter);
+            LoginInteractor loginInteractor = new LoginInteractor(userRepo, loginPresenter);
 
-            LoginController loginController =
-                    new LoginController(loginInteractor);
+            LoginController loginController = new LoginController(loginInteractor);
 
             loginFrame.setController(loginController);
             loginFrame.setSignupFrame(signupFrame);
 
             // ----- Signup wiring -----
-            SwingSignupPresenter signupPresenter =
-                    new SwingSignupPresenter(signupFrame);
+            SwingSignupPresenter signupPresenter = new SwingSignupPresenter(signupFrame);
 
-            SignupInteractor signupInteractor =
-                    new SignupInteractor(userRepo, signupPresenter);
+            SignupInteractor signupInteractor = new SignupInteractor(userRepo, signupPresenter);
 
-            SignupController signupController =
-                    new SignupController(signupInteractor);
+            SignupController signupController = new SignupController(signupInteractor);
 
             signupFrame.setController(signupController);
 
