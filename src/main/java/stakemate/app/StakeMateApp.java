@@ -45,13 +45,15 @@ public final class StakeMateApp {
     public static InMemoryAccountRepository accountRepo;
     public static InMemoryBetRepository betRepo;
 
-    private StakeMateApp() {}
+    private StakeMateApp() {
+    }
 
     public static void main(String[] args) {
         // Load .env file if it exists
         loadEnvFile();
-        
+
         SwingUtilities.invokeLater(() -> {
+            // ==============================
             // ==============================
             // Infrastructure for markets
             // ==============================
@@ -153,6 +155,26 @@ public final class StakeMateApp {
             SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
             // ==============================
+            // Profile Frame
+            // ==============================
+            stakemate.view.ProfileFrame profileFrame = new stakemate.view.ProfileFrame();
+
+            stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel = new stakemate.interface_adapter.view_profile.ProfileViewModel();
+            profileFrame.setViewModel(profileViewModel);
+
+            stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter = new stakemate.interface_adapter.view_profile.ViewProfilePresenter(
+                    profileViewModel);
+
+            stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor = new stakemate.use_case.view_profile.ViewProfileInteractor(
+                    userRepo, profilePresenter);
+
+            stakemate.interface_adapter.view_profile.ViewProfileController profileController = new stakemate.interface_adapter.view_profile.ViewProfileController(
+                    profileInteractor);
+
+            marketsFrame.setProfileFrame(profileFrame);
+            marketsFrame.setProfileController(profileController);
+
+            // ==============================
             // Login & Signup frames
             // ==============================
 
@@ -160,27 +182,21 @@ public final class StakeMateApp {
             SignupFrame signupFrame = new SignupFrame(loginFrame);
 
             // ----- Login wiring -----
-            SwingLoginPresenter loginPresenter =
-                    new SwingLoginPresenter(loginFrame);
+            SwingLoginPresenter loginPresenter = new SwingLoginPresenter(loginFrame);
 
-            LoginInteractor loginInteractor =
-                    new LoginInteractor(userRepo, loginPresenter);
+            LoginInteractor loginInteractor = new LoginInteractor(userRepo, loginPresenter);
 
-            LoginController loginController =
-                    new LoginController(loginInteractor);
+            LoginController loginController = new LoginController(loginInteractor);
 
             loginFrame.setController(loginController);
             loginFrame.setSignupFrame(signupFrame);
 
             // ----- Signup wiring -----
-            SwingSignupPresenter signupPresenter =
-                    new SwingSignupPresenter(signupFrame);
+            SwingSignupPresenter signupPresenter = new SwingSignupPresenter(signupFrame);
 
-            SignupInteractor signupInteractor =
-                    new SignupInteractor(userRepo, signupPresenter);
+            SignupInteractor signupInteractor = new SignupInteractor(userRepo, signupPresenter);
 
-            SignupController signupController =
-                    new SignupController(signupInteractor);
+            SignupController signupController = new SignupController(signupInteractor);
 
             signupFrame.setController(signupController);
 
@@ -192,7 +208,7 @@ public final class StakeMateApp {
             // Markets will be shown *after* login inside LoginFrame.onLoginSuccess()
         });
     }
-    
+
     /**
      * Loads environment variables from .env file in project root.
      * Format: KEY=value (one per line, no quotes needed)
@@ -214,12 +230,12 @@ public final class StakeMateApp {
                 if (line.isEmpty() || line.startsWith("#")) {
                     continue; // Skip empty lines and comments
                 }
-                
+
                 int equalIndex = line.indexOf('=');
                 if (equalIndex > 0) {
                     String key = line.substring(0, equalIndex).trim();
                     String value = line.substring(equalIndex + 1).trim();
-                    
+
                     // Only set if not already in system env
                     if (System.getenv(key) == null) {
                         System.setProperty(key, value);
@@ -231,7 +247,7 @@ public final class StakeMateApp {
             System.err.println("Warning: Could not read .env file: " + e.getMessage());
         }
     }
-    
+
     /**
      * Gets environment variable from system env or system properties (.env file).
      */
