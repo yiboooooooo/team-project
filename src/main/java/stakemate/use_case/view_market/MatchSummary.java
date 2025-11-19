@@ -11,17 +11,11 @@ public class MatchSummary {
         this.statusLabel = statusLabel;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public String getLabel() {
-        return label;
-    }
+    public String getLabel() { return label; }
 
-    public String getStatusLabel() {
-        return statusLabel;
-    }
+    public String getStatusLabel() { return statusLabel; }
 
     @Override
     public String toString() {

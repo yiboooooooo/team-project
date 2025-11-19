@@ -9,9 +9,7 @@ public class LoginViewModel {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private LoginState state = new LoginState();
 
-    public LoginState getState() {
-        return state;
-    }
+    public LoginState getState() { return state; }
 
     public void setState(LoginState state) {
         this.state = state;

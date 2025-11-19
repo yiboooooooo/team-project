@@ -11,11 +11,7 @@ public class MatchesResponseModel {
         this.emptyStateMessage = emptyStateMessage;
     }
 
-    public List<MatchSummary> getMatches() {
-        return matches;
-    }
+    public List<MatchSummary> getMatches() { return matches; }
 
-    public String getEmptyStateMessage() {
-        return emptyStateMessage;
-    }
+    public String getEmptyStateMessage() { return emptyStateMessage; }
 }

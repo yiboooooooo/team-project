@@ -1,11 +1,11 @@
 package stakemate.interface_adapter.view_market;
 
-import stakemate.use_case.view_market.MarketsResponseModel;
+import javax.swing.SwingUtilities;
+
 import stakemate.use_case.view_market.MatchesResponseModel;
+import stakemate.use_case.view_market.MarketsResponseModel;
 import stakemate.use_case.view_market.OrderBookResponseModel;
 import stakemate.use_case.view_market.ViewMarketOutputBoundary;
-
-import javax.swing.*;
 
 public class SwingViewMarketsPresenter implements ViewMarketOutputBoundary {
 

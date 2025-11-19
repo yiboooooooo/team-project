@@ -1,11 +1,11 @@
 package stakemate.data_access.in_memory;
 
-import stakemate.use_case.settle_market.SettlementRecord;
-import stakemate.use_case.settle_market.SettlementRecordRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import stakemate.use_case.settle_market.SettlementRecord;
+import stakemate.use_case.settle_market.SettlementRecordRepository;
 
 public class InMemorySettlementRecordRepository implements SettlementRecordRepository {
 

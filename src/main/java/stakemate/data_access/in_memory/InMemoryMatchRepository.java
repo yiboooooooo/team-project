@@ -1,17 +1,17 @@
 package stakemate.data_access.in_memory;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import stakemate.entity.Game;
 import stakemate.entity.GameStatus;
 import stakemate.entity.Match;
 import stakemate.entity.MatchStatus;
-import stakemate.use_case.fetch_games.FetchGamesInputBoundary;
-import stakemate.use_case.fetch_games.GameRepository;
 import stakemate.use_case.view_market.MatchRepository;
 import stakemate.use_case.view_market.RepositoryException;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import stakemate.use_case.fetch_games.GameRepository;
+import stakemate.use_case.fetch_games.FetchGamesInputBoundary;
 
 public class InMemoryMatchRepository implements MatchRepository {
 
@@ -64,15 +64,15 @@ public class InMemoryMatchRepository implements MatchRepository {
             if (fetchGamesInteractor != null) {
                 fetchGamesInteractor.refreshGames(); // This calls API and saves to DB
             }
-
+            
             // Step 2: Read the updated games from database
             List<Game> games = gameRepository.searchGames(""); // Get all games
             List<Match> apiMatches = convertGamesToMatches(games);
-
+            
             // Step 3: Replace current matches with API data
             matches.clear();
             matches.addAll(apiMatches);
-
+            
             // If no API matches found, fall back to default matches
             if (matches.isEmpty()) {
                 initializeWithDefaultMatches();
@@ -90,14 +90,14 @@ public class InMemoryMatchRepository implements MatchRepository {
      */
     private List<Match> convertGamesToMatches(List<Game> games) {
         List<Match> matchList = new ArrayList<>();
-
+        
         for (Game game : games) {
             Match match = convertGameToMatch(game);
             if (match != null) {
                 matchList.add(match);
             }
         }
-
+        
         return matchList;
     }
 
@@ -111,16 +111,16 @@ public class InMemoryMatchRepository implements MatchRepository {
 
         // Use external ID consistently as match ID to prevent duplicates
         String matchId = game.getExternalId() != null ? game.getExternalId() : game.getId().toString();
-
+        
         // Convert GameStatus to MatchStatus
         MatchStatus matchStatus = convertGameStatusToMatchStatus(game.getStatus());
-
+        
         return new Match(
-                matchId,
-                game.getTeamA(),  // home team
-                game.getTeamB(),  // away team
-                matchStatus,
-                game.getGameTime()
+            matchId,
+            game.getTeamA(),  // home team
+            game.getTeamB(),  // away team
+            matchStatus,
+            game.getGameTime()
         );
     }
 
@@ -131,7 +131,7 @@ public class InMemoryMatchRepository implements MatchRepository {
         if (gameStatus == null) {
             return MatchStatus.UPCOMING;
         }
-
+        
         switch (gameStatus) {
             case UPCOMING:
                 return MatchStatus.UPCOMING;
