@@ -8,14 +8,16 @@ import java.awt.*;
 
 public class SignupFrame extends JFrame implements SignupView {
 
+    private SignupController controller;  // injected later
     private final JFrame loginFrame;      // to return to login on success
+
     private final JTextField usernameField = new JTextField(15);
     private final JPasswordField passwordField = new JPasswordField(15);
     private final JPasswordField confirmField = new JPasswordField(15);
     private final JLabel errorLabel = new JLabel(" ");
+
     private final JButton signupButton = new JButton("Sign Up");
     private final JButton cancelButton = new JButton("Cancel");
-    private SignupController controller;  // injected later
 
     public SignupFrame(JFrame loginFrame) {
         super("StakeMate - Sign Up");
@@ -64,7 +66,7 @@ public class SignupFrame extends JFrame implements SignupView {
 
             String username = usernameField.getText().trim();
             String password = new String(passwordField.getPassword());
-            String confirm = new String(confirmField.getPassword());
+            String confirm  = new String(confirmField.getPassword());
 
             if (!password.equals(confirm)) {
                 showError("Passwords do not match.");

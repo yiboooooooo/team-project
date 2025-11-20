@@ -1,15 +1,17 @@
 package stakemate.interface_adapter.viewOrderBook;
 
-import stakemate.engine.MatchingEngine;
-import stakemate.engine.Trade;
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.entity.Side;
-import stakemate.service.AccountService;
+import stakemate.engine.BookOrder;
+import stakemate.engine.MatchingEngine;
+import stakemate.engine.Trade;
 import stakemate.service.InMemoryAccountService;
+import stakemate.service.AccountService;
 import stakemate.use_case.PlaceOrderUseCase.PlaceOrderRequest;
 import stakemate.use_case.PlaceOrderUseCase.PlaceOrderResponse;
 import stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,7 +20,7 @@ import java.util.List;
 
 /**
  * Self-contained Swing demo UI for the matching engine.
- * <p>
+ *
  * Put this file at: src/main/java/stakemate/ui/OrderBookSwingDemo.java
  */
 public class OrderBookDemo {
@@ -46,14 +48,10 @@ public class OrderBookDemo {
         JTextField qtyField = new JTextField("10", 6);
         JButton place = new JButton("Place Order");
 
-        controls.add(new JLabel("User:"));
-        controls.add(userField);
-        controls.add(new JLabel("Side:"));
-        controls.add(sideBox);
-        controls.add(new JLabel("Price:"));
-        controls.add(priceField);
-        controls.add(new JLabel("Qty:"));
-        controls.add(qtyField);
+        controls.add(new JLabel("User:")); controls.add(userField);
+        controls.add(new JLabel("Side:")); controls.add(sideBox);
+        controls.add(new JLabel("Price:")); controls.add(priceField);
+        controls.add(new JLabel("Qty:")); controls.add(qtyField);
         controls.add(marketCheck);
         controls.add(place);
 
@@ -105,14 +103,6 @@ public class OrderBookDemo {
         this.accountService = accountService;
     }
 
-    public static void main(String[] args) {
-        // ensure we run on the EDT
-        SwingUtilities.invokeLater(() -> {
-            OrderBookDemo demo = new OrderBookDemo();
-            demo.show();
-        });
-    }
-
     private void refreshBook() {
         // engine.snapshotOrderBook("demo-market")
         OrderBook ob = useCase.snapshot("demo-market");
@@ -131,6 +121,14 @@ public class OrderBookDemo {
 
     public void show() {
         frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        // ensure we run on the EDT
+        SwingUtilities.invokeLater(() -> {
+            OrderBookDemo demo = new OrderBookDemo();
+            demo.show();
+        });
     }
 }
 

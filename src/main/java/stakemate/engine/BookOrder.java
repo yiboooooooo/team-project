@@ -30,47 +30,18 @@ public class BookOrder {
         this.timestamp = Instant.now();
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public String getUserId() { return userId; }
+    public String getMarketId() { return marketId; }
+    public Side getSide() { return side; }
+    public Double getPrice() { return price; }
+    public Instant getTimestamp() { return timestamp; }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getMarketId() {
-        return marketId;
-    }
-
-    public Side getSide() {
-        return side;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public double getOriginalQty() {
-        return originalQty;
-    }
-
-    public double getRemainingQty() {
-        return remainingQty;
-    }
-
+    public double getOriginalQty() { return originalQty; }
+    public double getRemainingQty() { return remainingQty; }
     public void reduce(double filled) {
         remainingQty = Math.max(0.0, remainingQty - filled);
     }
-
-    public boolean isFilled() {
-        return remainingQty <= 0.0;
-    }
-
-    public boolean isMarket() {
-        return price == null;
-    }
+    public boolean isFilled() { return remainingQty <= 0.0; }
+    public boolean isMarket() { return price == null; }
 }

@@ -1,9 +1,9 @@
 package stakemate.interface_adapter.view_market;
 
+import javax.swing.SwingUtilities;
+
 import stakemate.use_case.settle_market.SettleMarketOutputBoundary;
 import stakemate.use_case.settle_market.SettleMarketResponseModel;
-
-import javax.swing.*;
 
 public class SwingSettleMarketPresenter implements SettleMarketOutputBoundary {
 

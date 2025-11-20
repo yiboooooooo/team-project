@@ -2,6 +2,8 @@ package stakemate.entity;
 
 public class Order {
 
+    public enum Side { BACK, LAY }
+
     private String userId;
     private Side side;
     private double odds;
@@ -39,6 +41,4 @@ public class Order {
                 ", stake=" + stake +
                 '}';
     }
-
-    public enum Side {BACK, LAY}
 }

@@ -18,19 +18,11 @@ public class MarketsResponseModel {
         this.emptyStateMessage = emptyStateMessage;
     }
 
-    public String getMatchId() {
-        return matchId;
-    }
+    public String getMatchId() { return matchId; }
 
-    public String getMatchTitle() {
-        return matchTitle;
-    }
+    public String getMatchTitle() { return matchTitle; }
 
-    public List<MarketSummary> getMarkets() {
-        return markets;
-    }
+    public List<MarketSummary> getMarkets() { return markets; }
 
-    public String getEmptyStateMessage() {
-        return emptyStateMessage;
-    }
+    public String getEmptyStateMessage() { return emptyStateMessage; }
 }

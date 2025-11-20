@@ -14,6 +14,10 @@ public enum Sport {
         this.oddsApiKey = oddsApiKey;
     }
 
+    public String getOddsApiKey() {
+        return oddsApiKey;
+    }
+
     /**
      * Find Sport enum by its API key
      */
@@ -24,10 +28,6 @@ public enum Sport {
             }
         }
         return null;
-    }
-
-    public String getOddsApiKey() {
-        return oddsApiKey;
     }
 }
 

@@ -17,15 +17,9 @@ public class OrderBook {
         this.asks = Collections.unmodifiableList(new ArrayList<>(asks));
     }
 
-    public String getMarketId() {
-        return marketId;
-    }
+    public String getMarketId() { return marketId; }
 
-    public List<OrderBookEntry> getBids() {
-        return bids;
-    }
+    public List<OrderBookEntry> getBids() { return bids; }
 
-    public List<OrderBookEntry> getAsks() {
-        return asks;
-    }
+    public List<OrderBookEntry> getAsks() { return asks; }
 }

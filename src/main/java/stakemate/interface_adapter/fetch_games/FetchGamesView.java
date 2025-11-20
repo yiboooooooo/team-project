@@ -12,23 +12,23 @@ public interface FetchGamesView {
     /**
      * Shows a success message with fetch results.
      *
-     * @param message    Success message
+     * @param message Success message
      * @param gamesCount Number of games fetched/saved
      */
     void showFetchSuccess(String message, int gamesCount);
-
+    
     /**
      * Shows an error message.
      *
      * @param errorMessage Error message to display
      */
     void showError(String errorMessage);
-
+    
     /**
      * Shows that fetching is in progress.
      */
     void showFetchInProgress();
-
+    
     /**
      * Shows search results.
      *
