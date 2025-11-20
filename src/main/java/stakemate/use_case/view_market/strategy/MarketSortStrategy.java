@@ -1,8 +1,8 @@
 package stakemate.use_case.view_market.strategy;
 
-import stakemate.use_case.view_market.MarketSummary;
-
 import java.util.List;
+
+import stakemate.use_case.view_market.MarketSummary;
 
 /**
  * [Strategy Pattern]

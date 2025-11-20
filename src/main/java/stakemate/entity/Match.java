@@ -9,11 +9,11 @@ public class Match {
     private final MatchStatus status;
     private final LocalDateTime commenceTime;
 
-    public Match(String id,
-                 String homeTeam,
-                 String awayTeam,
-                 MatchStatus status,
-                 LocalDateTime commenceTime) {
+    public Match(final String id,
+                 final String homeTeam,
+                 final String awayTeam,
+                 final MatchStatus status,
+                 final LocalDateTime commenceTime) {
         this.id = id;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;

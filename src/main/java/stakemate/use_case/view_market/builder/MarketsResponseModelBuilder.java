@@ -1,10 +1,10 @@
 package stakemate.use_case.view_market.builder;
 
-import stakemate.use_case.view_market.MarketSummary;
-import stakemate.use_case.view_market.MarketsResponseModel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import stakemate.use_case.view_market.MarketSummary;
+import stakemate.use_case.view_market.MarketsResponseModel;
 
 /**
  * [Builder Pattern]
@@ -16,27 +16,27 @@ public class MarketsResponseModelBuilder {
     private List<MarketSummary> markets = new ArrayList<>();
     private String emptyStateMessage;
 
-    public MarketsResponseModelBuilder setMatchId(String matchId) {
+    public MarketsResponseModelBuilder setMatchId(final String matchId) {
         this.matchId = matchId;
         return this;
     }
 
-    public MarketsResponseModelBuilder setMatchTitle(String matchTitle) {
+    public MarketsResponseModelBuilder setMatchTitle(final String matchTitle) {
         this.matchTitle = matchTitle;
         return this;
     }
 
-    public MarketsResponseModelBuilder addMarket(MarketSummary market) {
+    public MarketsResponseModelBuilder addMarket(final MarketSummary market) {
         this.markets.add(market);
         return this;
     }
 
-    public MarketsResponseModelBuilder setMarkets(List<MarketSummary> markets) {
+    public MarketsResponseModelBuilder setMarkets(final List<MarketSummary> markets) {
         this.markets = markets;
         return this;
     }
 
-    public MarketsResponseModelBuilder setEmptyStateMessage(String msg) {
+    public MarketsResponseModelBuilder setEmptyStateMessage(final String msg) {
         this.emptyStateMessage = msg;
         return this;
     }

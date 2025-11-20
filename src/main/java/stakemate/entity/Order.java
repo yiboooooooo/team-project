@@ -7,7 +7,7 @@ public class Order {
     private final double odds;
     private final double stake;
 
-    public Order(String userId, Side side, double odds, double stake) {
+    public Order(final String userId, final Side side, final double odds, final double stake) {
         this.userId = userId;
         this.side = side;
         this.odds = odds;

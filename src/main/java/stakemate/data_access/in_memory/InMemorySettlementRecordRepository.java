@@ -1,19 +1,19 @@
 package stakemate.data_access.in_memory;
 
-import stakemate.use_case.settle_market.SettlementRecord;
-import stakemate.use_case.settle_market.SettlementRecordRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import stakemate.use_case.settle_market.SettlementRecord;
+import stakemate.use_case.settle_market.SettlementRecordRepository;
 
 public class InMemorySettlementRecordRepository implements SettlementRecordRepository {
 
     private final List<SettlementRecord> records = new ArrayList<>();
 
     @Override
-    public Optional<SettlementRecord> findByMarketId(String marketId) {
-        for (SettlementRecord r : records) {
+    public Optional<SettlementRecord> findByMarketId(final String marketId) {
+        for (final SettlementRecord r : records) {
             if (r.getMarketId().equals(marketId)) {
                 return Optional.of(r);
             }
@@ -22,7 +22,7 @@ public class InMemorySettlementRecordRepository implements SettlementRecordRepos
     }
 
     @Override
-    public void save(SettlementRecord record) {
+    public void save(final SettlementRecord record) {
         records.add(record);
     }
 

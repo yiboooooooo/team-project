@@ -12,7 +12,7 @@ public class Bet {
     private boolean settled = false;
     private boolean won = false;
 
-    public Bet(String username, String marketId, Side side, double stake, double price) {
+    public Bet(final String username, final String marketId, final Side side, final double stake, final double price) {
         this.username = username;
         this.marketId = marketId;
         this.side = side;
@@ -44,7 +44,7 @@ public class Bet {
         return settled;
     }
 
-    public void setSettled(boolean settled) {
+    public void setSettled(final boolean settled) {
         this.settled = settled;
     }
 
@@ -52,7 +52,7 @@ public class Bet {
         return won;
     }
 
-    public void setWon(boolean won) {
+    public void setWon(final boolean won) {
         this.won = won;
     }
 }

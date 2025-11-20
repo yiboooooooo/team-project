@@ -1,11 +1,11 @@
 package stakemate.use_case.fetch_games;
 
-import stakemate.data_access.api.OddsApiResponseAdapter;
-import stakemate.entity.Game;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import stakemate.data_access.api.OddsApiResponseAdapter;
+import stakemate.entity.Game;
 
 /**
  * Interactor for the FetchGames use case.
@@ -21,10 +21,10 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
     private final GameRepository gameRepository;
     private final FetchGamesOutputBoundary presenter;
 
-    public FetchGamesInteractor(OddsApiGateway apiGateway,
-                                OddsApiResponseAdapter responseAdapter,
-                                GameRepository gameRepository,
-                                FetchGamesOutputBoundary presenter) {
+    public FetchGamesInteractor(final OddsApiGateway apiGateway,
+                                final OddsApiResponseAdapter responseAdapter,
+                                final GameRepository gameRepository,
+                                final FetchGamesOutputBoundary presenter) {
         this.apiGateway = apiGateway;
         this.responseAdapter = responseAdapter;
         this.gameRepository = gameRepository;
@@ -32,7 +32,7 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
     }
 
     @Override
-    public void fetchAndUpdateGames(String sport, String region, LocalDate dateFrom) {
+    public void fetchAndUpdateGames(final String sport, final String region, final LocalDate dateFrom) {
         presenter.presentFetchInProgress();
 
         try {
@@ -43,10 +43,8 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
             }
 
             // Use today if dateFrom is null
-            LocalDate effectiveDate = dateFrom != null ? dateFrom : LocalDate.now();
-
-            // Step 1: Fetch events from API
-            List<OddsApiEvent> events = apiGateway.fetchEvents(sport, region, effectiveDate);
+            final LocalDate effectiveDate = dateFrom != null ? dateFrom : LocalDate.now();
+            final List<OddsApiEvent> events = apiGateway.fetchEvents(sport, region, effectiveDate);
 
             if (events.isEmpty()) {
                 presenter.presentFetchSuccess(new FetchGamesResponseModel(
@@ -56,7 +54,7 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
             }
 
             // Step 2: Convert API events to Game entities
-            List<Game> games = responseAdapter.convertToGames(events);
+            final List<Game> games = responseAdapter.convertToGames(events);
 
             if (games.isEmpty()) {
                 presenter.presentFetchSuccess(new FetchGamesResponseModel(
@@ -66,22 +64,21 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
             }
 
             // Step 3: Normalize and validate game data
-            List<Game> validGames = normalizeAndValidateGames(games);
-
-            // Step 4: Upsert games to database
+            final List<Game> validGames = normalizeAndValidateGames(games);
             gameRepository.upsertGames(validGames);
-
-            // Step 5: Present success
-            String message = String.format("Successfully fetched and saved %d games.", validGames.size());
+            final String message = String.format("Successfully fetched and saved %d games.", validGames.size());
             presenter.presentFetchSuccess(new FetchGamesResponseModel(
                 events.size(), validGames.size(), sport, message
             ));
 
-        } catch (ApiException e) {
+        }
+        catch (final ApiException e) {
             presenter.presentFetchError("API error: " + e.getMessage());
-        } catch (RepositoryException e) {
+        }
+        catch (final RepositoryException e) {
             presenter.presentFetchError("Database error: " + e.getMessage());
-        } catch (Exception e) {
+        }
+        catch (final Exception e) {
             presenter.presentFetchError("Unexpected error: " + e.getMessage());
         }
     }
@@ -92,11 +89,12 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
     }
 
     @Override
-    public void searchGames(String query) {
+    public void searchGames(final String query) {
         try {
-            List<Game> games = gameRepository.searchGames(query);
+            final List<Game> games = gameRepository.searchGames(query);
             presenter.presentSearchResults(games, query);
-        } catch (RepositoryException e) {
+        }
+        catch (final RepositoryException e) {
             presenter.presentFetchError("Search failed: " + e.getMessage());
         }
     }
@@ -105,10 +103,10 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
      * Normalizes and validates game data before saving.
      * Filters out invalid games and ensures data consistency.
      */
-    private List<Game> normalizeAndValidateGames(List<Game> games) {
-        List<Game> validGames = new ArrayList<>();
+    private List<Game> normalizeAndValidateGames(final List<Game> games) {
+        final List<Game> validGames = new ArrayList<>();
 
-        for (Game game : games) {
+        for (final Game game : games) {
             // Validate required fields
             if (game.getId() == null ||
                 game.getMarketId() == null ||

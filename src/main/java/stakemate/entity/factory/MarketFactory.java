@@ -1,9 +1,9 @@
 package stakemate.entity.factory;
 
+import java.util.UUID;
+
 import stakemate.entity.Market;
 import stakemate.entity.MarketStatus;
-
-import java.util.UUID;
 
 /**
  * [Factory Pattern]
@@ -11,14 +11,14 @@ import java.util.UUID;
  */
 public class MarketFactory {
 
-    public static Market createMarket(String matchId, String name, boolean isOpen) {
-        String id = UUID.randomUUID().toString();
-        MarketStatus status = isOpen ? MarketStatus.OPEN : MarketStatus.CLOSED;
+    public static Market createMarket(final String matchId, final String name, final boolean isOpen) {
+        final String id = UUID.randomUUID().toString();
+        final MarketStatus status = isOpen ? MarketStatus.OPEN : MarketStatus.CLOSED;
         return new Market(id, matchId, name, status);
     }
 
     // Example of creating a specific type (Moneyline)
-    public static Market createMoneylineMarket(String matchId) {
+    public static Market createMoneylineMarket(final String matchId) {
         return createMarket(matchId, "Moneyline", true);
     }
 }

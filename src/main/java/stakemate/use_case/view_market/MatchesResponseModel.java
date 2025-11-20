@@ -6,7 +6,7 @@ public class MatchesResponseModel {
     private final List<MatchSummary> matches;
     private final String emptyStateMessage;
 
-    public MatchesResponseModel(List<MatchSummary> matches, String emptyStateMessage) {
+    public MatchesResponseModel(final List<MatchSummary> matches, final String emptyStateMessage) {
         this.matches = matches;
         this.emptyStateMessage = emptyStateMessage;
     }

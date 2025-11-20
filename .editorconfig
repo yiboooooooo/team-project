@@ -7,3 +7,8 @@ indent_size = 4
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+[*.java]
+ij_java_else_on_new_line = true
+ij_java_catch_on_new_line = true
+ij_java_finally_on_new_line = true

@@ -8,10 +8,10 @@ public class MarketsResponseModel {
     private final List<MarketSummary> markets;
     private final String emptyStateMessage;
 
-    public MarketsResponseModel(String matchId,
-                                String matchTitle,
-                                List<MarketSummary> markets,
-                                String emptyStateMessage) {
+    public MarketsResponseModel(final String matchId,
+                                final String matchTitle,
+                                final List<MarketSummary> markets,
+                                final String emptyStateMessage) {
         this.matchId = matchId;
         this.matchTitle = matchTitle;
         this.markets = markets;

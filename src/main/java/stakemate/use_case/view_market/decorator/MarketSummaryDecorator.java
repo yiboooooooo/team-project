@@ -9,7 +9,7 @@ import stakemate.use_case.view_market.MarketSummary;
 public abstract class MarketSummaryDecorator extends MarketSummary {
     protected final MarketSummary wrapped;
 
-    public MarketSummaryDecorator(MarketSummary wrapped) {
+    public MarketSummaryDecorator(final MarketSummary wrapped) {
         super(wrapped.getId(), wrapped.getName(), wrapped.getStatusLabel(), wrapped.isBuySellEnabled());
         this.wrapped = wrapped;
     }

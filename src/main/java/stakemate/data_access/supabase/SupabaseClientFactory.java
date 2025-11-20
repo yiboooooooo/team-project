@@ -41,8 +41,8 @@ public class SupabaseClientFactory {
     /**
      * Creates a factory with explicit credentials.
      */
-    public SupabaseClientFactory(String host, String port, String database,
-                                 String user, String password) {
+    public SupabaseClientFactory(final String host, final String port, final String database,
+                                 final String user, final String password) {
         this.host = host;
         this.port = port;
         this.database = database;
@@ -57,7 +57,7 @@ public class SupabaseClientFactory {
      * @throws SQLException if connection fails
      */
     public Connection createConnection() throws SQLException {
-        String jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s?prepareThreshold=0&preparedStatementCacheQueries=0",
+        final String jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s?prepareThreshold=0&preparedStatementCacheQueries=0",
             host, port, database);
         return DriverManager.getConnection(jdbcUrl, user, password);
     }
@@ -66,7 +66,7 @@ public class SupabaseClientFactory {
      * Gets environment variable or returns default value.
      * Checks both system environment and system properties (.env file support).
      */
-    private String getEnvOrDefault(String envVar, String defaultValue) {
+    private String getEnvOrDefault(final String envVar, final String defaultValue) {
         String value = System.getenv(envVar);
         if (value == null) {
             value = System.getProperty(envVar);

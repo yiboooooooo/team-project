@@ -3,7 +3,7 @@ package stakemate.use_case.view_market.decorator;
 import stakemate.use_case.view_market.MarketSummary;
 
 public class HotMarketDecorator extends MarketSummaryDecorator {
-    public HotMarketDecorator(MarketSummary wrapped) {
+    public HotMarketDecorator(final MarketSummary wrapped) {
         super(wrapped);
     }
 

@@ -9,7 +9,7 @@ public class FetchGamesResponseModel {
     private final String sport;
     private final String message;
 
-    public FetchGamesResponseModel(int gamesFetched, int gamesSaved, String sport, String message) {
+    public FetchGamesResponseModel(final int gamesFetched, final int gamesSaved, final String sport, final String message) {
         this.gamesFetched = gamesFetched;
         this.gamesSaved = gamesSaved;
         this.sport = sport;

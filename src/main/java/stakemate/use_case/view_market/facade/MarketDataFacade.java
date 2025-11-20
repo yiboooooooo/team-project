@@ -1,11 +1,15 @@
 package stakemate.use_case.view_market.facade;
 
+import java.util.List;
+
 import stakemate.entity.Market;
 import stakemate.entity.Match;
 import stakemate.entity.OrderBook;
-import stakemate.use_case.view_market.*;
-
-import java.util.List;
+import stakemate.use_case.view_market.MarketRepository;
+import stakemate.use_case.view_market.MatchRepository;
+import stakemate.use_case.view_market.OrderBookGateway;
+import stakemate.use_case.view_market.OrderBookSubscriber;
+import stakemate.use_case.view_market.RepositoryException;
 
 /**
  * [Facade Pattern]
@@ -17,9 +21,9 @@ public class MarketDataFacade {
     private final MarketRepository marketRepository;
     private final OrderBookGateway orderBookGateway;
 
-    public MarketDataFacade(MatchRepository matchRepo,
-                            MarketRepository marketRepo,
-                            OrderBookGateway obGateway) {
+    public MarketDataFacade(final MatchRepository matchRepo,
+                            final MarketRepository marketRepo,
+                            final OrderBookGateway obGateway) {
         this.matchRepository = matchRepo;
         this.marketRepository = marketRepo;
         this.orderBookGateway = obGateway;
@@ -30,20 +34,20 @@ public class MarketDataFacade {
         return matchRepository.findAllMatches();
     }
 
-    public List<Market> getMarketsForMatch(String matchId) throws RepositoryException {
+    public List<Market> getMarketsForMatch(final String matchId) throws RepositoryException {
         return marketRepository.findByMatchId(matchId);
     }
 
-    public OrderBook getOrderBookSnapshot(String marketId) throws RepositoryException {
+    public OrderBook getOrderBookSnapshot(final String marketId) throws RepositoryException {
         return orderBookGateway.getSnapshot(marketId);
     }
 
     // Pass-through for subscription management
-    public void subscribeToOrderBook(String marketId, OrderBookSubscriber subscriber) {
+    public void subscribeToOrderBook(final String marketId, final OrderBookSubscriber subscriber) {
         orderBookGateway.subscribe(marketId, subscriber);
     }
 
-    public void unsubscribeFromOrderBook(String marketId, OrderBookSubscriber subscriber) {
+    public void unsubscribeFromOrderBook(final String marketId, final OrderBookSubscriber subscriber) {
         orderBookGateway.unsubscribe(marketId, subscriber);
     }
 

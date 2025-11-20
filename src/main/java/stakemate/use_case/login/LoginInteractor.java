@@ -6,18 +6,18 @@ public class LoginInteractor implements LoginInputBoundary {
     private final LoginUserDataAccessInterface userDataAccess;
     private final LoginOutputBoundary presenter;
 
-    public LoginInteractor(LoginUserDataAccessInterface userDataAccess,
-                           LoginOutputBoundary presenter) {
+    public LoginInteractor(final LoginUserDataAccessInterface userDataAccess,
+                           final LoginOutputBoundary presenter) {
         this.userDataAccess = userDataAccess;
         this.presenter = presenter;
     }
 
     @Override
-    public void execute(LoginInputData inputData) {
-        String username = inputData.getUsername();
-        String password = inputData.getPassword();
+    public void execute(final LoginInputData inputData) {
+        final String username = inputData.getUsername();
+        final String password = inputData.getPassword();
 
-        User user = userDataAccess.getByUsername(username);
+        final User user = userDataAccess.getByUsername(username);
         if (user == null) {
             presenter.prepareFailView("User does not exist.");
             return;
@@ -28,7 +28,7 @@ public class LoginInteractor implements LoginInputBoundary {
             return;
         }
 
-        LoginOutputData outputData = new LoginOutputData(username);
+        final LoginOutputData outputData = new LoginOutputData(username);
         presenter.prepareSuccessView(outputData);
     }
 }

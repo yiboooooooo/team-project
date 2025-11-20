@@ -1,8 +1,8 @@
 package stakemate.use_case.fetch_games;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.time.LocalDateTime;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Data Transfer Object (DTO) representing an event from the Odds API.
@@ -28,8 +28,8 @@ public class OddsApiEvent {
         // Default constructor for JSON deserialization
     }
 
-    public OddsApiEvent(String id, String sportKey, LocalDateTime commenceTime,
-                        String homeTeam, String awayTeam) {
+    public OddsApiEvent(final String id, final String sportKey, final LocalDateTime commenceTime,
+                        final String homeTeam, final String awayTeam) {
         this.id = id;
         this.sportKey = sportKey;
         this.commenceTime = commenceTime;
@@ -41,7 +41,7 @@ public class OddsApiEvent {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -49,7 +49,7 @@ public class OddsApiEvent {
         return sportKey;
     }
 
-    public void setSportKey(String sportKey) {
+    public void setSportKey(final String sportKey) {
         this.sportKey = sportKey;
     }
 
@@ -57,7 +57,7 @@ public class OddsApiEvent {
         return commenceTime;
     }
 
-    public void setCommenceTime(LocalDateTime commenceTime) {
+    public void setCommenceTime(final LocalDateTime commenceTime) {
         this.commenceTime = commenceTime;
     }
 
@@ -65,7 +65,7 @@ public class OddsApiEvent {
         return homeTeam;
     }
 
-    public void setHomeTeam(String homeTeam) {
+    public void setHomeTeam(final String homeTeam) {
         this.homeTeam = homeTeam;
     }
 
@@ -73,7 +73,7 @@ public class OddsApiEvent {
         return awayTeam;
     }
 
-    public void setAwayTeam(String awayTeam) {
+    public void setAwayTeam(final String awayTeam) {
         this.awayTeam = awayTeam;
     }
 }

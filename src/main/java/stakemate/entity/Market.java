@@ -6,7 +6,7 @@ public class Market {
     private final String name;
     private final MarketStatus status;
 
-    public Market(String id, String matchId, String name, MarketStatus status) {
+    public Market(final String id, final String matchId, final String name, final MarketStatus status) {
         this.id = id;
         this.matchId = matchId;
         this.name = name;

@@ -5,7 +5,7 @@ public class SettleMarketRequestModel {
     private final String marketId;
     private final boolean homeTeamWon;
 
-    public SettleMarketRequestModel(String marketId, boolean homeTeamWon) {
+    public SettleMarketRequestModel(final String marketId, final boolean homeTeamWon) {
         this.marketId = marketId;
         this.homeTeamWon = homeTeamWon;
     }

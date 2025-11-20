@@ -15,12 +15,12 @@ public class SettlementRecord {
     private final boolean won;
     private final LocalDateTime settledAt;
 
-    public SettlementRecord(String marketId,
-                            String username,
-                            double stake,
-                            double payout,
-                            boolean won,
-                            LocalDateTime settledAt) {
+    public SettlementRecord(final String marketId,
+                            final String username,
+                            final double stake,
+                            final double payout,
+                            final boolean won,
+                            final LocalDateTime settledAt) {
 
         this.marketId = marketId;
         this.username = username;

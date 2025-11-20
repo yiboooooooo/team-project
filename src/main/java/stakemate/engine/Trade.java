@@ -12,7 +12,7 @@ public class Trade {
     private final double size;
     private final Instant timestamp;
 
-    public Trade(String marketId, String buyOrderId, String sellOrderId, double price, double size) {
+    public Trade(final String marketId, final String buyOrderId, final String sellOrderId, final double price, final double size) {
         this.id = UUID.randomUUID().toString();
         this.marketId = marketId;
         this.buyOrderId = buyOrderId;

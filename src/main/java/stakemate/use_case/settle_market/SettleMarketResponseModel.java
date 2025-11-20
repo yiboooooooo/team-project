@@ -6,9 +6,9 @@ public class SettleMarketResponseModel {
     private final int betsSettled;
     private final double totalPayout;
 
-    public SettleMarketResponseModel(String marketId,
-                                     int betsSettled,
-                                     double totalPayout) {
+    public SettleMarketResponseModel(final String marketId,
+                                     final int betsSettled,
+                                     final double totalPayout) {
         this.marketId = marketId;
         this.betsSettled = betsSettled;
         this.totalPayout = totalPayout;

@@ -11,7 +11,7 @@ public class ProfileViewModel {
         return state;
     }
 
-    public void setState(ProfileState state) {
+    public void setState(final ProfileState state) {
         this.state = state;
     }
 
@@ -19,7 +19,7 @@ public class ProfileViewModel {
         support.firePropertyChange("state", null, this.state);
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public void addPropertyChangeListener(final PropertyChangeListener listener) {
         support.addPropertyChangeListener(listener);
     }
 }

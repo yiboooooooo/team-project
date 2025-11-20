@@ -15,29 +15,28 @@ public class ViewMarketController {
 
     private final ViewMarketInputBoundary inputBoundary;
 
-    public ViewMarketController(ViewMarketInputBoundary inputBoundary) {
+    public ViewMarketController(final ViewMarketInputBoundary inputBoundary) {
         this.inputBoundary = inputBoundary;
     }
 
     public void refresh() {
         // Create command
-        ViewMarketCommand command = new LoadMatchesCommand(inputBoundary);
-        // Execute
+        final ViewMarketCommand command = new LoadMatchesCommand(inputBoundary);
         command.execute();
     }
 
     public void refreshWithApi() {
-        inputBoundary.refreshFromApi(); // Could be wrapped in Command too
+        inputBoundary.refreshFromApi();
     }
 
-    public void onMatchSelected(MatchSummary matchSummary) {
+    public void onMatchSelected(final MatchSummary matchSummary) {
         if (matchSummary != null) {
-            ViewMarketCommand command = new SelectMatchCommand(inputBoundary, matchSummary.getId());
+            final ViewMarketCommand command = new SelectMatchCommand(inputBoundary, matchSummary.getId());
             command.execute();
         }
     }
 
-    public void onMarketSelected(MarketSummary marketSummary) {
+    public void onMarketSelected(final MarketSummary marketSummary) {
         if (marketSummary != null) {
             // Direct call or Command, staying consistent
             inputBoundary.marketSelected(marketSummary.getId());

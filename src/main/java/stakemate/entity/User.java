@@ -5,7 +5,7 @@ public class User {
     private final String password;
     private int balance;
 
-    public User(String username, String password, int balance) {
+    public User(final String username, final String password, final int balance) {
         this.username = username;
         this.password = password;
         this.balance = balance;
@@ -23,7 +23,7 @@ public class User {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(final int balance) {
         this.balance = balance;
     }
 }

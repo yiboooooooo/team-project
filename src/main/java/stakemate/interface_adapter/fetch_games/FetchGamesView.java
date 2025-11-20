@@ -1,8 +1,8 @@
 package stakemate.interface_adapter.fetch_games;
 
-import stakemate.entity.Game;
-
 import java.util.List;
+
+import stakemate.entity.Game;
 
 /**
  * View interface for displaying fetch games results.

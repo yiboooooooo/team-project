@@ -5,7 +5,7 @@ import stakemate.use_case.view_market.ViewMarketInputBoundary;
 public class LoadMatchesCommand implements ViewMarketCommand {
     private final ViewMarketInputBoundary interactor;
 
-    public LoadMatchesCommand(ViewMarketInputBoundary interactor) {
+    public LoadMatchesCommand(final ViewMarketInputBoundary interactor) {
         this.interactor = interactor;
     }
 

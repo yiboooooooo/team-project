@@ -1,5 +1,23 @@
 package stakemate.interface_adapter.viewOrderBook;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+
 import stakemate.engine.MatchingEngine;
 import stakemate.engine.Trade;
 import stakemate.entity.OrderBook;
@@ -10,11 +28,6 @@ import stakemate.service.InMemoryAccountService;
 import stakemate.use_case.PlaceOrderUseCase.PlaceOrderRequest;
 import stakemate.use_case.PlaceOrderUseCase.PlaceOrderResponse;
 import stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
 
 /**
  * Self-contained Swing demo UI for the matching engine.
@@ -38,13 +51,13 @@ public class OrderBookDemo {
         this.accountService = new InMemoryAccountService();
         this.useCase = new PlaceOrderUseCase(engine, accountService);
 
-        JPanel controls = new JPanel();
+        final JPanel controls = new JPanel();
 
-        JComboBox<Side> sideBox = new JComboBox<>(Side.values());
-        JCheckBox marketCheck = new JCheckBox("Market");
-        JTextField priceField = new JTextField("1.5", 6);
-        JTextField qtyField = new JTextField("10", 6);
-        JButton place = new JButton("Place Order");
+        final JComboBox<Side> sideBox = new JComboBox<>(Side.values());
+        final JCheckBox marketCheck = new JCheckBox("Market");
+        final JTextField priceField = new JTextField("1.5", 6);
+        final JTextField qtyField = new JTextField("10", 6);
+        final JButton place = new JButton("Place Order");
 
         controls.add(new JLabel("User:"));
         controls.add(userField);
@@ -57,10 +70,10 @@ public class OrderBookDemo {
         controls.add(marketCheck);
         controls.add(place);
 
-        JTable bidsTable = new JTable(bidsModel);
-        JTable asksTable = new JTable(asksModel);
+        final JTable bidsTable = new JTable(bidsModel);
+        final JTable asksTable = new JTable(asksModel);
 
-        JPanel bookPanel = new JPanel(new GridLayout(1, 2));
+        final JPanel bookPanel = new JPanel(new GridLayout(1, 2));
         bookPanel.add(new JScrollPane(bidsTable));
         bookPanel.add(new JScrollPane(asksTable));
 
@@ -73,23 +86,24 @@ public class OrderBookDemo {
 
         place.addActionListener(e -> {
             try {
-                String user = userField.getText().trim();
-                Side side = (Side) sideBox.getSelectedItem();
-                boolean isMarket = marketCheck.isSelected();
-                Double price = isMarket ? null : Double.parseDouble(priceField.getText().trim());
-                double qty = Double.parseDouble(qtyField.getText().trim());
+                final String user = userField.getText().trim();
+                final Side side = (Side) sideBox.getSelectedItem();
+                final boolean isMarket = marketCheck.isSelected();
+                final Double price = isMarket ? null : Double.parseDouble(priceField.getText().trim());
+                final double qty = Double.parseDouble(qtyField.getText().trim());
 
-                PlaceOrderRequest req = new PlaceOrderRequest(user, "demo-market", side, price, qty);
-                PlaceOrderResponse res = useCase.place(req);
+                final PlaceOrderRequest req = new PlaceOrderRequest(user, "demo-market", side, price, qty);
+                final PlaceOrderResponse res = useCase.place(req);
                 JOptionPane.showMessageDialog(frame, res.message);
-
-                // show trades
-                List<Trade> trades = useCase.recentTrades();
+                final List<Trade> trades = useCase.recentTrades();
                 tradesLog.setText("");
-                for (Trade t : trades) tradesLog.append(t.toString() + "\n");
+                for (final Trade t : trades) {
+                    tradesLog.append(t.toString() + "\n");
+                }
 
                 refreshBook();
-            } catch (Exception ex) {
+            }
+            catch (final Exception ex) {
                 JOptionPane.showMessageDialog(frame, "Invalid input: " + ex.getMessage());
             }
         });
@@ -99,31 +113,31 @@ public class OrderBookDemo {
         frame.setLocationRelativeTo(null);
     }
 
-    public OrderBookDemo(PlaceOrderUseCase useCase, MatchingEngine engine, AccountService accountService) {
+    public OrderBookDemo(final PlaceOrderUseCase useCase, final MatchingEngine engine, final AccountService accountService) {
         this.useCase = useCase;
         this.engine = engine;
         this.accountService = accountService;
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         // ensure we run on the EDT
         SwingUtilities.invokeLater(() -> {
-            OrderBookDemo demo = new OrderBookDemo();
+            final OrderBookDemo demo = new OrderBookDemo();
             demo.show();
         });
     }
 
     private void refreshBook() {
         // engine.snapshotOrderBook("demo-market")
-        OrderBook ob = useCase.snapshot("demo-market");
+        final OrderBook ob = useCase.snapshot("demo-market");
         bidsModel.setRowCount(0);
         asksModel.setRowCount(0);
 
         if (ob != null) {
-            for (OrderBookEntry be : ob.getBids()) {
+            for (final OrderBookEntry be : ob.getBids()) {
                 bidsModel.addRow(new Object[]{String.format("%.2f", be.getPrice()), String.format("%.2f", be.getQuantity())});
             }
-            for (OrderBookEntry ae : ob.getAsks()) {
+            for (final OrderBookEntry ae : ob.getAsks()) {
                 asksModel.addRow(new Object[]{String.format("%.2f", ae.getPrice()), String.format("%.2f", ae.getQuantity())});
             }
         }

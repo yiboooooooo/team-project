@@ -6,7 +6,7 @@ public class SelectMatchCommand implements ViewMarketCommand {
     private final ViewMarketInputBoundary interactor;
     private final String matchId;
 
-    public SelectMatchCommand(ViewMarketInputBoundary interactor, String matchId) {
+    public SelectMatchCommand(final ViewMarketInputBoundary interactor, final String matchId) {
         this.interactor = interactor;
         this.matchId = matchId;
     }

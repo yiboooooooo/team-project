@@ -1,15 +1,5 @@
 package stakemate.data_access.api;
 
-import com.google.gson.*;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import stakemate.use_case.fetch_games.ApiException;
-import stakemate.use_case.fetch_games.OddsApiEvent;
-import stakemate.use_case.fetch_games.OddsApiGateway;
-import stakemate.use_case.fetch_games.OddsApiSport;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +8,22 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import stakemate.use_case.fetch_games.ApiException;
+import stakemate.use_case.fetch_games.OddsApiEvent;
+import stakemate.use_case.fetch_games.OddsApiGateway;
+import stakemate.use_case.fetch_games.OddsApiSport;
 
 /**
  * Implementation of OddsApiGateway using OkHttp.
@@ -33,14 +39,12 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
     private final Gson gson;
     private final String apiKey;
 
-    public OddsApiGatewayImpl(String apiKey) {
+    public OddsApiGatewayImpl(final String apiKey) {
         this.apiKey = apiKey;
         this.httpClient = new OkHttpClient.Builder()
             .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build();
-
-        // Configure Gson with custom LocalDateTime deserializer
         this.gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
             .create();
@@ -49,38 +53,40 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
     @Override
     public List<OddsApiSport> fetchSports() throws ApiException {
         try {
-            String url = BASE_URL + "?apiKey=" + apiKey;
-            Request request = new Request.Builder()
+            final String url = BASE_URL + "?apiKey=" + apiKey;
+            final Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .build();
 
-            try (Response response = httpClient.newCall(request).execute()) {
+            try (final Response response = httpClient.newCall(request).execute()) {
                 return handleSportsResponse(response);
             }
-        } catch (IOException e) {
+        }
+        catch (final IOException e) {
             throw new ApiException("Network error while fetching sports: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public List<OddsApiEvent> fetchEvents(String sport, String region, LocalDate dateFrom)
+    public List<OddsApiEvent> fetchEvents(final String sport, final String region, final LocalDate dateFrom)
         throws ApiException {
         if (sport == null || sport.isEmpty()) {
             throw new IllegalArgumentException("Sport parameter is required and cannot be null or empty");
         }
 
         try {
-            String url = buildUrl(sport, region, dateFrom);
-            Request request = new Request.Builder()
+            final String url = buildUrl(sport, region, dateFrom);
+            final Request request = new Request.Builder()
                 .url(url)
                 .get()
                 .build();
 
-            try (Response response = httpClient.newCall(request).execute()) {
+            try (final Response response = httpClient.newCall(request).execute()) {
                 return handleResponse(response);
             }
-        } catch (IOException e) {
+        }
+        catch (final IOException e) {
             throw new ApiException("Network error while fetching events: " + e.getMessage(), e);
         }
     }
@@ -88,12 +94,12 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
     /**
      * Builds the API URL with query parameters.
      */
-    private String buildUrl(String sport, String region, LocalDate dateFrom) {
-        StringBuilder url = new StringBuilder(BASE_URL);
+    private String buildUrl(final String sport, final String region, final LocalDate dateFrom) {
+        final StringBuilder url = new StringBuilder(BASE_URL);
         url.append("/").append(sport);
         url.append("/events");
 
-        StringBuilder queryParams = new StringBuilder();
+        final StringBuilder queryParams = new StringBuilder();
         queryParams.append("apiKey=").append(apiKey);
 
         if (region != null && !region.isEmpty()) {
@@ -102,7 +108,6 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
 
         if (dateFrom != null) {
             queryParams.append("&dateFormat=iso");
-            // Note: The API expects dateFrom parameter, but we'll use the default behavior
             // which is to return events from today onwards
         }
 
@@ -113,51 +118,57 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
     /**
      * Handles the HTTP response for sports endpoint and parses JSON.
      */
-    private List<OddsApiSport> handleSportsResponse(Response response) throws ApiException {
+    private List<OddsApiSport> handleSportsResponse(final Response response) throws ApiException {
         if (!response.isSuccessful()) {
             String errorBody = "";
-            try (ResponseBody body = response.body()) {
+            try (final ResponseBody body = response.body()) {
                 if (body != null) {
                     errorBody = body.string();
                 }
-            } catch (IOException e) {
+            }
+            catch (final IOException e) {
                 // Ignore
             }
 
-            int code = response.code();
+            final int code = response.code();
             if (code == 401) {
                 throw new ApiException("Invalid API key. Check your Odds API credentials.");
-            } else if (code == 429) {
+            }
+            else if (code == 429) {
                 throw new ApiException("Rate limit exceeded. Please wait before making more requests.");
-            } else if (code >= 500) {
+            }
+            else if (code >= 500) {
                 throw new ApiException("Server error from Odds API. Please try again later.");
-            } else {
+            }
+            else {
                 throw new ApiException("API request failed with code " + code + ": " + errorBody);
             }
         }
 
-        try (ResponseBody body = response.body()) {
+        try (final ResponseBody body = response.body()) {
             if (body == null) {
                 throw new ApiException("Empty response from API");
             }
 
-            String json = body.string();
+            final String json = body.string();
             if (json == null || json.trim().isEmpty()) {
                 return new ArrayList<>();
             }
 
-            JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
-            List<OddsApiSport> sports = new ArrayList<>();
+            final JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
+            final List<OddsApiSport> sports = new ArrayList<>();
 
-            for (JsonElement element : jsonArray) {
-                OddsApiSport sport = gson.fromJson(element, OddsApiSport.class);
+            for (final JsonElement element : jsonArray) {
+                final OddsApiSport sport = gson.fromJson(element, OddsApiSport.class);
                 sports.add(sport);
             }
 
             return sports;
-        } catch (IOException e) {
+        }
+        catch (final IOException e) {
             throw new ApiException("Error reading response: " + e.getMessage(), e);
-        } catch (JsonParseException e) {
+        }
+        catch (final JsonParseException e) {
             throw new ApiException("Error parsing JSON response: " + e.getMessage(), e);
         }
     }
@@ -165,51 +176,57 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
     /**
      * Handles the HTTP response and parses JSON.
      */
-    private List<OddsApiEvent> handleResponse(Response response) throws ApiException {
+    private List<OddsApiEvent> handleResponse(final Response response) throws ApiException {
         if (!response.isSuccessful()) {
             String errorBody = "";
-            try (ResponseBody body = response.body()) {
+            try (final ResponseBody body = response.body()) {
                 if (body != null) {
                     errorBody = body.string();
                 }
-            } catch (IOException e) {
+            }
+            catch (final IOException e) {
                 // Ignore
             }
 
-            int code = response.code();
+            final int code = response.code();
             if (code == 401) {
                 throw new ApiException("Invalid API key. Check your Odds API credentials.");
-            } else if (code == 429) {
+            }
+            else if (code == 429) {
                 throw new ApiException("Rate limit exceeded. Please wait before making more requests.");
-            } else if (code >= 500) {
+            }
+            else if (code >= 500) {
                 throw new ApiException("Server error from Odds API. Please try again later.");
-            } else {
+            }
+            else {
                 throw new ApiException("API request failed with code " + code + ": " + errorBody);
             }
         }
 
-        try (ResponseBody body = response.body()) {
+        try (final ResponseBody body = response.body()) {
             if (body == null) {
                 throw new ApiException("Empty response from API");
             }
 
-            String json = body.string();
+            final String json = body.string();
             if (json == null || json.trim().isEmpty()) {
                 return new ArrayList<>();
             }
 
-            JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
-            List<OddsApiEvent> events = new ArrayList<>();
+            final JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
+            final List<OddsApiEvent> events = new ArrayList<>();
 
-            for (JsonElement element : jsonArray) {
-                OddsApiEvent event = gson.fromJson(element, OddsApiEvent.class);
+            for (final JsonElement element : jsonArray) {
+                final OddsApiEvent event = gson.fromJson(element, OddsApiEvent.class);
                 events.add(event);
             }
 
             return events;
-        } catch (IOException e) {
+        }
+        catch (final IOException e) {
             throw new ApiException("Error reading response: " + e.getMessage(), e);
-        } catch (JsonParseException e) {
+        }
+        catch (final JsonParseException e) {
             throw new ApiException("Error parsing JSON response: " + e.getMessage(), e);
         }
     }
@@ -226,14 +243,15 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
         };
 
         @Override
-        public LocalDateTime deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
-                                         JsonDeserializationContext context) throws JsonParseException {
-            String dateString = json.getAsString();
+        public LocalDateTime deserialize(final JsonElement json, final java.lang.reflect.Type typeOfT,
+                                         final JsonDeserializationContext context) throws JsonParseException {
+            final String dateString = json.getAsString();
 
-            for (DateTimeFormatter formatter : FORMATTERS) {
+            for (final DateTimeFormatter formatter : FORMATTERS) {
                 try {
                     return LocalDateTime.parse(dateString, formatter);
-                } catch (DateTimeParseException e) {
+                }
+                catch (final DateTimeParseException e) {
                     // Try next formatter
                 }
             }

@@ -1,9 +1,9 @@
 package stakemate.engine;
 
-import stakemate.entity.Side;
-
 import java.time.Instant;
 import java.util.UUID;
+
+import stakemate.entity.Side;
 
 /**
  * Internal (mutable) order representation used by the matching engine.
@@ -13,18 +13,18 @@ public class BookOrder {
     private final String userId;
     private final String marketId;
     private final Side side;
-    private final Double price; // null for market orders
+    private final Double price;
     private final Instant timestamp;
 
     private final double originalQty;
     private double remainingQty;
 
-    public BookOrder(String userId, String marketId, Side side, Double price, double qty) {
+    public BookOrder(final String userId, final String marketId, final Side side, final Double price, final double qty) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.marketId = marketId;
         this.side = side;
-        this.price = price; // null if market
+        this.price = price;
         this.originalQty = qty;
         this.remainingQty = qty;
         this.timestamp = Instant.now();
@@ -62,7 +62,7 @@ public class BookOrder {
         return remainingQty;
     }
 
-    public void reduce(double filled) {
+    public void reduce(final double filled) {
         remainingQty = Math.max(0.0, remainingQty - filled);
     }
 

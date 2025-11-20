@@ -5,7 +5,7 @@ public class MatchSummary {
     private final String label;
     private final String statusLabel;
 
-    public MatchSummary(String id, String label, String statusLabel) {
+    public MatchSummary(final String id, final String label, final String statusLabel) {
         this.id = id;
         this.label = label;
         this.statusLabel = statusLabel;

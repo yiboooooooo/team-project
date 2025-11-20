@@ -1,12 +1,12 @@
 package stakemate.data_access.in_memory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import stakemate.entity.Market;
 import stakemate.entity.MarketStatus;
 import stakemate.use_case.view_market.MarketRepository;
 import stakemate.use_case.view_market.RepositoryException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class InMemoryMarketRepository implements MarketRepository {
 
@@ -23,9 +23,9 @@ public class InMemoryMarketRepository implements MarketRepository {
     }
 
     @Override
-    public List<Market> findByMatchId(String matchId) throws RepositoryException {
-        List<Market> result = new ArrayList<>();
-        for (Market m : markets) {
+    public List<Market> findByMatchId(final String matchId) throws RepositoryException {
+        final List<Market> result = new ArrayList<>();
+        for (final Market m : markets) {
             if (m.getMatchId().equals(matchId)) {
                 result.add(m);
             }

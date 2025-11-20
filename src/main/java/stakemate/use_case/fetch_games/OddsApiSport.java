@@ -32,7 +32,7 @@ public class OddsApiSport {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
 
@@ -40,7 +40,7 @@ public class OddsApiSport {
         return group;
     }
 
-    public void setGroup(String group) {
+    public void setGroup(final String group) {
         this.group = group;
     }
 
@@ -48,7 +48,7 @@ public class OddsApiSport {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -56,7 +56,7 @@ public class OddsApiSport {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -64,7 +64,7 @@ public class OddsApiSport {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(final boolean active) {
         this.active = active;
     }
 
@@ -72,7 +72,7 @@ public class OddsApiSport {
         return hasOutrights;
     }
 
-    public void setHasOutrights(boolean hasOutrights) {
+    public void setHasOutrights(final boolean hasOutrights) {
         this.hasOutrights = hasOutrights;
     }
 }

@@ -1,11 +1,11 @@
 package stakemate.use_case.view_market;
 
 public class RepositoryException extends Exception {
-    public RepositoryException(String message) {
+    public RepositoryException(final String message) {
         super(message);
     }
 
-    public RepositoryException(String message, Throwable cause) {
+    public RepositoryException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

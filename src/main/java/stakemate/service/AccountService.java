@@ -10,5 +10,5 @@ public interface AccountService {
 
     void reserveForOrder(String userId, String orderId, double amount);
 
-    void capture(Trade trade); // naive settlement for demo
+    void capture(Trade trade);
 }

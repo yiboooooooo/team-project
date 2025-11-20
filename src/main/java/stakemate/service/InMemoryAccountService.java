@@ -1,9 +1,9 @@
 package stakemate.service;
 
-import stakemate.engine.Trade;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import stakemate.engine.Trade;
 
 /**
  * Very small demo account service. Balances tracked per user; reservations tracked per orderId.
@@ -20,32 +20,32 @@ public class InMemoryAccountService implements AccountService {
     }
 
     @Override
-    public boolean hasSufficientFunds(String userId, String marketId, double qty, Double price) {
-        double p = (price == null) ? 1.0 : price;
-        double need = p * qty;
-        double reserved = reservations.getOrDefault(userId, Map.of()).values().stream().mapToDouble(Double::doubleValue).sum();
-        double available = balances.getOrDefault(userId, 0.0) - reserved;
+    public boolean hasSufficientFunds(final String userId, final String marketId, final double qty, final Double price) {
+        final double p = (price == null) ? 1.0 : price;
+        final double need = p * qty;
+        final double reserved = reservations.getOrDefault(userId, Map.of()).values().stream().mapToDouble(Double::doubleValue).sum();
+        final double available = balances.getOrDefault(userId, 0.0) - reserved;
         return available + 1e-9 >= need;
     }
 
     @Override
-    public void reserveForOrder(String userId, String orderId, double amount) {
+    public void reserveForOrder(final String userId, final String orderId, final double amount) {
         reservations.computeIfAbsent(userId, k -> new ConcurrentHashMap<>()).put(orderId, amount);
     }
 
     @Override
-    public void capture(Trade trade) {
+    public void capture(final Trade trade) {
         // naive: buyer pays total to seller
         // find buyer/seller IDs from trade object (we saved IDs only) -> in demo we don't have access to userIDs here.
         // For demo clarity, skip complex settlement. (You may extend this to map orderId->userId to settle precisely.)
     }
 
     // demo helper methods
-    public void deposit(String user, double amount) {
+    public void deposit(final String user, final double amount) {
         balances.put(user, balances.getOrDefault(user, 0.0) + amount);
     }
 
-    public double getBalance(String user) {
+    public double getBalance(final String user) {
         return balances.getOrDefault(user, 0.0);
     }
 }

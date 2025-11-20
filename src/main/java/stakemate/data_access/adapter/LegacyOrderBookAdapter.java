@@ -1,15 +1,15 @@
 package stakemate.data_access.adapter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.entity.Side;
 import stakemate.use_case.view_market.OrderBookGateway;
 import stakemate.use_case.view_market.OrderBookSubscriber;
 import stakemate.use_case.view_market.RepositoryException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * [Adapter Pattern]
@@ -19,26 +19,25 @@ public class LegacyOrderBookAdapter implements OrderBookGateway {
 
     private final ExternalLegacyOrderBookService legacyService;
 
-    public LegacyOrderBookAdapter(ExternalLegacyOrderBookService legacyService) {
+    public LegacyOrderBookAdapter(final ExternalLegacyOrderBookService legacyService) {
         this.legacyService = legacyService;
     }
 
     @Override
-    public OrderBook getSnapshot(String marketId) throws RepositoryException {
+    public OrderBook getSnapshot(final String marketId) throws RepositoryException {
         // Translate calls
-        Map<String, Double> rawData = legacyService.fetchLegacyData(marketId);
-
-        // Translate Data: Convert Map<"BID_price", qty> to Entity
-        List<OrderBookEntry> bids = new ArrayList<>();
-        List<OrderBookEntry> asks = new ArrayList<>();
+        final Map<String, Double> rawData = legacyService.fetchLegacyData(marketId);
+        final List<OrderBookEntry> bids = new ArrayList<>();
+        final List<OrderBookEntry> asks = new ArrayList<>();
 
         rawData.forEach((key, qty) -> {
-            String[] parts = key.split("_"); // e.g. "BID_0.95"
+            final String[] parts = key.split("_");
             if (parts.length == 2) {
-                double price = Double.parseDouble(parts[1]);
+                final double price = Double.parseDouble(parts[1]);
                 if (parts[0].equals("BID")) {
                     bids.add(new OrderBookEntry(Side.BUY, price, qty));
-                } else {
+                }
+                else {
                     asks.add(new OrderBookEntry(Side.SELL, price, qty));
                 }
             }
@@ -48,13 +47,13 @@ public class LegacyOrderBookAdapter implements OrderBookGateway {
     }
 
     @Override
-    public void subscribe(String marketId, OrderBookSubscriber subscriber) {
+    public void subscribe(final String marketId, final OrderBookSubscriber subscriber) {
         // Legacy service doesn't support push, so we ignore or implement polling here
         System.out.println("Adapter: Legacy service does not support live sockets.");
     }
 
     @Override
-    public void unsubscribe(String marketId, OrderBookSubscriber subscriber) {
+    public void unsubscribe(final String marketId, final OrderBookSubscriber subscriber) {
         // No-op
     }
 }

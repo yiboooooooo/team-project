@@ -1,8 +1,21 @@
 package stakemate.app;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+
+import javax.swing.SwingUtilities;
+
 import stakemate.data_access.api.OddsApiGatewayImpl;
 import stakemate.data_access.api.OddsApiResponseAdapter;
-import stakemate.data_access.in_memory.*;
+import stakemate.data_access.in_memory.FakeOrderBookGateway;
+import stakemate.data_access.in_memory.InMemoryAccountRepository;
+import stakemate.data_access.in_memory.InMemoryBetRepository;
+import stakemate.data_access.in_memory.InMemoryMarketRepository;
+import stakemate.data_access.in_memory.InMemoryMatchRepository;
+import stakemate.data_access.in_memory.InMemorySettlementRecordRepository;
 import stakemate.data_access.supabase.SupabaseClientFactory;
 import stakemate.data_access.supabase.SupabaseGameRepository;
 import stakemate.data_access.supabase.SupabaseUserDataAccess;
@@ -30,17 +43,12 @@ import stakemate.view.LoginFrame;
 import stakemate.view.MarketsFrame;
 import stakemate.view.SignupFrame;
 
-import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-
 /**
  * The Main Application Class for StakeMate.
  * Wires together the Clean Architecture layers (Entity, Use Case, Interface Adapter, View).
  */
+// -@cs[ClassDataAbstractionCoupling] Main class wires the entire application together.
+// -@cs[ClassFanOutComplexity] Main class depends on many components for dependency injection.
 public final class StakeMateApp {
 
     private static final int INITIAL_BALANCE = 1000;
@@ -78,7 +86,8 @@ public final class StakeMateApp {
      *
      * @param args Command line arguments.
      */
-    public static void main(String[] args) {
+    // -@cs[UncommentedMain] Main entry point is required for the application execution.
+    public static void main(final String[] args) {
         // Load .env file if it exists
         loadEnvFile();
 
@@ -89,8 +98,6 @@ public final class StakeMateApp {
         // 1. Infrastructure
         final SupabaseClientFactory gamesSupabaseFactory = new SupabaseClientFactory();
         final SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
-
-        // 2. API Fetching
         final String apiKey = getEnvVar("ODDS_API_KEY");
         if (apiKey == null || apiKey.isEmpty()) {
             System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
@@ -112,23 +119,15 @@ public final class StakeMateApp {
             new InMemoryMatchRepository(gameRepository, fetchGamesInteractor);
         final InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
         final FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
-
-        // 4. Facade
         final MarketDataFacade marketFacade = new MarketDataFacade(
             matchRepository,
             marketRepository,
             orderBookGateway
         );
-
-        // 5. Global Repos Setup
         betRepo = new InMemoryBetRepository();
         accountRepo = new InMemoryAccountRepository();
         final InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
-
-        // 6. Views
         final MarketsFrame marketsFrame = new MarketsFrame();
-
-        // 7. Use Case 2: View Markets
         final SwingViewMarketsPresenter marketsPresenter =
             new SwingViewMarketsPresenter(marketsFrame);
 
@@ -141,12 +140,8 @@ public final class StakeMateApp {
         final ViewMarketController marketController =
             new ViewMarketController(marketInteractor);
         marketsFrame.setController(marketController);
-
-        // 8. Use Case 6: Settlement & Demo Data
         setupDemoData();
         setupSettlementUseCase(marketsFrame, recordRepo);
-
-        // 9. Profile & Auth
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
         final SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
@@ -198,16 +193,12 @@ public final class StakeMateApp {
     private static void setupAuth(final MarketsFrame marketsFrame, final SupabaseUserDataAccess userRepo) {
         final LoginFrame loginFrame = new LoginFrame(marketsFrame);
         final SignupFrame signupFrame = new SignupFrame(loginFrame);
-
-        // Login
         final SwingLoginPresenter loginPresenter = new SwingLoginPresenter(loginFrame);
         final LoginInteractor loginInteractor = new LoginInteractor(userRepo, loginPresenter);
         final LoginController loginController = new LoginController(loginInteractor);
 
         loginFrame.setController(loginController);
         loginFrame.setSignupFrame(signupFrame);
-
-        // Signup
         final SwingSignupPresenter signupPresenter = new SwingSignupPresenter(signupFrame);
         final SignupInteractor signupInteractor = new SignupInteractor(userRepo, signupPresenter);
         final SignupController signupController = new SignupController(signupInteractor);
@@ -246,7 +237,8 @@ public final class StakeMateApp {
                 }
                 reader.close();
             }
-        } catch (final IOException ex) {
+        }
+        catch (final IOException ex) {
             System.err.println("Warning: Could not read .env file: " + ex.getMessage());
         }
     }
@@ -257,7 +249,7 @@ public final class StakeMateApp {
      * @param key The environment variable key.
      * @return The value of the environment variable, or null if not found.
      */
-    private static String getEnvVar(String key) {
+    private static String getEnvVar(final String key) {
         String value = System.getenv(key);
         if (value == null) {
             value = System.getProperty(key);
@@ -269,24 +261,24 @@ public final class StakeMateApp {
      * Private inner class to handle console output for game fetching.
      * Replaces the anonymous inner class to satisfy Checkstyle length rules.
      */
-    private static class ConsoleFetchGamesPresenter implements FetchGamesOutputBoundary {
+    private static final class ConsoleFetchGamesPresenter implements FetchGamesOutputBoundary {
         @Override
         public void presentFetchInProgress() {
             System.out.println("Fetching games from API...");
         }
 
         @Override
-        public void presentFetchSuccess(FetchGamesResponseModel response) {
+        public void presentFetchSuccess(final FetchGamesResponseModel response) {
             System.out.println("API fetch completed: " + response.getMessage());
         }
 
         @Override
-        public void presentFetchError(String error) {
+        public void presentFetchError(final String error) {
             System.err.println("API fetch error: " + error);
         }
 
         @Override
-        public void presentSearchResults(List<Game> games, String query) {
+        public void presentSearchResults(final List<Game> games, final String query) {
             System.out.println("Search found " + games.size() + " games for: " + query);
         }
     }
