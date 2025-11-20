@@ -7,12 +7,12 @@ public class ProfileViewModel {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private ProfileState state = new ProfileState();
 
-    public void setState(ProfileState state) {
-        this.state = state;
-    }
-
     public ProfileState getState() {
         return state;
+    }
+
+    public void setState(ProfileState state) {
+        this.state = state;
     }
 
     public void firePropertyChanged() {

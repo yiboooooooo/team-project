@@ -10,8 +10,8 @@ public class ViewProfileOutputData {
     private final List<String[]> historicalPositions;
 
     public ViewProfileOutputData(String username, int balance, int pnl,
-            List<String[]> openPositions,
-            List<String[]> historicalPositions) {
+                                 List<String[]> openPositions,
+                                 List<String[]> historicalPositions) {
         this.username = username;
         this.balance = balance;
         this.pnl = pnl;

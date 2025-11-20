@@ -1,7 +1,7 @@
 package stakemate.interface_adapter.view_profile;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileState {
     private String username = "";

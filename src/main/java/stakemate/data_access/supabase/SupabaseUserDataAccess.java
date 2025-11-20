@@ -12,9 +12,9 @@ import java.sql.SQLException;
 /**
  * Data access implementation that stores users in the Supabase "profiles"
  * table.
- *
+ * <p>
  * Expected table:
- *
+ * <p>
  * create table public.profiles (
  * id uuid primary key default gen_random_uuid(),
  * username text unique not null,
@@ -40,7 +40,7 @@ public class SupabaseUserDataAccess
         final String sql = "SELECT 1 FROM public.profiles WHERE username = ? LIMIT 1";
 
         try (Connection conn = factory.createConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
@@ -60,7 +60,7 @@ public class SupabaseUserDataAccess
                 "VALUES (?, ?, ?)";
 
         try (Connection conn = factory.createConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword()); // plain text for now
@@ -81,7 +81,7 @@ public class SupabaseUserDataAccess
                 "FROM public.profiles WHERE username = ?";
 
         try (Connection conn = factory.createConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 

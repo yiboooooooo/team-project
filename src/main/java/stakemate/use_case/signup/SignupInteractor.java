@@ -18,7 +18,7 @@ public class SignupInteractor implements SignupInputBoundary {
         String password = inputData.getPassword();
 
         if (username == null || username.isEmpty() ||
-            password == null || password.isEmpty()) {
+                password == null || password.isEmpty()) {
             presenter.prepareFailView("Username and password cannot be empty.");
             return;
         }

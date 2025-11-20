@@ -1,6 +1,7 @@
 package stakemate.use_case.view_profile;
 
 import stakemate.entity.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class ViewProfileInteractor implements ViewProfileInputBoundary {
     private final ViewProfileOutputBoundary outputBoundary;
 
     public ViewProfileInteractor(ViewProfileUserDataAccessInterface userDataAccess,
-            ViewProfileOutputBoundary outputBoundary) {
+                                 ViewProfileOutputBoundary outputBoundary) {
         this.userDataAccess = userDataAccess;
         this.outputBoundary = outputBoundary;
     }
@@ -28,13 +29,13 @@ public class ViewProfileInteractor implements ViewProfileInputBoundary {
         List<String[]> openPositions = new ArrayList<>();
         // {Market Name, Team, Buy in Price, Position Size, Buy in Dollar Amt, Profit if
         // Won}
-        openPositions.add(new String[] {
+        openPositions.add(new String[]{
                 "Lakers vs Warriors", "Lakers", "0.60", "100", "60.00", "40.00"
         });
 
         List<String[]> historicalPositions = new ArrayList<>();
         // {Market Name, Team, Buy in Price, Position Size, Profit}
-        historicalPositions.add(new String[] {
+        historicalPositions.add(new String[]{
                 "Knicks vs Celtics", "Celtics", "0.40", "50", "30.00"
         });
 

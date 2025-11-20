@@ -1,15 +1,15 @@
 package stakemate.view;
 
-import stakemate.interface_adapter.view_market.MarketsView;
-import stakemate.interface_adapter.view_market.ViewMarketController;
-import stakemate.use_case.view_market.MatchSummary;
-import stakemate.use_case.view_market.MarketSummary;
-import stakemate.use_case.view_market.MarketsResponseModel;
-import stakemate.use_case.view_market.OrderBookResponseModel;
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
-import stakemate.interface_adapter.view_market.SettleMarketView;
 import stakemate.interface_adapter.controllers.SettleMarketController;
+import stakemate.interface_adapter.view_market.MarketsView;
+import stakemate.interface_adapter.view_market.SettleMarketView;
+import stakemate.interface_adapter.view_market.ViewMarketController;
+import stakemate.use_case.view_market.MarketSummary;
+import stakemate.use_case.view_market.MarketsResponseModel;
+import stakemate.use_case.view_market.MatchSummary;
+import stakemate.use_case.view_market.OrderBookResponseModel;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -20,29 +20,23 @@ import java.util.List;
 
 public class MarketsFrame extends JFrame implements MarketsView, SettleMarketView {
 
-    private ViewMarketController controller;
-    private SettleMarketController settleMarketController;
-
     private final DefaultListModel<MatchSummary> matchesListModel = new DefaultListModel<>();
     private final JList<MatchSummary> matchesList = new JList<>(matchesListModel);
     private final JLabel matchesEmptyLabel = new JLabel(" ");
-
     private final DefaultListModel<MarketSummary> marketsListModel = new DefaultListModel<>();
     private final JList<MarketSummary> marketsList = new JList<>(marketsListModel);
     private final JLabel marketsEmptyLabel = new JLabel(" ");
-
     private final OrderBookTableModel orderBookTableModel = new OrderBookTableModel();
     private final JTable orderBookTable = new JTable(orderBookTableModel);
     private final JLabel orderBookEmptyLabel = new JLabel("Select a market to see orders.");
-
     private final JLabel statusLabel = new JLabel(" ");
     private final JButton buyButton = new JButton("Buy");
     private final JButton sellButton = new JButton("Sell");
     private final JButton refreshButton = new JButton("Refresh");
-
     private final JButton myProfileButton = new JButton("My Profile");
     private final JButton settleButton = new JButton("Settle");
-
+    private ViewMarketController controller;
+    private SettleMarketController settleMarketController;
     private MarketSummary currentlySelectedMarket;
     private ProfileFrame profileFrame;
     private stakemate.interface_adapter.view_profile.ViewProfileController profileController;

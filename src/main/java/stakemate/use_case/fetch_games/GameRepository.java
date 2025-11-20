@@ -1,6 +1,7 @@
 package stakemate.use_case.fetch_games;
 
 import stakemate.entity.Game;
+
 import java.util.List;
 import java.util.Optional;
 
