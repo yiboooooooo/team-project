@@ -74,7 +74,7 @@ public class Game {
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
         return Objects.equals(id, game.id) &&
-                Objects.equals(externalId, game.externalId);
+            Objects.equals(externalId, game.externalId);
     }
 
     @Override
@@ -85,13 +85,13 @@ public class Game {
     @Override
     public String toString() {
         return "Game{" +
-                "id=" + id +
-                ", teamA='" + teamA + '\'' +
-                ", teamB='" + teamB + '\'' +
-                ", sport='" + sport + '\'' +
-                ", gameTime=" + gameTime +
-                ", status=" + status +
-                '}';
+            "id=" + id +
+            ", teamA='" + teamA + '\'' +
+            ", teamB='" + teamB + '\'' +
+            ", sport='" + sport + '\'' +
+            ", gameTime=" + gameTime +
+            ", status=" + status +
+            '}';
     }
 }
 

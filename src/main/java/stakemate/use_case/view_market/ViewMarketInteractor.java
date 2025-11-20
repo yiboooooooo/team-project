@@ -20,8 +20,8 @@ import java.util.Map;
  * Uses [Facade], [Strategy], [Builder], and [Decorator] internally.
  */
 public class ViewMarketInteractor implements
-        ViewMarketInputBoundary,
-        OrderBookSubscriber {
+    ViewMarketInputBoundary,
+    OrderBookSubscriber {
 
     // [Facade Pattern]: Replaces individual Repos
     private final MarketDataFacade dataFacade;
@@ -79,8 +79,8 @@ public class ViewMarketInteractor implements
     public void matchSelected(String matchId) {
         Match match = matchesById.get(matchId);
         String title = match != null
-                ? match.getHomeTeam() + " vs " + match.getAwayTeam()
-                : "Match " + matchId;
+            ? match.getHomeTeam() + " vs " + match.getAwayTeam()
+            : "Match " + matchId;
 
         try {
             List<Market> markets = dataFacade.getMarketsForMatch(matchId);
@@ -91,10 +91,10 @@ public class ViewMarketInteractor implements
                 String statusLabel = open ? "Open" : "Closed";
 
                 MarketSummary summary = new MarketSummary(
-                        market.getId(),
-                        market.getName(),
-                        statusLabel,
-                        open
+                    market.getId(),
+                    market.getName(),
+                    statusLabel,
+                    open
                 );
 
                 // [Decorator Pattern]: Mark open markets as "HOT"
@@ -110,10 +110,10 @@ public class ViewMarketInteractor implements
 
             // [Builder Pattern]: Construct response
             MarketsResponseModel response = new MarketsResponseModelBuilder()
-                    .setMatchId(matchId)
-                    .setMatchTitle(title)
-                    .setMarkets(summaries)
-                    .build();
+                .setMatchId(matchId)
+                .setMatchTitle(title)
+                .setMarkets(summaries)
+                .build();
 
             presenter.presentMarketsForMatch(response);
 
@@ -135,14 +135,14 @@ public class ViewMarketInteractor implements
             String msg = empty ? "No orders yet" : null;
 
             presenter.presentOrderBook(
-                    new OrderBookResponseModel(orderBook, empty, false, msg)
+                new OrderBookResponseModel(orderBook, empty, false, msg)
             );
 
             dataFacade.subscribeToOrderBook(marketId, this);
 
         } catch (RepositoryException e) {
             presenter.presentOrderBook(
-                    new OrderBookResponseModel(null, false, true, "Reconnecting...")
+                new OrderBookResponseModel(null, false, true, "Reconnecting...")
             );
         }
     }
@@ -153,22 +153,22 @@ public class ViewMarketInteractor implements
         boolean empty = orderBook.getBids().isEmpty() && orderBook.getAsks().isEmpty();
         String msg = empty ? "No orders yet" : null;
         presenter.presentOrderBook(
-                new OrderBookResponseModel(orderBook, empty, false, msg)
+            new OrderBookResponseModel(orderBook, empty, false, msg)
         );
     }
 
     @Override
     public void onConnectionError(String message) {
         presenter.presentOrderBook(
-                new OrderBookResponseModel(null, false, true,
-                        message != null ? message : "Reconnecting...")
+            new OrderBookResponseModel(null, false, true,
+                message != null ? message : "Reconnecting...")
         );
     }
 
     @Override
     public void onConnectionRestored() {
         presenter.presentOrderBook(
-                new OrderBookResponseModel(null, false, false, "Connection restored")
+            new OrderBookResponseModel(null, false, false, "Connection restored")
         );
     }
 }

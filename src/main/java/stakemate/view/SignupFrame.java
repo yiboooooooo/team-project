@@ -97,10 +97,10 @@ public class SignupFrame extends JFrame implements SignupView {
     @Override
     public void onSignupSuccess(String username) {
         JOptionPane.showMessageDialog(
-                this,
-                "Account created for " + username + ". Please log in.",
-                "Signup Successful",
-                JOptionPane.INFORMATION_MESSAGE
+            this,
+            "Account created for " + username + ". Please log in.",
+            "Signup Successful",
+            JOptionPane.INFORMATION_MESSAGE
         );
 
         // Close this window and return to login

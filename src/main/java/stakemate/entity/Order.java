@@ -2,10 +2,10 @@ package stakemate.entity;
 
 public class Order {
 
-    private String userId;
-    private Side side;
-    private double odds;
-    private double stake;
+    private final String userId;
+    private final Side side;
+    private final double odds;
+    private final double stake;
 
     public Order(String userId, Side side, double odds, double stake) {
         this.userId = userId;
@@ -33,11 +33,11 @@ public class Order {
     @Override
     public String toString() {
         return "Order{" +
-                "userId='" + userId + '\'' +
-                ", side=" + side +
-                ", odds=" + odds +
-                ", stake=" + stake +
-                '}';
+            "userId='" + userId + '\'' +
+            ", side=" + side +
+            ", odds=" + odds +
+            ", stake=" + stake +
+            '}';
     }
 
     public enum Side {BACK, LAY}

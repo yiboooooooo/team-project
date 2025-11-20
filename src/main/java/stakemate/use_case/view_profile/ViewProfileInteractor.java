@@ -30,21 +30,21 @@ public class ViewProfileInteractor implements ViewProfileInputBoundary {
         // {Market Name, Team, Buy in Price, Position Size, Buy in Dollar Amt, Profit if
         // Won}
         openPositions.add(new String[]{
-                "Lakers vs Warriors", "Lakers", "0.60", "100", "60.00", "40.00"
+            "Lakers vs Warriors", "Lakers", "0.60", "100", "60.00", "40.00"
         });
 
         List<String[]> historicalPositions = new ArrayList<>();
         // {Market Name, Team, Buy in Price, Position Size, Profit}
         historicalPositions.add(new String[]{
-                "Knicks vs Celtics", "Celtics", "0.40", "50", "30.00"
+            "Knicks vs Celtics", "Celtics", "0.40", "50", "30.00"
         });
 
         ViewProfileOutputData outputData = new ViewProfileOutputData(
-                user.getUsername(),
-                user.getBalance(),
-                0, // PnL set to 0 for now
-                openPositions,
-                historicalPositions);
+            user.getUsername(),
+            user.getBalance(),
+            0, // PnL set to 0 for now
+            openPositions,
+            historicalPositions);
 
         outputBoundary.presentProfile(outputData);
     }

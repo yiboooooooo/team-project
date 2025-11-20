@@ -25,7 +25,7 @@ public class Main {
         // Using System.currentTimeMillis() to make the name unique every time.
         String marketName = "Test Market " + System.currentTimeMillis();
         String sql = "INSERT INTO public.markets (name, category) " +
-                "VALUES ('" + marketName + "', 'Test Category')";
+            "VALUES ('" + marketName + "', 'Test Category')";
 
         try (Connection conn = DriverManager.getConnection(jdbcUrl, DB_USER, DB_PASSWORD);
              Statement stmt = conn.createStatement()) {

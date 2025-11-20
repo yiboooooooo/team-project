@@ -24,10 +24,10 @@ public class SwingSettleMarketPresenter implements SettleMarketOutputBoundary {
     @Override
     public void presentSuccess(SettleMarketResponseModel response) {
         String msg = String.format(
-                "Settled market %s: %d bets, total payout %.2f",
-                response.getMarketId(),
-                response.getBetsSettled(),
-                response.getTotalPayout()
+            "Settled market %s: %d bets, total payout %.2f",
+            response.getMarketId(),
+            response.getBetsSettled(),
+            response.getTotalPayout()
         );
 
         runOnEdt(() -> view.showSettlementResult(msg));

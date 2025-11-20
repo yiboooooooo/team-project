@@ -71,7 +71,7 @@ public class OddsApiTest {
     }
 
     private static void testFetchEvents(OddsApiGateway gateway, String sport, String region)
-            throws ApiException {
+        throws ApiException {
         try {
             List<OddsApiEvent> events = gateway.fetchEvents(sport, region, LocalDate.now());
 
@@ -93,7 +93,7 @@ public class OddsApiTest {
     }
 
     private static void testAdapter(OddsApiGateway gateway, String sport, String region)
-            throws ApiException {
+        throws ApiException {
         try {
             // Fetch events
             List<OddsApiEvent> events = gateway.fetchEvents(sport, region, LocalDate.now());

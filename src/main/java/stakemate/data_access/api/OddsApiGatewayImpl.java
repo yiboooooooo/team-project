@@ -36,14 +36,14 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
     public OddsApiGatewayImpl(String apiKey) {
         this.apiKey = apiKey;
         this.httpClient = new OkHttpClient.Builder()
-                .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .build();
+            .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .build();
 
         // Configure Gson with custom LocalDateTime deserializer
         this.gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                .create();
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+            .create();
     }
 
     @Override
@@ -51,9 +51,9 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
         try {
             String url = BASE_URL + "?apiKey=" + apiKey;
             Request request = new Request.Builder()
-                    .url(url)
-                    .get()
-                    .build();
+                .url(url)
+                .get()
+                .build();
 
             try (Response response = httpClient.newCall(request).execute()) {
                 return handleSportsResponse(response);
@@ -65,7 +65,7 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
 
     @Override
     public List<OddsApiEvent> fetchEvents(String sport, String region, LocalDate dateFrom)
-            throws ApiException {
+        throws ApiException {
         if (sport == null || sport.isEmpty()) {
             throw new IllegalArgumentException("Sport parameter is required and cannot be null or empty");
         }
@@ -73,9 +73,9 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
         try {
             String url = buildUrl(sport, region, dateFrom);
             Request request = new Request.Builder()
-                    .url(url)
-                    .get()
-                    .build();
+                .url(url)
+                .get()
+                .build();
 
             try (Response response = httpClient.newCall(request).execute()) {
                 return handleResponse(response);
@@ -219,10 +219,10 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
      */
     private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
         private static final DateTimeFormatter[] FORMATTERS = {
-                DateTimeFormatter.ISO_DATE_TIME,
-                DateTimeFormatter.ISO_OFFSET_DATE_TIME,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+            DateTimeFormatter.ISO_DATE_TIME,
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME,
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         };
 
         @Override

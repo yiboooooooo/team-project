@@ -16,7 +16,7 @@ public class BookOrder {
     private final Double price; // null for market orders
     private final Instant timestamp;
 
-    private double originalQty;
+    private final double originalQty;
     private double remainingQty;
 
     public BookOrder(String userId, String marketId, Side side, Double price, double qty) {

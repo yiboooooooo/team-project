@@ -38,11 +38,11 @@ public class MatchingEngine {
         if (incoming.getSide() == Side.BUY) {
             // match buys against lowest ask price first, then earlier timestamp
             cmp = Comparator.comparing((BookOrder o) -> o.getPrice() == null ? Double.MAX_VALUE : o.getPrice())
-                    .thenComparing(BookOrder::getTimestamp);
+                .thenComparing(BookOrder::getTimestamp);
         } else {
             // match sells against highest bid price first, then earlier timestamp
             cmp = Comparator.comparing((BookOrder o) -> o.getPrice() == null ? Double.MIN_VALUE : o.getPrice()).reversed()
-                    .thenComparing(BookOrder::getTimestamp);
+                .thenComparing(BookOrder::getTimestamp);
         }
         List<BookOrder> sortedOpposite = opposite.stream().sorted(cmp).collect(Collectors.toList());
 
@@ -147,12 +147,12 @@ public class MatchingEngine {
         }
 
         List<OrderBookEntry> bidEntries = bidAgg.entrySet().stream()
-                .map(e -> new OrderBookEntry(stakemate.entity.Side.BUY, e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+            .map(e -> new OrderBookEntry(stakemate.entity.Side.BUY, e.getKey(), e.getValue()))
+            .collect(Collectors.toList());
 
         List<OrderBookEntry> askEntries = askAgg.entrySet().stream()
-                .map(e -> new OrderBookEntry(stakemate.entity.Side.SELL, e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
+            .map(e -> new OrderBookEntry(stakemate.entity.Side.SELL, e.getKey(), e.getValue()))
+            .collect(Collectors.toList());
 
         return new OrderBook(marketId, bidEntries, askEntries);
     }

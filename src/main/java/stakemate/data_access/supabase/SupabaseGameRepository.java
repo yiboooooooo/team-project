@@ -31,14 +31,14 @@ public class SupabaseGameRepository implements GameRepository {
         }
 
         String upsertSql = "INSERT INTO public.games (id, market_id, game_time, team_a, team_b, sport, status) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?::game_status) " +
-                "ON CONFLICT (id) DO UPDATE SET " +
-                "market_id = EXCLUDED.market_id, " +
-                "game_time = EXCLUDED.game_time, " +
-                "team_a = EXCLUDED.team_a, " +
-                "team_b = EXCLUDED.team_b, " +
-                "sport = EXCLUDED.sport, " +
-                "status = EXCLUDED.status";
+            "VALUES (?, ?, ?, ?, ?, ?, ?::game_status) " +
+            "ON CONFLICT (id) DO UPDATE SET " +
+            "market_id = EXCLUDED.market_id, " +
+            "game_time = EXCLUDED.game_time, " +
+            "team_a = EXCLUDED.team_a, " +
+            "team_b = EXCLUDED.team_b, " +
+            "sport = EXCLUDED.sport, " +
+            "status = EXCLUDED.status";
 
         try (Connection conn = connectionFactory.createConnection()) {
             conn.setAutoCommit(false);
@@ -76,9 +76,9 @@ public class SupabaseGameRepository implements GameRepository {
         // In a production system, you'd want an external_id column in the games table
 
         String sql = "SELECT id, market_id, game_time, team_a, team_b, sport, status " +
-                "FROM public.games " +
-                "WHERE id::text = ? OR (team_a = ? AND team_b = ? AND game_time = ?) " +
-                "LIMIT 1";
+            "FROM public.games " +
+            "WHERE id::text = ? OR (team_a = ? AND team_b = ? AND game_time = ?) " +
+            "LIMIT 1";
 
         try (Connection conn = connectionFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -118,9 +118,9 @@ public class SupabaseGameRepository implements GameRepository {
     @Override
     public List<Game> findFutureGames() throws RepositoryException {
         String sql = "SELECT id, market_id, game_time, team_a, team_b, sport, status " +
-                "FROM public.games " +
-                "WHERE game_time >= CURRENT_DATE " +
-                "ORDER BY game_time ASC";
+            "FROM public.games " +
+            "WHERE game_time >= CURRENT_DATE " +
+            "ORDER BY game_time ASC";
 
         return executeQuery(sql, null);
     }
@@ -133,10 +133,10 @@ public class SupabaseGameRepository implements GameRepository {
 
         String searchTerm = "%" + query.trim() + "%";
         String sql = "SELECT id, market_id, game_time, team_a, team_b, sport, status " +
-                "FROM public.games " +
-                "WHERE (team_a ILIKE ? OR team_b ILIKE ? OR sport ILIKE ?) " +
-                "AND game_time >= CURRENT_DATE " +
-                "ORDER BY game_time ASC";
+            "FROM public.games " +
+            "WHERE (team_a ILIKE ? OR team_b ILIKE ? OR sport ILIKE ?) " +
+            "AND game_time >= CURRENT_DATE " +
+            "ORDER BY game_time ASC";
 
         return executeQuery(sql, searchTerm);
     }
@@ -199,7 +199,7 @@ public class SupabaseGameRepository implements GameRepository {
                 if (!rs.next()) {
                     // Market doesn't exist, create a default one
                     String insertSql = "INSERT INTO public.markets (id, name, category, created_at) " +
-                            "VALUES (?, ?, ?, NOW())";
+                        "VALUES (?, ?, ?, NOW())";
 
                     try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
                         insertStmt.setObject(1, marketId);

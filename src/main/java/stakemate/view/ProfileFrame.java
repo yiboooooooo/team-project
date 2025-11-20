@@ -20,14 +20,14 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
 
     // Open Positions Table
     private final String[] openColumns = {
-            "Market Name", "Team", "Buy Price", "Size", "Buy Amt ($)", "Profit if Won ($)"
+        "Market Name", "Team", "Buy Price", "Size", "Buy Amt ($)", "Profit if Won ($)"
     };
     private final DefaultTableModel openModel = new DefaultTableModel(openColumns, 0);
     private final JTable openTable = new JTable(openModel);
 
     // Historical Positions Table
     private final String[] historyColumns = {
-            "Market Name", "Team", "Buy Price", "Size", "Profit ($)"
+        "Market Name", "Team", "Buy Price", "Size", "Profit ($)"
     };
     private final DefaultTableModel historyModel = new DefaultTableModel(historyColumns, 0);
     private final JTable historyTable = new JTable(historyModel);
@@ -125,13 +125,13 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
 
         // Placeholder listeners for sort buttons
         sortOpenDateBtn
-                .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Date not implemented yet."));
+            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Date not implemented yet."));
         sortOpenSizeBtn
-                .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Size not implemented yet."));
+            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Size not implemented yet."));
         sortHistoryDateBtn
-                .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Date not implemented yet."));
+            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Date not implemented yet."));
         sortHistorySizeBtn
-                .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Size not implemented yet."));
+            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Size not implemented yet."));
     }
 
     @Override

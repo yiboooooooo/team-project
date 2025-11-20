@@ -31,10 +31,10 @@ public class SwingFetchGamesPresenter implements FetchGamesOutputBoundary {
     public void presentFetchSuccess(FetchGamesResponseModel responseModel) {
         runOnEdt(() -> {
             String message = responseModel.getMessage() != null
-                    ? responseModel.getMessage()
-                    : String.format("Fetched %d games, saved %d games",
-                    responseModel.getGamesFetched(),
-                    responseModel.getGamesSaved());
+                ? responseModel.getMessage()
+                : String.format("Fetched %d games, saved %d games",
+                responseModel.getGamesFetched(),
+                responseModel.getGamesSaved());
             view.showFetchSuccess(message, responseModel.getGamesSaved());
         });
     }

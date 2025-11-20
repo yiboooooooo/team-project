@@ -24,8 +24,8 @@ import java.sql.SQLException;
  * );
  */
 public class SupabaseUserDataAccess
-        implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-        stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface {
+    implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
+    stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface {
 
     private final SupabaseClientFactory factory;
 
@@ -57,7 +57,7 @@ public class SupabaseUserDataAccess
     public void save(User user) {
         // We let Supabase/Postgres generate the UUID id and updated_at
         final String sql = "INSERT INTO public.profiles (username, password, balance) " +
-                "VALUES (?, ?, ?)";
+            "VALUES (?, ?, ?)";
 
         try (Connection conn = factory.createConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -78,7 +78,7 @@ public class SupabaseUserDataAccess
     @Override
     public User getByUsername(String username) {
         final String sql = "SELECT username, password, balance " +
-                "FROM public.profiles WHERE username = ?";
+            "FROM public.profiles WHERE username = ?";
 
         try (Connection conn = factory.createConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -10,6 +10,6 @@ public class StatusSortStrategy implements MarketSortStrategy {
     public void sort(List<MarketSummary> markets) {
         // Open markets first, then alphabetical
         markets.sort(Comparator.comparing(MarketSummary::getStatusLabel).reversed()
-                .thenComparing(MarketSummary::getName));
+            .thenComparing(MarketSummary::getName));
     }
 }

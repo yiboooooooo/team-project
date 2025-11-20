@@ -53,6 +53,6 @@ public class Trade {
     @Override
     public String toString() {
         return String.format("[%s] TRADE %s BUY:%s SELL:%s @ %.2f x %.2f",
-                timestamp, id, buyOrderId, sellOrderId, price, size);
+            timestamp, id, buyOrderId, sellOrderId, price, size);
     }
 }

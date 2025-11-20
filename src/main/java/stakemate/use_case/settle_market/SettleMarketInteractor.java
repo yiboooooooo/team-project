@@ -82,12 +82,12 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
 
             // Record this individual settlement (payout is net change, can be + or -)
             SettlementRecord record = new SettlementRecord(
-                    marketId,
-                    bet.getUsername(),
-                    bet.getStake(),
-                    payout,
-                    won,
-                    LocalDateTime.now()
+                marketId,
+                bet.getUsername(),
+                bet.getStake(),
+                payout,
+                won,
+                LocalDateTime.now()
             );
             settlementRecordRepository.save(record);
 
@@ -96,7 +96,7 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
 
         // 5) Send summary back to presenter
         SettleMarketResponseModel response =
-                new SettleMarketResponseModel(marketId, settledCount, totalPayout);
+            new SettleMarketResponseModel(marketId, settledCount, totalPayout);
 
         presenter.presentSuccess(response);
     }

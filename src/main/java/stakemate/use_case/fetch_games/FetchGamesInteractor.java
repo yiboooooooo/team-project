@@ -50,7 +50,7 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
 
             if (events.isEmpty()) {
                 presenter.presentFetchSuccess(new FetchGamesResponseModel(
-                        0, 0, sport, "No events found for the specified criteria."
+                    0, 0, sport, "No events found for the specified criteria."
                 ));
                 return;
             }
@@ -60,7 +60,7 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
 
             if (games.isEmpty()) {
                 presenter.presentFetchSuccess(new FetchGamesResponseModel(
-                        events.size(), 0, sport, "Fetched events but none could be converted to games."
+                    events.size(), 0, sport, "Fetched events but none could be converted to games."
                 ));
                 return;
             }
@@ -74,7 +74,7 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
             // Step 5: Present success
             String message = String.format("Successfully fetched and saved %d games.", validGames.size());
             presenter.presentFetchSuccess(new FetchGamesResponseModel(
-                    events.size(), validGames.size(), sport, message
+                events.size(), validGames.size(), sport, message
             ));
 
         } catch (ApiException e) {
@@ -111,11 +111,11 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
         for (Game game : games) {
             // Validate required fields
             if (game.getId() == null ||
-                    game.getMarketId() == null ||
-                    game.getGameTime() == null ||
-                    game.getTeamA() == null || game.getTeamA().trim().isEmpty() ||
-                    game.getTeamB() == null || game.getTeamB().trim().isEmpty() ||
-                    game.getSport() == null || game.getSport().trim().isEmpty()) {
+                game.getMarketId() == null ||
+                game.getGameTime() == null ||
+                game.getTeamA() == null || game.getTeamA().trim().isEmpty() ||
+                game.getTeamB() == null || game.getTeamB().trim().isEmpty() ||
+                game.getSport() == null || game.getSport().trim().isEmpty()) {
                 // Skip invalid games
                 continue;
             }

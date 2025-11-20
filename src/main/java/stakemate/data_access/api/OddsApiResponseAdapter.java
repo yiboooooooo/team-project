@@ -70,14 +70,14 @@ public class OddsApiResponseAdapter {
         }
 
         return new Game(
-                gameId,
-                marketId,
-                gameTime,
-                teamA,
-                teamB,
-                sport,
-                status,
-                event.getId()  // Store external ID for deduplication
+            gameId,
+            marketId,
+            gameTime,
+            teamA,
+            teamB,
+            sport,
+            status,
+            event.getId()  // Store external ID for deduplication
         );
     }
 

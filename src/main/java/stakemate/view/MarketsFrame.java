@@ -1,5 +1,6 @@
 package stakemate.view;
 
+import stakemate.app.StakeMateApp;
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.interface_adapter.controllers.SettleMarketController;
@@ -122,9 +123,9 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         rightPanel.add(buySellPanel, BorderLayout.SOUTH);
 
         JSplitPane splitPane = new JSplitPane(
-                JSplitPane.HORIZONTAL_SPLIT,
-                leftPanel,
-                rightPanel);
+            JSplitPane.HORIZONTAL_SPLIT,
+            leftPanel,
+            rightPanel);
         splitPane.setDividerLocation(280);
 
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -171,12 +172,12 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         });
 
         buyButton.addActionListener(e -> JOptionPane.showMessageDialog(
-                MarketsFrame.this,
-                "Buy clicked. (Use Case 4 will handle order placement.)"));
+            MarketsFrame.this,
+            "Buy clicked. (Use Case 4 will handle order placement.)"));
 
         sellButton.addActionListener(e -> JOptionPane.showMessageDialog(
-                MarketsFrame.this,
-                "Sell clicked. (Use Case 4 will handle order placement.)"));
+            MarketsFrame.this,
+            "Sell clicked. (Use Case 4 will handle order placement.)"));
 
         // UC6: settle selected market
         settleButton.addActionListener(e -> {
@@ -185,10 +186,10 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
             }
 
             int choice = JOptionPane.showConfirmDialog(
-                    MarketsFrame.this,
-                    "Did the HOME team win this market?",
-                    "Settle Market",
-                    JOptionPane.YES_NO_OPTION);
+                MarketsFrame.this,
+                "Did the HOME team win this market?",
+                "Settle Market",
+                JOptionPane.YES_NO_OPTION);
 
             if (choice == JOptionPane.YES_OPTION || choice == JOptionPane.NO_OPTION) {
                 boolean homeTeamWon = (choice == JOptionPane.YES_OPTION);
@@ -204,7 +205,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         matchesListModel.clear();
         if (matches == null || matches.isEmpty()) {
             matchesEmptyLabel.setText(
-                    emptyStateMessage != null ? emptyStateMessage : "No matches.");
+                emptyStateMessage != null ? emptyStateMessage : "No matches.");
         } else {
             for (MatchSummary m : matches) {
                 matchesListModel.addElement(m);
@@ -221,9 +222,9 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         currentlySelectedMarket = null;
         if (responseModel.getMarkets() == null || responseModel.getMarkets().isEmpty()) {
             marketsEmptyLabel.setText(
-                    responseModel.getEmptyStateMessage() != null
-                            ? responseModel.getEmptyStateMessage()
-                            : "No markets for this match.");
+                responseModel.getEmptyStateMessage() != null
+                    ? responseModel.getEmptyStateMessage()
+                    : "No markets for this match.");
         } else {
             for (MarketSummary m : responseModel.getMarkets()) {
                 marketsListModel.addElement(m);
@@ -247,8 +248,8 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
         if (responseModel.isReconnecting()) {
             statusLabel.setText(responseModel.getMessage() != null
-                    ? responseModel.getMessage()
-                    : "Reconnecting...");
+                ? responseModel.getMessage()
+                : "Reconnecting...");
         } else if (responseModel.getMessage() != null) {
             statusLabel.setText(responseModel.getMessage());
         } else {
@@ -257,19 +258,16 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
         if (responseModel.isEmpty()) {
             orderBookEmptyLabel.setText(
-                    responseModel.getMessage() != null
-                            ? responseModel.getMessage()
-                            : "No orders yet");
+                responseModel.getMessage() != null
+                    ? responseModel.getMessage()
+                    : "No orders yet");
         } else if (!responseModel.isReconnecting()) {
             orderBookEmptyLabel.setText(" ");
         }
 
-        boolean enableBuySell = false;
-        if (currentlySelectedMarket != null
-                && currentlySelectedMarket.isBuySellEnabled()
-                && !responseModel.isReconnecting()) {
-            enableBuySell = true;
-        }
+        boolean enableBuySell = currentlySelectedMarket != null
+            && currentlySelectedMarket.isBuySellEnabled()
+            && !responseModel.isReconnecting();
 
         buyButton.setEnabled(enableBuySell);
         sellButton.setEnabled(enableBuySell);
@@ -293,26 +291,27 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         String you = "";
 
         try {
-            alice = "Alice: " + stakemate.app.StakeMateApp.accountRepo
-                    .findByUsername("alice").getBalance();
-            bob = "Bob:   " + stakemate.app.StakeMateApp.accountRepo
-                    .findByUsername("bob").getBalance();
-            you = "You (ryth): " + stakemate.app.StakeMateApp.accountRepo
-                    .findByUsername("ryth").getBalance();
+            // FIXED: Use getter method instead of direct access
+            alice = "Alice: " + StakeMateApp.getAccountRepo()
+                .findByUsername("alice").getBalance();
+            bob = "Bob:   " + StakeMateApp.getAccountRepo()
+                .findByUsername("bob").getBalance();
+            you = "You (ryth): " + StakeMateApp.getAccountRepo()
+                .findByUsername("ryth").getBalance();
         } catch (Exception ignored) {
         }
 
         JOptionPane.showMessageDialog(
-                this,
-                message + "\n\nAccount Balances:\n" + alice + "\n" + bob + "\n" + you,
-                "Settlement Complete",
-                JOptionPane.INFORMATION_MESSAGE);
+            this,
+            message + "\n\nAccount Balances:\n" + alice + "\n" + bob + "\n" + you,
+            "Settlement Complete",
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public void showSettlementError(String errorMessage) {
         JOptionPane.showMessageDialog(this, errorMessage,
-                "Settlement Error", JOptionPane.ERROR_MESSAGE);
+            "Settlement Error", JOptionPane.ERROR_MESSAGE);
     }
 
     // ---- Order Book Table Model ----
@@ -320,7 +319,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private static final class OrderBookTableModel extends AbstractTableModel {
 
         private static final String[] COLUMNS = {
-                "Bid Size", "Bid Price", "Ask Price", "Ask Size"
+            "Bid Size", "Bid Price", "Ask Price", "Ask Size"
         };
 
         private final List<Row> rows = new ArrayList<>();

@@ -36,11 +36,11 @@ public class InMemoryMatchRepository implements MatchRepository {
         LocalDateTime now = LocalDateTime.now();
 
         matches.add(new Match("M1", "Raptors", "Lakers",
-                MatchStatus.UPCOMING, now.plusHours(2)));
+            MatchStatus.UPCOMING, now.plusHours(2)));
         matches.add(new Match("M2", "Celtics", "Bulls",
-                MatchStatus.LIVE, now.minusMinutes(30)));
+            MatchStatus.LIVE, now.minusMinutes(30)));
         matches.add(new Match("M3", "Warriors", "Nets",
-                MatchStatus.CLOSED, now.minusHours(4)));
+            MatchStatus.CLOSED, now.minusHours(4)));
     }
 
     @Override
@@ -116,11 +116,11 @@ public class InMemoryMatchRepository implements MatchRepository {
         MatchStatus matchStatus = convertGameStatusToMatchStatus(game.getStatus());
 
         return new Match(
-                matchId,
-                game.getTeamA(),  // home team
-                game.getTeamB(),  // away team
-                matchStatus,
-                game.getGameTime()
+            matchId,
+            game.getTeamA(),  // home team
+            game.getTeamB(),  // away team
+            matchStatus,
+            game.getGameTime()
         );
     }
 

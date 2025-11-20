@@ -58,7 +58,7 @@ public class SupabaseClientFactory {
      */
     public Connection createConnection() throws SQLException {
         String jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s?prepareThreshold=0&preparedStatementCacheQueries=0",
-                host, port, database);
+            host, port, database);
         return DriverManager.getConnection(jdbcUrl, user, password);
     }
 
