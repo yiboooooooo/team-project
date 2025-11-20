@@ -4,38 +4,50 @@ import stakemate.entity.Market;
 import stakemate.entity.MarketStatus;
 import stakemate.entity.Match;
 import stakemate.entity.OrderBook;
+import stakemate.use_case.view_market.builder.MarketsResponseModelBuilder;
+import stakemate.use_case.view_market.decorator.HotMarketDecorator;
+import stakemate.use_case.view_market.facade.MarketDataFacade;
+import stakemate.use_case.view_market.strategy.MarketSortStrategy;
+import stakemate.use_case.view_market.strategy.StatusSortStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * [Observer Pattern]: Implements OrderBookSubscriber to observe data changes.
+ * Uses [Facade], [Strategy], [Builder], and [Decorator] internally.
+ */
 public class ViewMarketInteractor implements
         ViewMarketInputBoundary,
         OrderBookSubscriber {
 
-    private final MatchRepository matchRepository;
-    private final MarketRepository marketRepository;
-    private final OrderBookGateway orderBookGateway;
+    // [Facade Pattern]: Replaces individual Repos
+    private final MarketDataFacade dataFacade;
     private final ViewMarketOutputBoundary presenter;
-
     private final Map<String, Match> matchesById = new HashMap<>();
+    // [Strategy Pattern]: Strategy for sorting markets
+    private MarketSortStrategy marketSortStrategy;
     private String currentSubscribedMarketId;
 
-    public ViewMarketInteractor(MatchRepository matchRepository,
-                                MarketRepository marketRepository,
-                                OrderBookGateway orderBookGateway,
+    public ViewMarketInteractor(MarketDataFacade dataFacade,
                                 ViewMarketOutputBoundary presenter) {
-        this.matchRepository = matchRepository;
-        this.marketRepository = marketRepository;
-        this.orderBookGateway = orderBookGateway;
+        this.dataFacade = dataFacade;
         this.presenter = presenter;
+        // Default strategy
+        this.marketSortStrategy = new StatusSortStrategy();
+    }
+
+    // Setter to change strategy at runtime
+    public void setMarketSortStrategy(MarketSortStrategy strategy) {
+        this.marketSortStrategy = strategy;
     }
 
     @Override
     public void loadMatches() {
         try {
-            List<Match> matches = matchRepository.findAllMatches();
+            List<Match> matches = dataFacade.getAllMatches();
             matchesById.clear();
             List<MatchSummary> summaries = new ArrayList<>();
 
@@ -56,12 +68,7 @@ public class ViewMarketInteractor implements
     @Override
     public void refreshFromApi() {
         try {
-            // If the repository supports API sync, trigger it
-            if (matchRepository instanceof stakemate.data_access.in_memory.InMemoryMatchRepository) {
-                ((stakemate.data_access.in_memory.InMemoryMatchRepository) matchRepository).syncWithApiData();
-            }
-
-            // Then load the refreshed matches
+            dataFacade.refreshApi();
             loadMatches();
         } catch (RepositoryException e) {
             presenter.presentError("Error refreshing from API: " + e.getMessage());
@@ -76,41 +83,54 @@ public class ViewMarketInteractor implements
                 : "Match " + matchId;
 
         try {
-            List<Market> markets = marketRepository.findByMatchId(matchId);
+            List<Market> markets = dataFacade.getMarketsForMatch(matchId);
             List<MarketSummary> summaries = new ArrayList<>();
 
             for (Market market : markets) {
                 boolean open = market.getStatus() == MarketStatus.OPEN;
                 String statusLabel = open ? "Open" : "Closed";
-                summaries.add(new MarketSummary(
+
+                MarketSummary summary = new MarketSummary(
                         market.getId(),
                         market.getName(),
                         statusLabel,
                         open
-                ));
+                );
+
+                // [Decorator Pattern]: Mark open markets as "HOT"
+                if (open) {
+                    summary = new HotMarketDecorator(summary);
+                }
+
+                summaries.add(summary);
             }
 
-            String emptyMessage = summaries.isEmpty()
-                    ? "No markets available for this match yet."
-                    : null;
+            // [Strategy Pattern]: Sort the list
+            marketSortStrategy.sort(summaries);
 
-            presenter.presentMarketsForMatch(new MarketsResponseModel(
-                    matchId, title, summaries, emptyMessage
-            ));
+            // [Builder Pattern]: Construct response
+            MarketsResponseModel response = new MarketsResponseModelBuilder()
+                    .setMatchId(matchId)
+                    .setMatchTitle(title)
+                    .setMarkets(summaries)
+                    .build();
+
+            presenter.presentMarketsForMatch(response);
+
         } catch (RepositoryException e) {
-            presenter.presentError("There was a problem loading markets. Please try again.");
+            presenter.presentError("There was a problem loading markets.");
         }
     }
 
     @Override
     public void marketSelected(String marketId) {
         if (currentSubscribedMarketId != null && !currentSubscribedMarketId.equals(marketId)) {
-            orderBookGateway.unsubscribe(currentSubscribedMarketId, this);
+            dataFacade.unsubscribeFromOrderBook(currentSubscribedMarketId, this);
         }
         currentSubscribedMarketId = marketId;
 
         try {
-            OrderBook orderBook = orderBookGateway.getSnapshot(marketId);
+            OrderBook orderBook = dataFacade.getOrderBookSnapshot(marketId);
             boolean empty = orderBook.getBids().isEmpty() && orderBook.getAsks().isEmpty();
             String msg = empty ? "No orders yet" : null;
 
@@ -118,7 +138,7 @@ public class ViewMarketInteractor implements
                     new OrderBookResponseModel(orderBook, empty, false, msg)
             );
 
-            orderBookGateway.subscribe(marketId, this);
+            dataFacade.subscribeToOrderBook(marketId, this);
 
         } catch (RepositoryException e) {
             presenter.presentOrderBook(
@@ -127,6 +147,7 @@ public class ViewMarketInteractor implements
         }
     }
 
+    // [Observer Pattern]: Callback methods
     @Override
     public void onOrderBookUpdated(OrderBook orderBook) {
         boolean empty = orderBook.getBids().isEmpty() && orderBook.getAsks().isEmpty();

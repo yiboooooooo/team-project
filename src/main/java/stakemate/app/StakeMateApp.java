@@ -25,6 +25,7 @@ import stakemate.use_case.settle_market.Bet;
 import stakemate.use_case.settle_market.SettleMarketInteractor;
 import stakemate.use_case.signup.SignupInteractor;
 import stakemate.use_case.view_market.ViewMarketInteractor;
+import stakemate.use_case.view_market.facade.MarketDataFacade;
 import stakemate.view.LoginFrame;
 import stakemate.view.MarketsFrame;
 import stakemate.view.SignupFrame;
@@ -95,6 +96,16 @@ public final class StakeMateApp {
             InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
             FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
 
+            // ============================================================
+            // [Facade Pattern]
+            // Wire the Facade with the repositories
+            // ============================================================
+            MarketDataFacade marketFacade = new MarketDataFacade(
+                    matchRepository,
+                    marketRepository,
+                    orderBookGateway
+            );
+
             betRepo = new InMemoryBetRepository();
             InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
             accountRepo = new InMemoryAccountRepository();
@@ -104,11 +115,12 @@ public final class StakeMateApp {
             SwingViewMarketsPresenter marketsPresenter =
                     new SwingViewMarketsPresenter(marketsFrame);
 
+            // ============================================================
+            // Use Case 2 Wiring with [Facade] and [Observer]
+            // ============================================================
             ViewMarketInteractor marketInteractor =
                     new ViewMarketInteractor(
-                            matchRepository,
-                            marketRepository,
-                            orderBookGateway,
+                            marketFacade, // Inject Facade instead of 3 separate repos
                             marketsPresenter
                     );
 
@@ -138,7 +150,7 @@ public final class StakeMateApp {
             marketsFrame.setSettleMarketController(settleController);
 
             // ==============================
-            // User data access 
+            // User data access
             // ==============================
 
             SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
