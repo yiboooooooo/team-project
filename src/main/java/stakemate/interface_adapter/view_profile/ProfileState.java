@@ -1,7 +1,7 @@
 package stakemate.interface_adapter.view_profile;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileState {
     private String username = "";
@@ -14,7 +14,7 @@ public class ProfileState {
     public ProfileState() {
     }
 
-    public ProfileState(ProfileState copy) {
+    public ProfileState(final ProfileState copy) {
         this.username = copy.username;
         this.balance = copy.balance;
         this.pnl = copy.pnl;
@@ -27,7 +27,7 @@ public class ProfileState {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(final String username) {
         this.username = username;
     }
 
@@ -35,7 +35,7 @@ public class ProfileState {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(final int balance) {
         this.balance = balance;
     }
 
@@ -43,7 +43,7 @@ public class ProfileState {
         return pnl;
     }
 
-    public void setPnl(int pnl) {
+    public void setPnl(final int pnl) {
         this.pnl = pnl;
     }
 
@@ -51,7 +51,7 @@ public class ProfileState {
         return openPositions;
     }
 
-    public void setOpenPositions(List<String[]> openPositions) {
+    public void setOpenPositions(final List<String[]> openPositions) {
         this.openPositions = openPositions;
     }
 
@@ -59,7 +59,7 @@ public class ProfileState {
         return historicalPositions;
     }
 
-    public void setHistoricalPositions(List<String[]> historicalPositions) {
+    public void setHistoricalPositions(final List<String[]> historicalPositions) {
         this.historicalPositions = historicalPositions;
     }
 
@@ -67,7 +67,7 @@ public class ProfileState {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(final String error) {
         this.error = error;
     }
 }

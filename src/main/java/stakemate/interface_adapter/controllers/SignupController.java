@@ -6,12 +6,12 @@ import stakemate.use_case.signup.SignupInputData;
 public class SignupController {
     private final SignupInputBoundary interactor;
 
-    public SignupController(SignupInputBoundary interactor) {
+    public SignupController(final SignupInputBoundary interactor) {
         this.interactor = interactor;
     }
 
-    public void execute(String username, String password) {
-        SignupInputData inputData = new SignupInputData(username, password);
+    public void execute(final String username, final String password) {
+        final SignupInputData inputData = new SignupInputData(username, password);
         interactor.execute(inputData);
     }
 }

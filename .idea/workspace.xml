@@ -4,19 +4,108 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="">
+    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="Checkstyle fixes">
+      <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/adapter/ExternalLegacyOrderBookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/adapter/ExternalLegacyOrderBookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/adapter/LegacyOrderBookAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/adapter/LegacyOrderBookAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiGatewayImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiGatewayImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiResponseAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiResponseAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/csv/CsvUserDataAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/csv/CsvUserDataAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/FakeOrderBookGateway.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/FakeOrderBookGateway.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryAccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryAccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryBetRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryBetRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMarketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMarketRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMatchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMatchRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemorySettlementRecordRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemorySettlementRecordRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseClientFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseClientFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseGameRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseGameRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseUserDataAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseUserDataAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/engine/BookOrder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/engine/BookOrder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/engine/MatchingEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/engine/MatchingEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/engine/OrderBookFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/engine/OrderBookFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/engine/Trade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/engine/Trade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/Market.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/Market.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/Match.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/OrderBook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/OrderBook.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/OrderBookEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/OrderBookEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/Sport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/Sport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/factory/MarketFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/factory/MarketFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/SettleMarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/SettleMarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/SignupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/SignupController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/FetchGamesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/FetchGamesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/FetchGamesView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/FetchGamesView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/SwingFetchGamesPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/SwingFetchGamesPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/viewOrderBook/OrderBookDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/viewOrderBook/OrderBookDemo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_login/LoginState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_login/LoginState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_login/LoginViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_login/LoginViewModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_login/SwingLoginPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_login/SwingLoginPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/MarketsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/MarketsView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/SwingSettleMarketPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/SwingSettleMarketPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/SwingViewMarketsPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/SwingViewMarketsPresenter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/ViewMarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/ViewMarketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/commands/LoadMatchesCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/commands/LoadMatchesCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/commands/SelectMatchCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/commands/SelectMatchCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ProfileState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ProfileState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ProfileViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ProfileViewModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ViewProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ViewProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ViewProfilePresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_profile/ViewProfilePresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_signup/SwingSignupPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_signup/SwingSignupPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/service/InMemoryAccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/service/InMemoryAccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderUseCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/ApiException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/ApiException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesOutputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesResponseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesResponseModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/GameRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/GameRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/OddsApiEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/OddsApiEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/OddsApiSport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/OddsApiSport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/RepositoryException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/RepositoryException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/login/LoginInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/login/LoginInputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/login/LoginInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/login/LoginInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/login/LoginOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/login/LoginOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/Bet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/Bet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketRequestModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketRequestModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketResponseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketResponseModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettlementRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettlementRecord.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/signup/SignupInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/signup/SignupInputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/signup/SignupInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/signup/SignupInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/signup/SignupOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/signup/SignupOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketSummary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketSummary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketsResponseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketsResponseModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchSummary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchSummary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchesResponseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchesResponseModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/OrderBookResponseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/OrderBookResponseModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/RepositoryException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/RepositoryException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/builder/MarketsResponseModelBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/builder/MarketsResponseModelBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/HotMarketDecorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/HotMarketDecorator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/MarketSummaryDecorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/MarketSummaryDecorator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/facade/MarketDataFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/facade/MarketDataFacade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/MarketSortStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/MarketSortStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/NameSortStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/NameSortStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/StatusSortStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/StatusSortStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_profile/ViewProfileInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_profile/ViewProfileInputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_profile/ViewProfileInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_profile/ViewProfileInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_profile/ViewProfileOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_profile/ViewProfileOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/LoginFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/LoginFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/ProfileFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/ProfileFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/SignupFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/SignupFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +137,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/yiboooooooo/team-project.git&quot;,
-    &quot;accountId&quot;: &quot;46272f12-d03f-465e-8a5a-727a4c53c414&quot;
+    &quot;accountId&quot;: &quot;f74a48d8-1d70-4128-b15b-e5b25550325c&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
@@ -62,37 +151,53 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.OddsApiTest.executor&quot;: &quot;Run&quot;,
-    &quot;Application.StakeMateApp.executor&quot;: &quot;Run&quot;,
-    &quot;Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/firas/Documents/CSC207_Projects/team-project&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.OddsApiTest.executor": "Run",
+    "Application.StakeMateApp (1).executor": "Run",
+    "Application.StakeMateApp.executor": "Run",
+    "Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo.executor": "Run",
+    "JUnit.ViewMarketInteractorTest.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "Use-Case-2",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/garychoi/IdeaProjects/team-project",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.sourceCode.JAVA",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="stakemate.entity" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/.idea" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/java/stakemate/use_case" />
+      <recent name="$PROJECT_DIR$/src/test/java/stakemate" />
+      <recent name="$PROJECT_DIR$/src/test/java" />
+      <recent name="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market" />
+      <recent name="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market" />
     </key>
   </component>
   <component name="RunManager" selected="Application.StakeMateApp">
@@ -102,6 +207,19 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="stakemate.view.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StakeMateApp (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="stakemate.app.StakeMateApp" />
+      <module name="TeamProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="stakemate.app.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -135,6 +253,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ViewMarketInteractorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TeamProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="stakemate.use_case.view_market.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="stakemate.use_case.view_market" />
+      <option name="MAIN_CLASS_NAME" value="stakemate.use_case.view_market.ViewMarketInteractorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="team-project" />
       <method v="2">
@@ -149,6 +282,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.StakeMateApp" />
+        <item itemvalue="JUnit.ViewMarketInteractorTest" />
+        <item itemvalue="Application.StakeMateApp (1)" />
         <item itemvalue="Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo" />
         <item itemvalue="Application.OrderBookDemo" />
       </list>
@@ -157,8 +292,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -181,7 +316,51 @@
       <workItem from="1763245863352" duration="9819000" />
       <workItem from="1763257206685" duration="1520000" />
       <workItem from="1763407136595" duration="4466000" />
+      <workItem from="1763511638597" duration="1872000" />
+      <workItem from="1763513551773" duration="2359000" />
+      <workItem from="1763602846400" duration="7533000" />
     </task>
+    <task id="LOCAL-00001" summary="Set up Checkstyle and added dependencies for unit testing in pom.xml">
+      <option name="closed" value="true" />
+      <created>1763601865046</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763601865046</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Reformatted project files">
+      <option name="closed" value="true" />
+      <created>1763601985472</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763601985472</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added strategy, observer, factory, builder, facade, adapter, command, and decorator design patterns to Use Case 2 and reformatted files">
+      <option name="closed" value="true" />
+      <created>1763604290012</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1763604290012</updated>
+    </task>
+    <task id="LOCAL-00004" summary="ViewMarketInteractor unit tests with 100% code coverage">
+      <option name="closed" value="true" />
+      <created>1763605353727</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763605353727</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Checkstyle fixes">
+      <option name="closed" value="true" />
+      <created>1763606707269</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1763606707269</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,6 +368,16 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="my changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="my changes" />
+    <MESSAGE value="Set up Checkstyle and added dependencies for unit testing in pom.xml" />
+    <MESSAGE value="Reformatted project files" />
+    <MESSAGE value="Added strategy, observer, factory, builder, facade, adapter, command, and decorator design patterns to Use Case 2 and reformatted files" />
+    <MESSAGE value="ViewMarketInteractor unit tests with 100% code coverage" />
+    <MESSAGE value="Checkstyle fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Checkstyle fixes" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1763605039137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.use_case.view_market.*</FILTER>
+    </SUITE>
   </component>
 </project>

@@ -7,18 +7,18 @@ public class SwingLoginPresenter implements LoginOutputBoundary {
 
     private final LoginView view;
 
-    public SwingLoginPresenter(LoginView view) {
+    public SwingLoginPresenter(final LoginView view) {
         this.view = view;
     }
 
     @Override
-    public void prepareSuccessView(LoginOutputData data) {
+    public void prepareSuccessView(final LoginOutputData data) {
         // Just tell the view it succeeded; the view will handle opening MarketsFrame.
         view.onLoginSuccess(data.getUsername());
     }
 
     @Override
-    public void prepareFailView(String error) {
+    public void prepareFailView(final String error) {
         view.showError(error);
     }
 }

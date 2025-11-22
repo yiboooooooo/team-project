@@ -10,24 +10,24 @@ public enum Sport {
 
     private final String oddsApiKey;
 
-    Sport(String oddsApiKey) {
+    Sport(final String oddsApiKey) {
         this.oddsApiKey = oddsApiKey;
-    }
-
-    public String getOddsApiKey() {
-        return oddsApiKey;
     }
 
     /**
      * Find Sport enum by its API key
      */
-    public static Sport fromApiKey(String apiKey) {
-        for (Sport sport : values()) {
+    public static Sport fromApiKey(final String apiKey) {
+        for (final Sport sport : values()) {
             if (sport.oddsApiKey.equals(apiKey)) {
                 return sport;
             }
         }
         return null;
+    }
+
+    public String getOddsApiKey() {
+        return oddsApiKey;
     }
 }
 

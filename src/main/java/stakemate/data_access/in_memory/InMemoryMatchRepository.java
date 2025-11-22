@@ -8,10 +8,10 @@ import stakemate.entity.Game;
 import stakemate.entity.GameStatus;
 import stakemate.entity.Match;
 import stakemate.entity.MatchStatus;
+import stakemate.use_case.fetch_games.FetchGamesInputBoundary;
+import stakemate.use_case.fetch_games.GameRepository;
 import stakemate.use_case.view_market.MatchRepository;
 import stakemate.use_case.view_market.RepositoryException;
-import stakemate.use_case.fetch_games.GameRepository;
-import stakemate.use_case.fetch_games.FetchGamesInputBoundary;
 
 public class InMemoryMatchRepository implements MatchRepository {
 
@@ -23,24 +23,24 @@ public class InMemoryMatchRepository implements MatchRepository {
         this(null, null);
     }
 
-    public InMemoryMatchRepository(GameRepository gameRepository) {
+    public InMemoryMatchRepository(final GameRepository gameRepository) {
         this(gameRepository, null);
     }
 
-    public InMemoryMatchRepository(GameRepository gameRepository, FetchGamesInputBoundary fetchGamesInteractor) {
+    public InMemoryMatchRepository(final GameRepository gameRepository, final FetchGamesInputBoundary fetchGamesInteractor) {
         this.gameRepository = gameRepository;
         this.fetchGamesInteractor = fetchGamesInteractor;
     }
 
     private void initializeWithDefaultMatches() {
-        LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now();
 
         matches.add(new Match("M1", "Raptors", "Lakers",
-                MatchStatus.UPCOMING, now.plusHours(2)));
+            MatchStatus.UPCOMING, now.plusHours(2)));
         matches.add(new Match("M2", "Celtics", "Bulls",
-                MatchStatus.LIVE, now.minusMinutes(30)));
+            MatchStatus.LIVE, now.minusMinutes(30)));
         matches.add(new Match("M3", "Warriors", "Nets",
-                MatchStatus.CLOSED, now.minusHours(4)));
+            MatchStatus.CLOSED, now.minusHours(4)));
     }
 
     @Override
@@ -62,22 +62,19 @@ public class InMemoryMatchRepository implements MatchRepository {
         try {
             // Step 1: Fetch fresh data from API if interactor is available
             if (fetchGamesInteractor != null) {
-                fetchGamesInteractor.refreshGames(); // This calls API and saves to DB
+                fetchGamesInteractor.refreshGames();
             }
-            
+
             // Step 2: Read the updated games from database
-            List<Game> games = gameRepository.searchGames(""); // Get all games
-            List<Match> apiMatches = convertGamesToMatches(games);
-            
-            // Step 3: Replace current matches with API data
+            final List<Game> games = gameRepository.searchGames("");
+            final List<Match> apiMatches = convertGamesToMatches(games);
             matches.clear();
             matches.addAll(apiMatches);
-            
-            // If no API matches found, fall back to default matches
             if (matches.isEmpty()) {
                 initializeWithDefaultMatches();
             }
-        } catch (Exception e) {
+        }
+        catch (final Exception e) {
             // Fall back to default matches on error
             initializeWithDefaultMatches();
             throw new RepositoryException("Failed to sync with API data: " + e.getMessage(), e);
@@ -88,33 +85,31 @@ public class InMemoryMatchRepository implements MatchRepository {
      * Converts Game entities to Match entities.
      * This is the Game-to-Match adapter functionality.
      */
-    private List<Match> convertGamesToMatches(List<Game> games) {
-        List<Match> matchList = new ArrayList<>();
-        
-        for (Game game : games) {
-            Match match = convertGameToMatch(game);
+    private List<Match> convertGamesToMatches(final List<Game> games) {
+        final List<Match> matchList = new ArrayList<>();
+
+        for (final Game game : games) {
+            final Match match = convertGameToMatch(game);
             if (match != null) {
                 matchList.add(match);
             }
         }
-        
+
         return matchList;
     }
 
     /**
      * Converts a single Game to a Match.
      */
-    private Match convertGameToMatch(Game game) {
+    private Match convertGameToMatch(final Game game) {
         if (game == null) {
             return null;
         }
 
         // Use external ID consistently as match ID to prevent duplicates
-        String matchId = game.getExternalId() != null ? game.getExternalId() : game.getId().toString();
-        
-        // Convert GameStatus to MatchStatus
-        MatchStatus matchStatus = convertGameStatusToMatchStatus(game.getStatus());
-        
+        final String matchId = game.getExternalId() != null ? game.getExternalId() : game.getId().toString();
+        final MatchStatus matchStatus = convertGameStatusToMatchStatus(game.getStatus());
+
         return new Match(
             matchId,
             game.getTeamA(),  // home team
@@ -127,11 +122,11 @@ public class InMemoryMatchRepository implements MatchRepository {
     /**
      * Maps GameStatus enum values to MatchStatus enum values.
      */
-    private MatchStatus convertGameStatusToMatchStatus(GameStatus gameStatus) {
+    private MatchStatus convertGameStatusToMatchStatus(final GameStatus gameStatus) {
         if (gameStatus == null) {
             return MatchStatus.UPCOMING;
         }
-        
+
         switch (gameStatus) {
             case UPCOMING:
                 return MatchStatus.UPCOMING;

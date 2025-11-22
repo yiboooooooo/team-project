@@ -6,12 +6,12 @@ import stakemate.use_case.login.LoginInputData;
 public class LoginController {
     private final LoginInputBoundary interactor;
 
-    public LoginController(LoginInputBoundary interactor) {
+    public LoginController(final LoginInputBoundary interactor) {
         this.interactor = interactor;
     }
 
-    public void execute(String username, String password) {
-        LoginInputData inputData = new LoginInputData(username, password);
+    public void execute(final String username, final String password) {
+        final LoginInputData inputData = new LoginInputData(username, password);
         interactor.execute(inputData);
     }
 }

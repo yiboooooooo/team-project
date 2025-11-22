@@ -6,13 +6,13 @@ import stakemate.use_case.view_profile.ViewProfileOutputData;
 public class ViewProfilePresenter implements ViewProfileOutputBoundary {
     private final ProfileViewModel viewModel;
 
-    public ViewProfilePresenter(ProfileViewModel viewModel) {
+    public ViewProfilePresenter(final ProfileViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
     @Override
-    public void presentProfile(ViewProfileOutputData outputData) {
-        ProfileState state = viewModel.getState();
+    public void presentProfile(final ViewProfileOutputData outputData) {
+        final ProfileState state = viewModel.getState();
         state.setUsername(outputData.getUsername());
         state.setBalance(outputData.getBalance());
         state.setPnl(outputData.getPnl());
@@ -25,8 +25,8 @@ public class ViewProfilePresenter implements ViewProfileOutputBoundary {
     }
 
     @Override
-    public void presentError(String error) {
-        ProfileState state = viewModel.getState();
+    public void presentError(final String error) {
+        final ProfileState state = viewModel.getState();
         state.setError(error);
         viewModel.setState(state);
         viewModel.firePropertyChanged();

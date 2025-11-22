@@ -1,8 +1,8 @@
 package stakemate.use_case.fetch_games;
 
-import stakemate.entity.Game;
-
 import java.util.List;
+
+import stakemate.entity.Game;
 
 /**
  * Output boundary for the FetchGames use case.
@@ -15,19 +15,19 @@ public interface FetchGamesOutputBoundary {
      * @param responseModel Contains information about the fetch operation
      */
     void presentFetchSuccess(FetchGamesResponseModel responseModel);
-    
+
     /**
      * Presents an error that occurred during fetching.
      *
      * @param errorMessage User-friendly error message
      */
     void presentFetchError(String errorMessage);
-    
+
     /**
      * Indicates that fetching is in progress.
      */
     void presentFetchInProgress();
-    
+
     /**
      * Presents search results.
      *

@@ -9,11 +9,11 @@ public class Match {
     private final MatchStatus status;
     private final LocalDateTime commenceTime;
 
-    public Match(String id,
-                 String homeTeam,
-                 String awayTeam,
-                 MatchStatus status,
-                 LocalDateTime commenceTime) {
+    public Match(final String id,
+                 final String homeTeam,
+                 final String awayTeam,
+                 final MatchStatus status,
+                 final LocalDateTime commenceTime) {
         this.id = id;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -21,13 +21,23 @@ public class Match {
         this.commenceTime = commenceTime;
     }
 
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getHomeTeam() { return homeTeam; }
+    public String getHomeTeam() {
+        return homeTeam;
+    }
 
-    public String getAwayTeam() { return awayTeam; }
+    public String getAwayTeam() {
+        return awayTeam;
+    }
 
-    public MatchStatus getStatus() { return status; }
+    public MatchStatus getStatus() {
+        return status;
+    }
 
-    public LocalDateTime getCommenceTime() { return commenceTime; }
+    public LocalDateTime getCommenceTime() {
+        return commenceTime;
+    }
 }

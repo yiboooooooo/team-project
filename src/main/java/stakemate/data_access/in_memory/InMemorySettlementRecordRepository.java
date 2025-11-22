@@ -12,8 +12,8 @@ public class InMemorySettlementRecordRepository implements SettlementRecordRepos
     private final List<SettlementRecord> records = new ArrayList<>();
 
     @Override
-    public Optional<SettlementRecord> findByMarketId(String marketId) {
-        for (SettlementRecord r : records) {
+    public Optional<SettlementRecord> findByMarketId(final String marketId) {
+        for (final SettlementRecord r : records) {
             if (r.getMarketId().equals(marketId)) {
                 return Optional.of(r);
             }
@@ -22,7 +22,7 @@ public class InMemorySettlementRecordRepository implements SettlementRecordRepos
     }
 
     @Override
-    public void save(SettlementRecord record) {
+    public void save(final SettlementRecord record) {
         records.add(record);
     }
 

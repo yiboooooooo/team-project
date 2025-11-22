@@ -23,9 +23,9 @@ public class InMemoryMarketRepository implements MarketRepository {
     }
 
     @Override
-    public List<Market> findByMatchId(String matchId) throws RepositoryException {
-        List<Market> result = new ArrayList<>();
-        for (Market m : markets) {
+    public List<Market> findByMatchId(final String matchId) throws RepositoryException {
+        final List<Market> result = new ArrayList<>();
+        for (final Market m : markets) {
             if (m.getMatchId().equals(matchId)) {
                 result.add(m);
             }
