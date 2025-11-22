@@ -9,14 +9,16 @@ public class LoginViewModel {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private LoginState state = new LoginState();
 
-    public LoginState getState() { return state; }
+    public LoginState getState() {
+        return state;
+    }
 
-    public void setState(LoginState state) {
+    public void setState(final LoginState state) {
         this.state = state;
         support.firePropertyChange("state", null, this.state);
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener l) {
+    public void addPropertyChangeListener(final PropertyChangeListener l) {
         support.addPropertyChangeListener(l);
     }
 }

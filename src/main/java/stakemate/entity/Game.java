@@ -16,16 +16,16 @@ public class Game {
     private final String teamB;
     private final String sport;
     private final GameStatus status;
-    private final String externalId;  // API's event ID for deduplication
+    private final String externalId;
 
-    public Game(UUID id,
-                UUID marketId,
-                LocalDateTime gameTime,
-                String teamA,
-                String teamB,
-                String sport,
-                GameStatus status,
-                String externalId) {
+    public Game(final UUID id,
+                final UUID marketId,
+                final LocalDateTime gameTime,
+                final String teamA,
+                final String teamB,
+                final String sport,
+                final GameStatus status,
+                final String externalId) {
         this.id = id;
         this.marketId = marketId;
         this.gameTime = gameTime;
@@ -69,12 +69,16 @@ public class Game {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Game game = (Game) o;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Game game = (Game) o;
         return Objects.equals(id, game.id) &&
-                Objects.equals(externalId, game.externalId);
+            Objects.equals(externalId, game.externalId);
     }
 
     @Override
@@ -85,13 +89,13 @@ public class Game {
     @Override
     public String toString() {
         return "Game{" +
-                "id=" + id +
-                ", teamA='" + teamA + '\'' +
-                ", teamB='" + teamB + '\'' +
-                ", sport='" + sport + '\'' +
-                ", gameTime=" + gameTime +
-                ", status=" + status +
-                '}';
+            "id=" + id +
+            ", teamA='" + teamA + '\'' +
+            ", teamB='" + teamB + '\'' +
+            ", sport='" + sport + '\'' +
+            ", gameTime=" + gameTime +
+            ", status=" + status +
+            '}';
     }
 }
 

@@ -12,7 +12,7 @@ public class Trade {
     private final double size;
     private final Instant timestamp;
 
-    public Trade(String marketId, String buyOrderId, String sellOrderId, double price, double size) {
+    public Trade(final String marketId, final String buyOrderId, final String sellOrderId, final double price, final double size) {
         this.id = UUID.randomUUID().toString();
         this.marketId = marketId;
         this.buyOrderId = buyOrderId;
@@ -22,17 +22,37 @@ public class Trade {
         this.timestamp = Instant.now();
     }
 
-    public String getId() { return id; }
-    public String getMarketId() { return marketId; }
-    public String getBuyOrderId() { return buyOrderId; }
-    public String getSellOrderId() { return sellOrderId; }
-    public double getPrice() { return price; }
-    public double getSize() { return size; }
-    public Instant getTimestamp() { return timestamp; }
+    public String getId() {
+        return id;
+    }
+
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public String getBuyOrderId() {
+        return buyOrderId;
+    }
+
+    public String getSellOrderId() {
+        return sellOrderId;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
 
     @Override
     public String toString() {
         return String.format("[%s] TRADE %s BUY:%s SELL:%s @ %.2f x %.2f",
-                timestamp, id, buyOrderId, sellOrderId, price, size);
+            timestamp, id, buyOrderId, sellOrderId, price, size);
     }
 }

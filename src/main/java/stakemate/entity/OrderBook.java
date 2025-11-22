@@ -9,17 +9,23 @@ public class OrderBook {
     private final List<OrderBookEntry> bids;
     private final List<OrderBookEntry> asks;
 
-    public OrderBook(String marketId,
-                     List<OrderBookEntry> bids,
-                     List<OrderBookEntry> asks) {
+    public OrderBook(final String marketId,
+                     final List<OrderBookEntry> bids,
+                     final List<OrderBookEntry> asks) {
         this.marketId = marketId;
         this.bids = Collections.unmodifiableList(new ArrayList<>(bids));
         this.asks = Collections.unmodifiableList(new ArrayList<>(asks));
     }
 
-    public String getMarketId() { return marketId; }
+    public String getMarketId() {
+        return marketId;
+    }
 
-    public List<OrderBookEntry> getBids() { return bids; }
+    public List<OrderBookEntry> getBids() {
+        return bids;
+    }
 
-    public List<OrderBookEntry> getAsks() { return asks; }
+    public List<OrderBookEntry> getAsks() {
+        return asks;
+    }
 }

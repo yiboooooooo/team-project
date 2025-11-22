@@ -1,32 +1,41 @@
 package stakemate.view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 import stakemate.interface_adapter.controllers.SignupController;
 import stakemate.interface_adapter.view_signup.SignupView;
 
-import javax.swing.*;
-import java.awt.*;
-
 public class SignupFrame extends JFrame implements SignupView {
 
-    private SignupController controller;  // injected later
-    private final JFrame loginFrame;      // to return to login on success
-
+    private final JFrame loginFrame;
     private final JTextField usernameField = new JTextField(15);
     private final JPasswordField passwordField = new JPasswordField(15);
     private final JPasswordField confirmField = new JPasswordField(15);
     private final JLabel errorLabel = new JLabel(" ");
-
     private final JButton signupButton = new JButton("Sign Up");
     private final JButton cancelButton = new JButton("Cancel");
+    private SignupController controller;
 
-    public SignupFrame(JFrame loginFrame) {
+    public SignupFrame(final JFrame loginFrame) {
         super("StakeMate - Sign Up");
         this.loginFrame = loginFrame;
         initUi();
         hookCancel();
     }
 
-    public void setController(SignupController controller) {
+    public void setController(final SignupController controller) {
         this.controller = controller;
         hookSignup();
     }
@@ -36,10 +45,10 @@ public class SignupFrame extends JFrame implements SignupView {
         setSize(400, 250);
         setLocationRelativeTo(null);
 
-        JPanel root = new JPanel(new BorderLayout(8, 8));
+        final JPanel root = new JPanel(new BorderLayout(8, 8));
         root.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
+        final JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
         form.add(new JLabel("Username:"));
         form.add(usernameField);
         form.add(new JLabel("Password:"));
@@ -47,7 +56,7 @@ public class SignupFrame extends JFrame implements SignupView {
         form.add(new JLabel("Confirm Password:"));
         form.add(confirmField);
 
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttons.add(cancelButton);
         buttons.add(signupButton);
 
@@ -62,11 +71,13 @@ public class SignupFrame extends JFrame implements SignupView {
 
     private void hookSignup() {
         signupButton.addActionListener(e -> {
-            if (controller == null) return;
+            if (controller == null) {
+                return;
+            }
 
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword());
-            String confirm  = new String(confirmField.getPassword());
+            final String username = usernameField.getText().trim();
+            final String password = new String(passwordField.getPassword());
+            final String confirm = new String(confirmField.getPassword());
 
             if (!password.equals(confirm)) {
                 showError("Passwords do not match.");
@@ -92,20 +103,18 @@ public class SignupFrame extends JFrame implements SignupView {
     // ===== SignupView implementation =====
 
     @Override
-    public void showError(String message) {
+    public void showError(final String message) {
         errorLabel.setText(message != null ? message : " ");
     }
 
     @Override
-    public void onSignupSuccess(String username) {
+    public void onSignupSuccess(final String username) {
         JOptionPane.showMessageDialog(
-                this,
-                "Account created for " + username + ". Please log in.",
-                "Signup Successful",
-                JOptionPane.INFORMATION_MESSAGE
+            this,
+            "Account created for " + username + ". Please log in.",
+            "Signup Successful",
+            JOptionPane.INFORMATION_MESSAGE
         );
-
-        // Close this window and return to login
         this.setVisible(false);
         this.dispose();
 

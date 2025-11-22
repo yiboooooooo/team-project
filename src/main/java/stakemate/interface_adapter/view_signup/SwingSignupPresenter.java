@@ -7,17 +7,17 @@ public class SwingSignupPresenter implements SignupOutputBoundary {
 
     private final SignupView view;
 
-    public SwingSignupPresenter(SignupView view) {
+    public SwingSignupPresenter(final SignupView view) {
         this.view = view;
     }
 
     @Override
-    public void prepareSuccessView(SignupOutputData data) {
+    public void prepareSuccessView(final SignupOutputData data) {
         view.onSignupSuccess(data.getUsername());
     }
 
     @Override
-    public void prepareFailView(String error) {
+    public void prepareFailView(final String error) {
         view.showError(error);
     }
 }

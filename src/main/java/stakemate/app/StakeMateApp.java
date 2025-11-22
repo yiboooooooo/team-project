@@ -1,140 +1,285 @@
 package stakemate.app;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+
 import javax.swing.SwingUtilities;
 
+import stakemate.data_access.api.OddsApiGatewayImpl;
+import stakemate.data_access.api.OddsApiResponseAdapter;
+import stakemate.data_access.in_memory.FakeOrderBookGateway;
+import stakemate.data_access.in_memory.InMemoryAccountRepository;
+import stakemate.data_access.in_memory.InMemoryBetRepository;
+import stakemate.data_access.in_memory.InMemoryMarketRepository;
+import stakemate.data_access.in_memory.InMemoryMatchRepository;
+import stakemate.data_access.in_memory.InMemorySettlementRecordRepository;
 import stakemate.data_access.supabase.SupabaseClientFactory;
+import stakemate.data_access.supabase.SupabaseGameRepository;
 import stakemate.data_access.supabase.SupabaseUserDataAccess;
-
-import stakemate.data_access.in_memory.*;
-
+import stakemate.entity.Game;
 import stakemate.entity.Side;
 import stakemate.entity.User;
 import stakemate.interface_adapter.controllers.LoginController;
+import stakemate.interface_adapter.controllers.SettleMarketController;
 import stakemate.interface_adapter.controllers.SignupController;
-
 import stakemate.interface_adapter.view_login.SwingLoginPresenter;
+import stakemate.interface_adapter.view_market.SwingSettleMarketPresenter;
+import stakemate.interface_adapter.view_market.SwingViewMarketsPresenter;
+import stakemate.interface_adapter.view_market.ViewMarketController;
 import stakemate.interface_adapter.view_signup.SwingSignupPresenter;
-
+import stakemate.use_case.fetch_games.FetchGamesInteractor;
+import stakemate.use_case.fetch_games.FetchGamesOutputBoundary;
+import stakemate.use_case.fetch_games.FetchGamesResponseModel;
 import stakemate.use_case.login.LoginInteractor;
 import stakemate.use_case.settle_market.Bet;
 import stakemate.use_case.settle_market.SettleMarketInteractor;
 import stakemate.use_case.signup.SignupInteractor;
-
-import stakemate.interface_adapter.view_market.SwingViewMarketsPresenter;
-import stakemate.interface_adapter.view_market.ViewMarketController;
 import stakemate.use_case.view_market.ViewMarketInteractor;
-
-import stakemate.view.MarketsFrame;
+import stakemate.use_case.view_market.facade.MarketDataFacade;
 import stakemate.view.LoginFrame;
+import stakemate.view.MarketsFrame;
 import stakemate.view.SignupFrame;
 
-// NEW for UC6 GUI wiring
-import stakemate.interface_adapter.view_market.SwingSettleMarketPresenter;
-import stakemate.interface_adapter.controllers.SettleMarketController;
-
+/**
+ * The Main Application Class for StakeMate.
+ * Wires together the Clean Architecture layers (Entity, Use Case, Interface Adapter, View).
+ */
+// -@cs[ClassDataAbstractionCoupling] Main class wires the entire application together.
+// -@cs[ClassFanOutComplexity] Main class depends on many components for dependency injection.
 public final class StakeMateApp {
-    public static InMemoryAccountRepository accountRepo;
-    public static InMemoryBetRepository betRepo;
 
-    private StakeMateApp() {}
+    private static final int INITIAL_BALANCE = 1000;
+    private static final double BET_AMOUNT = 50.0;
+    private static final double ODDS_WIN = 0.6;
+    private static final double ODDS_LOSE = 0.4;
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // ==============================
-            // Infrastructure for markets
-            // ==============================
+    private static InMemoryAccountRepository accountRepo;
+    private static InMemoryBetRepository betRepo;
 
-            InMemoryMatchRepository matchRepository = new InMemoryMatchRepository();
-            InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
-            FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
+    private StakeMateApp() {
+        // Private constructor to prevent instantiation
+    }
 
-            betRepo = new InMemoryBetRepository();
-            InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
-            accountRepo = new InMemoryAccountRepository();
+    /**
+     * Gets the Account Repository.
+     *
+     * @return The in-memory account repository.
+     */
+    public static InMemoryAccountRepository getAccountRepo() {
+        return accountRepo;
+    }
 
-            MarketsFrame marketsFrame = new MarketsFrame();
+    /**
+     * Gets the Bet Repository.
+     *
+     * @return The in-memory bet repository.
+     */
+    public static InMemoryBetRepository getBetRepo() {
+        return betRepo;
+    }
 
-            SwingViewMarketsPresenter marketsPresenter =
-                    new SwingViewMarketsPresenter(marketsFrame);
+    /**
+     * The main entry point of the application.
+     *
+     * @param args Command line arguments.
+     */
+    // -@cs[UncommentedMain] Main entry point is required for the application execution.
+    public static void main(final String[] args) {
+        // Load .env file if it exists
+        loadEnvFile();
 
-            ViewMarketInteractor marketInteractor =
-                    new ViewMarketInteractor(
-                            matchRepository,
-                            marketRepository,
-                            orderBookGateway,
-                            marketsPresenter
-                    );
+        SwingUtilities.invokeLater(StakeMateApp::runApp);
+    }
 
-            ViewMarketController marketController =
-                    new ViewMarketController(marketInteractor);
-            marketsFrame.setController(marketController);
+    private static void runApp() {
+        // 1. Infrastructure
+        final SupabaseClientFactory gamesSupabaseFactory = new SupabaseClientFactory();
+        final SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
+        final String apiKey = getEnvVar("ODDS_API_KEY");
+        if (apiKey == null || apiKey.isEmpty()) {
+            System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
+        }
 
-            // ==============================
-            // UC6 Settlement (using same repos)
-            // ==============================
+        FetchGamesInteractor fetchGamesInteractor = null;
+        if (apiKey != null && !apiKey.isEmpty()) {
+            final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
+            final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
+            final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
 
-            // Demo data: two users and two bets on the same market
-            accountRepo.addDemoUser(new User("alice", "password", 1000));
-            accountRepo.addDemoUser(new User("bob", "password", 1000));
+            fetchGamesInteractor = new FetchGamesInteractor(
+                apiGateway, responseAdapter, gameRepository, presenter
+            );
+        }
 
-            betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, 50, 0.6));
-            betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, 50, 0.4));
+        // 3. Repositories
+        final InMemoryMatchRepository matchRepository =
+            new InMemoryMatchRepository(gameRepository, fetchGamesInteractor);
+        final InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
+        final FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
+        final MarketDataFacade marketFacade = new MarketDataFacade(
+            matchRepository,
+            marketRepository,
+            orderBookGateway
+        );
+        betRepo = new InMemoryBetRepository();
+        accountRepo = new InMemoryAccountRepository();
+        final InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
+        final MarketsFrame marketsFrame = new MarketsFrame();
+        final SwingViewMarketsPresenter marketsPresenter =
+            new SwingViewMarketsPresenter(marketsFrame);
 
-            SwingSettleMarketPresenter settlePresenter =
-                    new SwingSettleMarketPresenter(marketsFrame);
+        final ViewMarketInteractor marketInteractor =
+            new ViewMarketInteractor(
+                marketFacade,
+                marketsPresenter
+            );
 
-            SettleMarketInteractor settleInteractor =
-                    new SettleMarketInteractor(betRepo, accountRepo, recordRepo, settlePresenter);
+        final ViewMarketController marketController =
+            new ViewMarketController(marketInteractor);
+        marketsFrame.setController(marketController);
+        setupDemoData();
+        setupSettlementUseCase(marketsFrame, recordRepo);
+        final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
+        final SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
-            SettleMarketController settleController =
-                    new SettleMarketController(settleInteractor);
-            marketsFrame.setSettleMarketController(settleController);
+        setupProfileUseCase(marketsFrame, userRepo);
+        setupAuth(marketsFrame, userRepo);
+    }
 
-            // ==============================
-            // DB initialization and user stuff
-            // ==============================
+    private static void setupDemoData() {
+        accountRepo.addDemoUser(new User("alice", "password", INITIAL_BALANCE));
+        accountRepo.addDemoUser(new User("bob", "password", INITIAL_BALANCE));
 
-            SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
-            SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
+        betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN));
+        betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE));
+    }
 
-            // ==============================
-            // Login & Signup frames
-            // ==============================
+    private static void setupSettlementUseCase(final MarketsFrame marketsFrame,
+                                               final InMemorySettlementRecordRepository recordRepo) {
+        final SwingSettleMarketPresenter settlePresenter =
+            new SwingSettleMarketPresenter(marketsFrame);
 
-            LoginFrame loginFrame = new LoginFrame(marketsFrame);
-            SignupFrame signupFrame = new SignupFrame(loginFrame);
+        final SettleMarketInteractor settleInteractor =
+            new SettleMarketInteractor(betRepo, accountRepo, recordRepo, settlePresenter);
 
-            // ----- Login wiring -----
-            SwingLoginPresenter loginPresenter =
-                    new SwingLoginPresenter(loginFrame);
+        final SettleMarketController settleController =
+            new SettleMarketController(settleInteractor);
+        marketsFrame.setSettleMarketController(settleController);
+    }
 
-            LoginInteractor loginInteractor =
-                    new LoginInteractor(userRepo, loginPresenter);
+    private static void setupProfileUseCase(final MarketsFrame marketsFrame,
+                                            final SupabaseUserDataAccess userRepo) {
+        final stakemate.view.ProfileFrame profileFrame = new stakemate.view.ProfileFrame();
+        final stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel =
+            new stakemate.interface_adapter.view_profile.ProfileViewModel();
+        profileFrame.setViewModel(profileViewModel);
 
-            LoginController loginController =
-                    new LoginController(loginInteractor);
+        final stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter =
+            new stakemate.interface_adapter.view_profile.ViewProfilePresenter(profileViewModel);
 
-            loginFrame.setController(loginController);
-            loginFrame.setSignupFrame(signupFrame);
+        final stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor =
+            new stakemate.use_case.view_profile.ViewProfileInteractor(userRepo, profilePresenter);
 
-            // ----- Signup wiring -----
-            SwingSignupPresenter signupPresenter =
-                    new SwingSignupPresenter(signupFrame);
+        final stakemate.interface_adapter.view_profile.ViewProfileController profileController =
+            new stakemate.interface_adapter.view_profile.ViewProfileController(profileInteractor);
 
-            SignupInteractor signupInteractor =
-                    new SignupInteractor(userRepo, signupPresenter);
+        marketsFrame.setProfileFrame(profileFrame);
+        marketsFrame.setProfileController(profileController);
+    }
 
-            SignupController signupController =
-                    new SignupController(signupInteractor);
+    private static void setupAuth(final MarketsFrame marketsFrame, final SupabaseUserDataAccess userRepo) {
+        final LoginFrame loginFrame = new LoginFrame(marketsFrame);
+        final SignupFrame signupFrame = new SignupFrame(loginFrame);
+        final SwingLoginPresenter loginPresenter = new SwingLoginPresenter(loginFrame);
+        final LoginInteractor loginInteractor = new LoginInteractor(userRepo, loginPresenter);
+        final LoginController loginController = new LoginController(loginInteractor);
 
-            signupFrame.setController(signupController);
+        loginFrame.setController(loginController);
+        loginFrame.setSignupFrame(signupFrame);
+        final SwingSignupPresenter signupPresenter = new SwingSignupPresenter(signupFrame);
+        final SignupInteractor signupInteractor = new SignupInteractor(userRepo, signupPresenter);
+        final SignupController signupController = new SignupController(signupInteractor);
 
-            // ==============================
-            // Launch app at login
-            // ==============================
+        signupFrame.setController(signupController);
 
-            loginFrame.setVisible(true);
-            // Markets will be shown *after* login inside LoginFrame.onLoginSuccess()
-        });
+        loginFrame.setVisible(true);
+    }
+
+    /**
+     * Loads environment variables from .env file in project root.
+     * Format: KEY=value (one per line, no quotes needed)
+     */
+    private static void loadEnvFile() {
+        try {
+            final File envFile = new File(".env");
+            if (envFile.exists()) {
+                final BufferedReader reader = new BufferedReader(new FileReader(envFile));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.isEmpty() || line.startsWith("#")) {
+                        continue;
+                    }
+
+                    final int equalIndex = line.indexOf('=');
+                    if (equalIndex > 0) {
+                        final String key = line.substring(0, equalIndex).trim();
+                        final String value = line.substring(equalIndex + 1).trim();
+
+                        if (System.getenv(key) == null) {
+                            System.setProperty(key, value);
+                        }
+                    }
+                }
+                reader.close();
+            }
+        }
+        catch (final IOException ex) {
+            System.err.println("Warning: Could not read .env file: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Gets environment variable from system env or system properties (.env file).
+     *
+     * @param key The environment variable key.
+     * @return The value of the environment variable, or null if not found.
+     */
+    private static String getEnvVar(final String key) {
+        String value = System.getenv(key);
+        if (value == null) {
+            value = System.getProperty(key);
+        }
+        return value;
+    }
+
+    /**
+     * Private inner class to handle console output for game fetching.
+     * Replaces the anonymous inner class to satisfy Checkstyle length rules.
+     */
+    private static final class ConsoleFetchGamesPresenter implements FetchGamesOutputBoundary {
+        @Override
+        public void presentFetchInProgress() {
+            System.out.println("Fetching games from API...");
+        }
+
+        @Override
+        public void presentFetchSuccess(final FetchGamesResponseModel response) {
+            System.out.println("API fetch completed: " + response.getMessage());
+        }
+
+        @Override
+        public void presentFetchError(final String error) {
+            System.err.println("API fetch error: " + error);
+        }
+
+        @Override
+        public void presentSearchResults(final List<Game> games, final String query) {
+            System.out.println("Search found " + games.size() + " games for: " + query);
+        }
     }
 }

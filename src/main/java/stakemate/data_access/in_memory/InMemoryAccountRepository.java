@@ -11,17 +11,17 @@ public class InMemoryAccountRepository implements AccountRepository {
     private final Map<String, User> users = new HashMap<>();
 
     @Override
-    public User findByUsername(String username) {
+    public User findByUsername(final String username) {
         return users.get(username);
     }
 
     @Override
-    public void save(User user) {
+    public void save(final User user) {
         users.put(user.getUsername(), user);
     }
 
     // Helper for your demo to pre-load users with balances
-    public void addDemoUser(User user) {
+    public void addDemoUser(final User user) {
         users.put(user.getUsername(), user);
     }
 }

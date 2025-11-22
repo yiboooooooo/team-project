@@ -9,10 +9,10 @@ public class PlaceOrderRequest {
     public final String userId;
     public final String marketId;
     public final Side side;
-    public final Double price; // null for market orders
+    public final Double price;
     public final double quantity;
 
-    public PlaceOrderRequest(String userId, String marketId, Side side, Double price, double quantity) {
+    public PlaceOrderRequest(final String userId, final String marketId, final Side side, final Double price, final double quantity) {
         this.userId = userId;
         this.marketId = marketId;
         this.side = side;

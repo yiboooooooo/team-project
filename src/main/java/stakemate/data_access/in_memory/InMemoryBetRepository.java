@@ -1,4 +1,5 @@
 package stakemate.data_access.in_memory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +11,9 @@ public class InMemoryBetRepository implements BetRepository {
     private final List<Bet> bets = new ArrayList<>();
 
     @Override
-    public List<Bet> findByMarketId(String marketId) {
-        List<Bet> result = new ArrayList<>();
-        for (Bet b : bets) {
+    public List<Bet> findByMarketId(final String marketId) {
+        final List<Bet> result = new ArrayList<>();
+        for (final Bet b : bets) {
             if (b.getMarketId().equals(marketId)) {
                 result.add(b);
             }
@@ -21,13 +22,13 @@ public class InMemoryBetRepository implements BetRepository {
     }
 
     @Override
-    public void save(Bet bet) {
+    public void save(final Bet bet) {
         if (!bets.contains(bet)) {
             bets.add(bet);
         }
     }
 
-    public void addDemoBet(Bet bet) {
+    public void addDemoBet(final Bet bet) {
         bets.add(bet);
     }
 }
