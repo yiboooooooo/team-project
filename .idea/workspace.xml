@@ -4,6 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="use case final fix">
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/PostCommentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/SwingPostCommentPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/SwingViewCommentsPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/ViewCommentsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/CommentsPanel.java" afterDir="false" />
     <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="Checkstyle fixes">
       <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -166,7 +172,8 @@
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Use-Case-2",
+    "git-widget-placeholder": "usecase-5",
+    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/garychoi/IdeaProjects/team-project",
@@ -179,7 +186,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.sourceCode.JAVA",
+    "settings.editor.selected.configurable": "vcs.Git",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -200,7 +207,7 @@
       <recent name="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.StakeMateApp">
+  <component name="RunManager">
     <configuration name="OrderBookDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="stakemate.view.OrderBookDemo" />
       <module name="TeamProject" />
@@ -336,29 +343,45 @@
       <option name="project" value="LOCAL" />
       <updated>1763601985472</updated>
     </task>
-    <task id="LOCAL-00003" summary="Added strategy, observer, factory, builder, facade, adapter, command, and decorator design patterns to Use Case 2 and reformatted files">
+    <task id="LOCAL-00001" summary="comment entity">
       <option name="closed" value="true" />
-      <created>1763604290012</created>
+      <created>1763411906463</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763411906464</updated>
+    </task>
+    <task id="LOCAL-00002" summary="comment entity">
+      <option name="closed" value="true" />
+      <created>1763411977871</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763411977871</updated>
+    </task>
+    <task id="LOCAL-00003" summary="use case part 1">
+      <option name="closed" value="true" />
+      <created>1763412876446</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1763604290012</updated>
+      <updated>1763412876446</updated>
     </task>
-    <task id="LOCAL-00004" summary="ViewMarketInteractor unit tests with 100% code coverage">
+    <task id="LOCAL-00004" summary="use case part 2">
       <option name="closed" value="true" />
-      <created>1763605353727</created>
+      <created>1763413331670</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1763605353727</updated>
+      <updated>1763413331670</updated>
     </task>
-    <task id="LOCAL-00005" summary="Checkstyle fixes">
+    <task id="LOCAL-00005" summary="use case final fix">
       <option name="closed" value="true" />
-      <created>1763606707269</created>
+      <created>1763416154949</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1763606707269</updated>
+      <updated>1763416154949</updated>
     </task>
     <option name="localTasksCounter" value="6" />
     <servers />
@@ -368,16 +391,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="my changes" />
-    <MESSAGE value="Set up Checkstyle and added dependencies for unit testing in pom.xml" />
-    <MESSAGE value="Reformatted project files" />
-    <MESSAGE value="Added strategy, observer, factory, builder, facade, adapter, command, and decorator design patterns to Use Case 2 and reformatted files" />
-    <MESSAGE value="ViewMarketInteractor unit tests with 100% code coverage" />
-    <MESSAGE value="Checkstyle fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Checkstyle fixes" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1763605039137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>stakemate.use_case.view_market.*</FILTER>
-    </SUITE>
+    <MESSAGE value="comment entity" />
+    <MESSAGE value="use case part 1" />
+    <MESSAGE value="use case part 2" />
+    <MESSAGE value="use case final fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="use case final fix" />
   </component>
 </project>
