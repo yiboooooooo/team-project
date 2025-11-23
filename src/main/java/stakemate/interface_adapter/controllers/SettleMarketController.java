@@ -12,8 +12,8 @@ public class SettleMarketController {
         this.interactor = interactor;
     }
 
-    public void settleMarket(final String marketId, final boolean homeTeamWon) {
-        final SettleMarketRequestModel request = new SettleMarketRequestModel(marketId, homeTeamWon);
+    public void settleMarket(final String marketId) {
+        final SettleMarketRequestModel request = new SettleMarketRequestModel(marketId);
         interactor.execute(request);
     }
 }
