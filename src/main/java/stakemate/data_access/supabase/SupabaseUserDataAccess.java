@@ -25,7 +25,7 @@ import stakemate.use_case.signup.SignupUserDataAccessInterface;
  */
 public class SupabaseUserDataAccess
     implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-    stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface {
+    stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface  {
 
     private final SupabaseClientFactory factory;
 

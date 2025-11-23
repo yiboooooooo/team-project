@@ -3,7 +3,6 @@ package stakemate.use_case.settle_market;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import stakemate.entity.Side;
 import stakemate.entity.User;
 
 public class SettleMarketInteractor implements SettleMarketInputBoundary {
@@ -28,44 +27,40 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
     public void execute(final SettleMarketRequestModel requestModel) {
 
         final String marketId = requestModel.getMarketId();
-        final boolean homeTeamWon = requestModel.isHomeTeamWon();
-        final List<Bet> bets = betRepository.findByMarketId(marketId);
+        System.out.println("DEBUG — Settling market: " + marketId);
 
+        final List<Bet> bets = betRepository.findByMarketId(marketId);
         if (bets == null || bets.isEmpty()) {
             presenter.presentFailure("No bets found for market " + marketId);
             return;
         }
 
-        // 2) Decide which Side is the winner for this demo
-        final Side winningSide = homeTeamWon ? Side.BUY : Side.SELL;
-
         int settledCount = 0;
         double totalPayout = 0.0;
 
-        // 3) Loop over all bets and update balances
         for (final Bet bet : bets) {
 
-            final boolean won = (bet.getSide() == winningSide);
+            final Boolean wonFlag = bet.isWon();
+            final boolean won = Boolean.TRUE.equals(wonFlag);
+
             double payout = 0.0;
+
             final User user = accountRepository.findByUsername(bet.getUsername());
             if (user == null) {
-                // Skip this bet if somehow the user doesn't exist
+                System.out.println("WARN — No user found for bet: " + bet.getUsername());
                 continue;
             }
 
             if (won) {
-                // Winner: profit = stake * (1 - price)
                 final double profit = bet.getStake() * (1 - bet.getPrice());
                 payout = profit;
 
                 final int newBalance = (int) Math.round(user.getBalance() + payout);
                 user.setBalance(newBalance);
                 accountRepository.save(user);
-                totalPayout += profit;
 
-            }
-            else {
-                // Loser: lose stake * price (negative payout)
+                totalPayout += profit;
+            } else {
                 payout = -bet.getStake() * bet.getPrice();
 
                 final int newBalance = (int) Math.round(user.getBalance() + payout);
@@ -73,7 +68,6 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
                 accountRepository.save(user);
             }
 
-            // Record this individual settlement (payout is net change, can be + or -)
             final SettlementRecord record = new SettlementRecord(
                 marketId,
                 bet.getUsername(),
@@ -82,17 +76,17 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
                 won,
                 LocalDateTime.now()
             );
+
             settlementRecordRepository.save(record);
+
+            betRepository.save(bet);
 
             settledCount++;
         }
 
-        // 5) Send summary back to presenter
         final SettleMarketResponseModel response =
             new SettleMarketResponseModel(marketId, settledCount, totalPayout);
 
         presenter.presentSuccess(response);
     }
-
-
 }
