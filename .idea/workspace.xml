@@ -5,18 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="Checkstyle fixes">
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/SettleMarketManualTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseAccountDataAccess.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseAccountRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseBetRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseUserDataAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseUserDataAccess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/SettleMarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/controllers/SettleMarketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/Bet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/Bet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketRequestModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketRequestModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMarketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMarketRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMatchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMatchRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,12 +37,12 @@
     &quot;assignee&quot;: &quot;gchoi123x&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/yiboooooooo/team-project.git&quot;,
-    &quot;accountId&quot;: &quot;88fca039-d08c-4aee-8793-b8da3470e018&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/yiboooooooo/team-project.git",
+    "accountId": "f74a48d8-1d70-4128-b15b-e5b25550325c"
   }
-}</component>
+}]]></component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -62,40 +54,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.OddsApiTest.executor": "Run",
-    "Application.SettleMarketManualTest.executor": "Run",
-    "Application.StakeMateApp (1).executor": "Run",
-    "Application.StakeMateApp.executor": "Run",
-    "Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo.executor": "Run",
-    "JUnit.ViewMarketInteractorTest.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "db__uc6",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/garychoi/IdeaProjects/team-project",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.sourceCode.JAVA",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.OddsApiTest.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SettleMarketManualTest.executor&quot;: &quot;Run&quot;,
+    &quot;Application.StakeMateApp (1).executor&quot;: &quot;Run&quot;,
+    &quot;Application.StakeMateApp.executor&quot;: &quot;Run&quot;,
+    &quot;Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ViewMarketInteractorTest.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/garychoi/IdeaProjects/team-project&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.JAVA&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="stakemate.entity" />
@@ -112,7 +104,7 @@
       <recent name="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.StakeMateApp">
+  <component name="RunManager" selected="Application.SettleMarketManualTest">
     <configuration name="SettleMarketManualTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="stakemate.app.SettleMarketManualTest" />
       <module name="TeamProject" />
@@ -193,9 +185,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.StakeMateApp" />
         <item itemvalue="Application.SettleMarketManualTest" />
         <item itemvalue="JUnit.ViewMarketInteractorTest" />
+        <item itemvalue="Application.StakeMateApp" />
         <item itemvalue="Application.StakeMateApp (1)" />
         <item itemvalue="Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo" />
       </list>
@@ -233,6 +225,10 @@
       <workItem from="1763602846400" duration="7533000" />
       <workItem from="1763850345882" duration="4532000" />
       <workItem from="1763859015665" duration="5088000" />
+      <workItem from="1763872808066" duration="176000" />
+      <workItem from="1763873163239" duration="890000" />
+      <workItem from="1763874065922" duration="57000" />
+      <workItem from="1763874123721" duration="143000" />
     </task>
     <task id="LOCAL-00001" summary="Set up Checkstyle and added dependencies for unit testing in pom.xml">
       <option name="closed" value="true" />

@@ -161,6 +161,8 @@ public final class StakeMateApp {
         setupProfileUseCase(marketsFrame, userRepo);
         setupAuth(marketsFrame, userRepo);
 
+        // Trigger initial load so UI has data when user logs in
+        marketController.refresh();
     }
 
 
