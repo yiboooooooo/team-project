@@ -4,8 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="unit test for uc6 interactor">
-      <change afterPath="$PROJECT_DIR$/src/test/java/stakemate/entity/EntitiesTest.java" afterDir="false" />
+    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="unit test for the entities with 100 % coverage">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseAccountDataAccess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseAccountDataAccess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseAccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseAccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseBetRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseBetRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/AccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/AccountRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/BetRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/BetRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketOutputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettlementRecordRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettlementRecordRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,8 +68,9 @@
     "Application.StakeMateApp.executor": "Run",
     "Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo.executor": "Run",
     "JUnit.EntitiesTest.executor": "Run",
-    "JUnit.SettleMarketInteractorTest.executor": "Run",
+    "JUnit.SettleMarketInteractorTest.executor": "Coverage",
     "JUnit.ViewMarketInteractorTest.executor": "Coverage",
+    "JUnit.stakemate.entity in TeamProject.executor": "Coverage",
     "JUnit.stakemate.use_case.settle_market in TeamProject.executor": "Run",
     "JUnit.stakemate.use_case.view_market in TeamProject.executor": "Coverage",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
@@ -105,16 +115,18 @@
       <recent name="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.stakemate.entity in TeamProject">
-    <configuration name="StakeMateApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="stakemate.app.StakeMateApp" />
+  <component name="RunManager" selected="JUnit.SettleMarketInteractorTest">
+    <configuration name="SettleMarketInteractorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="TeamProject" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="stakemate.app.*" />
+          <option name="PATTERN" value="stakemate.use_case.settle_market.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <option name="PACKAGE_NAME" value="stakemate.use_case.settle_market" />
+      <option name="MAIN_CLASS_NAME" value="stakemate.use_case.settle_market.SettleMarketInteractorTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -189,11 +201,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.SettleMarketInteractorTest" />
         <item itemvalue="JUnit.stakemate.entity in TeamProject" />
         <item itemvalue="JUnit.stakemate.use_case.settle_market in TeamProject" />
         <item itemvalue="JUnit.ViewMarketInteractorTest" />
         <item itemvalue="JUnit.stakemate.use_case.view_market in TeamProject" />
-        <item itemvalue="Application.StakeMateApp" />
       </list>
     </recent_temporary>
   </component>
@@ -281,7 +293,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764025205834</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="unit test for the entities with 100 % coverage">
+      <option name="closed" value="true" />
+      <created>1764025536143</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1764025536143</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -295,7 +315,8 @@
     <MESSAGE value="ViewMarketInteractor unit tests with 100% code coverage" />
     <MESSAGE value="Checkstyle fixes" />
     <MESSAGE value="unit test for uc6 interactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="unit test for uc6 interactor" />
+    <MESSAGE value="unit test for the entities with 100 % coverage" />
+    <option name="LAST_COMMIT_MESSAGE" value="unit test for the entities with 100 % coverage" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -314,6 +335,12 @@
     </SUITE>
     <SUITE FILE_PATH="coverage/team_project$stakemate_use_case_view_market_in_TeamProject.ic" NAME="stakemate.use_case.view_market in TeamProject Coverage Results" MODIFIED="1764019295619" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.view_market.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/team_project$SettleMarketInteractorTest.ic" NAME="SettleMarketInteractorTest Coverage Results" MODIFIED="1764026261891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.use_case.settle_market.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/team_project$stakemate_entity_in_TeamProject.ic" NAME="stakemate.entity in TeamProject Coverage Results" MODIFIED="1764025462778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.entity.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/team_project$stakemate_use_case_settle_market_in_TeamProject.ic" NAME="stakemate.use_case.settle_market in TeamProject Coverage Results" MODIFIED="1764021529043" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.settle_market.*</FILTER>
