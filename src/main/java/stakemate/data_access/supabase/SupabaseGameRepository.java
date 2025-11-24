@@ -19,6 +19,8 @@ import stakemate.use_case.fetch_games.RepositoryException;
 /**
  * Supabase implementation of GameRepository.
  * Handles database operations for Game entities using JDBC.
+ *
+ * TODO: Fix any Checkstyle violations in this file
  */
 public class SupabaseGameRepository implements GameRepository {
 
@@ -34,35 +36,42 @@ public class SupabaseGameRepository implements GameRepository {
             return;
         }
 
-        final String upsertSql = "INSERT INTO public.games (id, market_id, game_time, team_a, team_b, sport, status) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?::game_status) " +
-            "ON CONFLICT (id) DO UPDATE SET " +
-            "market_id = EXCLUDED.market_id, " +
-            "game_time = EXCLUDED.game_time, " +
-            "team_a = EXCLUDED.team_a, " +
-            "team_b = EXCLUDED.team_b, " +
-            "sport = EXCLUDED.sport, " +
-            "status = EXCLUDED.status";
-
         try (final Connection conn = connectionFactory.createConnection()) {
             conn.setAutoCommit(false);
 
-            try (final PreparedStatement stmt = conn.prepareStatement(upsertSql)) {
-                for (final Game game : games) {
-                    // Ensure market exists before inserting game
-                    ensureMarketExists(conn, game.getMarketId());
+            try {
+                // Step 1: Update status of old games that are no longer in the API response
+                updateOldGameStatuses(conn);
 
-                    stmt.setObject(1, game.getId());
-                    stmt.setObject(2, game.getMarketId());
-                    stmt.setTimestamp(3, Timestamp.valueOf(game.getGameTime()));
-                    stmt.setString(4, game.getTeamA());
-                    stmt.setString(5, game.getTeamB());
-                    stmt.setString(6, game.getSport());
-                    stmt.setString(7, mapGameStatusToDb(game.getStatus()));
-                    stmt.addBatch();
+                // Step 2: Upsert new/updated games from API
+                final String upsertSql = "INSERT INTO public.games (id, market_id, game_time, team_a, team_b, sport, status) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?::game_status) " +
+                    "ON CONFLICT (id) DO UPDATE SET " +
+                    "market_id = EXCLUDED.market_id, " +
+                    "game_time = EXCLUDED.game_time, " +
+                    "team_a = EXCLUDED.team_a, " +
+                    "team_b = EXCLUDED.team_b, " +
+                    "sport = EXCLUDED.sport, " +
+                    "status = EXCLUDED.status";
+
+                try (final PreparedStatement stmt = conn.prepareStatement(upsertSql)) {
+                    for (final Game game : games) {
+                        // Ensure market exists before inserting game
+                        ensureMarketExists(conn, game.getMarketId());
+
+                        stmt.setObject(1, game.getId());
+                        stmt.setObject(2, game.getMarketId());
+                        stmt.setTimestamp(3, Timestamp.valueOf(game.getGameTime()));
+                        stmt.setString(4, game.getTeamA());
+                        stmt.setString(5, game.getTeamB());
+                        stmt.setString(6, game.getSport());
+                        stmt.setString(7, mapGameStatusToDb(game.getStatus()));
+                        stmt.addBatch();
+                    }
+
+                    stmt.executeBatch();
                 }
 
-                stmt.executeBatch();
                 conn.commit();
             }
             catch (final SQLException e) {
@@ -72,6 +81,28 @@ public class SupabaseGameRepository implements GameRepository {
         }
         catch (final SQLException e) {
             throw new RepositoryException("Database connection error: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Updates the status of old games in the database based on their game time.
+     * This is called during upsert to ensure existing games reflect current status.
+     * Games older than 1 day are marked as finished.
+     *
+     * @param conn Active database connection
+     * @throws SQLException if database operation fails
+     */
+    private void updateOldGameStatuses(final Connection conn) throws SQLException {
+        final String updateSql = "UPDATE public.games " +
+            "SET status = 'finished' " +
+            "WHERE game_time < (CURRENT_TIMESTAMP - INTERVAL '1 day') " +
+            "AND status != 'finished'";
+
+        try (final PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+            final int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Updated " + rowsUpdated + " old game(s) to finished status.");
+            }
         }
     }
 
@@ -129,11 +160,11 @@ public class SupabaseGameRepository implements GameRepository {
         // First, mark old games as finished (games older than 1 day)
         markOldGamesAsFinished();
 
-        // Then, return only games that are not finished (upcoming and live games)
+        // Then, return ALL games from today onwards (including finished ones)
+        // The view should display the actual status from the database
         final String sql = "SELECT id, market_id, game_time, team_a, team_b, sport, status " +
             "FROM public.games " +
             "WHERE game_time >= CURRENT_DATE " +
-            "AND status != 'finished' " +
             "ORDER BY game_time ASC";
 
         return executeQuery(sql, null);

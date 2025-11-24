@@ -13,13 +13,26 @@ import stakemate.use_case.fetch_games.RepositoryException;
 /**
  * Interactor for the Live Matches use case.
  * Orchestrates the periodic fetching and retrieval of game data.
+ *
+ * TODO: Add comprehensive unit tests for this interactor (Use Case 1):
+ *   - Test startTracking() initializes scheduler and starts polling
+ *   - Test startTracking() does not start if already running
+ *   - Test stopTracking() shuts down scheduler properly
+ *   - Test fetchAndPresent() calls fetchGamesInteractor.refreshGames()
+ *   - Test fetchAndPresent() queries repository for future games
+ *   - Test fetchAndPresent() presents games via presenter
+ *   - Test fetchAndPresent() handles RepositoryException gracefully
+ *   - Test fetchAndPresent() handles generic exceptions gracefully
+ *   - Verify presenter.presentMatches() called with correct game list
+ *   - Verify presenter.presentError() called when errors occur
+ * TODO: Fix any Checkstyle violations in this file
  */
 public class LiveMatchesInteractor implements LiveMatchesInputBoundary {
 
     private final FetchGamesInputBoundary fetchGamesInteractor;
     private final GameRepository gameRepository;
     private final LiveMatchesOutputBoundary presenter;
-    
+
     private ScheduledExecutorService scheduler;
     private static final int POLLING_INTERVAL_SECONDS = 30;
 

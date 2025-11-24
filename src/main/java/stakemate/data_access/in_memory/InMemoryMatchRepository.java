@@ -113,16 +113,14 @@ public class InMemoryMatchRepository implements MatchRepository {
     /**
      * Converts Game entities to Match entities.
      * This is the Game-to-Match adapter functionality.
-     * Filters out finished games to keep them out of the live matches panel.
+     * No filtering applied - all games are converted with their actual status.
      */
     private List<Match> convertGamesToMatches(final List<Game> games) {
         final List<Match> matchList = new ArrayList<>();
-        final LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
 
         for (final Game game : games) {
-            // Skip games that are finished or older than 1 day
-            if (game.getStatus() == GameStatus.FINISHED ||
-                (game.getGameTime() != null && game.getGameTime().isBefore(oneDayAgo))) {
+            // Skip games with null game time
+            if (game.getGameTime() == null) {
                 continue;
             }
 
