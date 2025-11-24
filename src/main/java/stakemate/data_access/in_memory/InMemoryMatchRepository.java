@@ -2,7 +2,9 @@ package stakemate.data_access.in_memory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import stakemate.entity.Game;
 import stakemate.entity.GameStatus;
@@ -60,6 +62,7 @@ public class InMemoryMatchRepository implements MatchRepository {
     /**
      * Syncs matches with latest games from the API/database.
      * This method fetches games from API, saves to DB, then converts to Match objects.
+     * Merges new matches with existing ones instead of replacing all matches.
      */
     public void syncWithApiData() throws RepositoryException {
         if (gameRepository == null) {
@@ -74,11 +77,28 @@ public class InMemoryMatchRepository implements MatchRepository {
                 fetchGamesInteractor.refreshGames();
             }
 
-            // Step 2: Read the updated games from database
+            // Step 2: Read all games from database (includes both old and new)
             final List<Game> games = gameRepository.searchGames("");
-            final List<Match> apiMatches = convertGamesToMatches(games);
+            final List<Match> newMatches = convertGamesToMatches(games);
+
+            // Step 3: Merge new matches with existing ones
+            // Use a map to track matches by ID to avoid duplicates
+            final Map<String, Match> matchMap = new HashMap<>();
+
+            // First, add all existing matches
+            for (final Match existingMatch : matches) {
+                matchMap.put(existingMatch.getId(), existingMatch);
+            }
+
+            // Then, update or add new matches (this will update existing or add new)
+            for (final Match newMatch : newMatches) {
+                matchMap.put(newMatch.getId(), newMatch);
+            }
+
+            // Replace matches list with merged results
             matches.clear();
-            matches.addAll(apiMatches);
+            matches.addAll(matchMap.values());
+
             if (matches.isEmpty()) {
                 initializeWithDefaultMatches();
             }
@@ -93,11 +113,19 @@ public class InMemoryMatchRepository implements MatchRepository {
     /**
      * Converts Game entities to Match entities.
      * This is the Game-to-Match adapter functionality.
+     * Filters out finished games to keep them out of the live matches panel.
      */
     private List<Match> convertGamesToMatches(final List<Game> games) {
         final List<Match> matchList = new ArrayList<>();
+        final LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
 
         for (final Game game : games) {
+            // Skip games that are finished or older than 1 day
+            if (game.getStatus() == GameStatus.FINISHED ||
+                (game.getGameTime() != null && game.getGameTime().isBefore(oneDayAgo))) {
+                continue;
+            }
+
             final Match match = convertGameToMatch(game);
             if (match != null) {
                 matchList.add(match);

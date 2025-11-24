@@ -126,18 +126,24 @@ public class SupabaseGameRepository implements GameRepository {
 
     @Override
     public List<Game> findFutureGames() throws RepositoryException {
+        // First, mark old games as finished (games older than 1 day)
+        markOldGamesAsFinished();
+
+        // Then, return only games that are not finished (upcoming and live games)
         final String sql = "SELECT id, market_id, game_time, team_a, team_b, sport, status " +
             "FROM public.games " +
             "WHERE game_time >= CURRENT_DATE " +
+            "AND status != 'finished' " +
             "ORDER BY game_time ASC";
 
         return executeQuery(sql, null);
     }
 
-    // TODO: Fix code to stop deleting old games upon running, instead upsert / add new games every update.
-
     @Override
     public List<Game> searchGames(final String query) throws RepositoryException {
+        // Mark old games as finished before searching
+        markOldGamesAsFinished();
+
         if (query == null || query.trim().isEmpty()) {
             return findFutureGames();
         }
@@ -150,6 +156,29 @@ public class SupabaseGameRepository implements GameRepository {
             "ORDER BY game_time ASC";
 
         return executeQuery(sql, searchTerm);
+    }
+
+    /**
+     * Marks games older than 1 day as finished.
+     * This ensures old games persist in the database but are marked as completed.
+     */
+    private void markOldGamesAsFinished() throws RepositoryException {
+        final String updateSql = "UPDATE public.games " +
+            "SET status = 'finished' " +
+            "WHERE game_time < (CURRENT_TIMESTAMP - INTERVAL '1 day') " +
+            "AND status != 'finished'";
+
+        try (final Connection conn = connectionFactory.createConnection();
+             final PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+
+            final int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Marked " + rowsUpdated + " old game(s) as finished.");
+            }
+        }
+        catch (final SQLException e) {
+            throw new RepositoryException("Failed to mark old games as finished: " + e.getMessage(), e);
+        }
     }
 
     /**

@@ -95,25 +95,28 @@ public class OddsApiResponseAdapter {
 
     /**
      * Maps API event status to GameStatus enum.
-     * The Odds API events endpoint typically returns upcoming events,
-     * so we default to UPCOMING. In a real implementation, you might
-     * check additional fields or make separate API calls for live events.
+     * The Odds API events endpoint only returns upcoming events,
+     * so we always set them as UPCOMING. The status should be updated
+     * by a separate mechanism when games actually start or finish.
      */
     private GameStatus mapStatus(final OddsApiEvent event) {
-        // The events endpoint typically returns upcoming events
-        // For now, we'll check the commence time to determine status
+        // The /events endpoint only returns upcoming events
+        // If the API returns an event, it means it hasn't started yet
         final LocalDateTime commenceTime = event.getCommenceTime();
         if (commenceTime == null) {
             return GameStatus.UPCOMING;
         }
 
         final LocalDateTime now = LocalDateTime.now();
-        if (commenceTime.isBefore(now.minusHours(3))) {
-            // Game started more than 3 hours ago, likely finished
-            return GameStatus.FINISHED;
+
+        // Check if game is very close to starting (within 1 hour)
+        // This provides a buffer zone where we might consider it as approaching live
+        if (commenceTime.isBefore(now.plusMinutes(30)) && commenceTime.isAfter(now.minusMinutes(30))) {
+            // Game is starting very soon or just started - mark as LIVE
+            return GameStatus.LIVE;
         }
         else if (commenceTime.isBefore(now)) {
-            // Game has started but less than 3 hours ago, likely live
+            // Game start time has passed but still in API = likely in progress
             return GameStatus.LIVE;
         }
         else {
