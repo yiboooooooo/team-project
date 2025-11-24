@@ -13,20 +13,21 @@ import stakemate.use_case.settle_market.SettleMarketOutputBoundary;
 import stakemate.use_case.settle_market.SettleMarketRequestModel;
 import stakemate.use_case.settle_market.SettleMarketResponseModel;
 // thhis is a tmep class
+
 public class SettleMarketManualTest {
 
     public static void main(String[] args) {
         // 1) Set up Supabase factory (uses your existing config / env)
-        SupabaseClientFactory factory = new SupabaseClientFactory();
+        final SupabaseClientFactory factory = new SupabaseClientFactory();
 
         // 2) Repositories for the use case
-        BetRepository betRepository = new SupabaseBetRepository(factory);
-        AccountRepository accountRepository = new SupabaseAccountDataAccess(factory);
-        SettlementRecordRepository settlementRecordRepository =
+        final BetRepository betRepository = new SupabaseBetRepository(factory);
+        final AccountRepository accountRepository = new SupabaseAccountDataAccess(factory);
+        final SettlementRecordRepository settlementRecordRepository =
             new InMemorySettlementRecordRepository();
 
         // 3) Simple presenter that just prints to console
-        SettleMarketOutputBoundary presenter = new SettleMarketOutputBoundary() {
+        final SettleMarketOutputBoundary presenter = new SettleMarketOutputBoundary() {
             @Override
             public void presentSuccess(SettleMarketResponseModel response) {
                 System.out.println("=== Settlement SUCCESS ===");
@@ -43,7 +44,7 @@ public class SettleMarketManualTest {
         };
 
         // 4) Build the interactor
-        SettleMarketInputBoundary interactor =
+        final SettleMarketInputBoundary interactor =
             new SettleMarketInteractor(
                 betRepository,
                 accountRepository,
@@ -52,10 +53,10 @@ public class SettleMarketManualTest {
             );
 
         // 5) The marketId you manually put into positions
-        String marketId = "cd627332-49c2-4ec0-abcf-12e2c245cd03";
+        final String marketId = "cd627332-49c2-4ec0-abcf-12e2c245cd03";
 
         // NOTE: second arg is homeTeamWon, but your interactor doesn't use it anymore.
-        SettleMarketRequestModel request =
+        final SettleMarketRequestModel request =
             new SettleMarketRequestModel(marketId);
 
         // 6) Execute the use case
