@@ -39,6 +39,10 @@ import stakemate.interface_adapter.view_signup.SwingSignupPresenter;
 import stakemate.use_case.fetch_games.FetchGamesInteractor;
 import stakemate.use_case.fetch_games.FetchGamesOutputBoundary;
 import stakemate.use_case.fetch_games.FetchGamesResponseModel;
+import stakemate.interface_adapter.view_live.LiveMatchesController;
+import stakemate.interface_adapter.view_live.SwingLiveMatchesPresenter;
+import stakemate.use_case.view_live.LiveMatchesInteractor;
+import stakemate.view.LiveMatchesFrame;
 import stakemate.use_case.login.LoginInteractor;
 import stakemate.use_case.settle_market.Bet;
 import stakemate.use_case.settle_market.SettleMarketInteractor;
@@ -163,6 +167,23 @@ public final class StakeMateApp {
 
         // Trigger initial load so UI has data when user logs in
         marketController.refresh();
+
+        // --- NEW: Setup Live Matches View ---
+        if (fetchGamesInteractor != null) {
+            final LiveMatchesFrame liveMatchesFrame = new LiveMatchesFrame();
+            final SwingLiveMatchesPresenter liveMatchesPresenter = new SwingLiveMatchesPresenter(liveMatchesFrame);
+            final LiveMatchesInteractor liveMatchesInteractor = new LiveMatchesInteractor(
+                fetchGamesInteractor,
+                gameRepository,
+                liveMatchesPresenter
+            );
+            final LiveMatchesController liveMatchesController = new LiveMatchesController(liveMatchesInteractor);
+            liveMatchesFrame.setController(liveMatchesController);
+            
+            // Wire to MarketsFrame
+            marketsFrame.setLiveMatchesFrame(liveMatchesFrame);
+            marketsFrame.setLiveMatchesController(liveMatchesController);
+        }
     }
 
 

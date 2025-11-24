@@ -134,6 +134,8 @@ public class SupabaseGameRepository implements GameRepository {
         return executeQuery(sql, null);
     }
 
+    // TODO: Fix code to stop deleting old games upon running, instead upsert / add new games every update.
+
     @Override
     public List<Game> searchGames(final String query) throws RepositoryException {
         if (query == null || query.trim().isEmpty()) {

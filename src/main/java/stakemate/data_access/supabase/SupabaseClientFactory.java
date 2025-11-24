@@ -57,6 +57,7 @@ public class SupabaseClientFactory {
      * @throws SQLException if connection fails
      */
     public Connection createConnection() throws SQLException {
+        System.out.println("[SupabaseClientFactory] Opening new database connection...");
         final String jdbcUrl = String.format("jdbc:postgresql://%s:%s/%s?prepareThreshold=0&preparedStatementCacheQueries=0",
             host, port, database);
         return DriverManager.getConnection(jdbcUrl, user, password);
