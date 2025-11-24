@@ -50,6 +50,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private final JButton refreshButton = new JButton("Refresh");
     private final JButton myProfileButton = new JButton("My Profile");
     private final JButton settleButton = new JButton("Settle");
+    private final CommentsPanel commentsPanel = new CommentsPanel();
     private ViewMarketController controller;
     private SettleMarketController settleMarketController;
     private MarketSummary currentlySelectedMarket;
@@ -141,6 +142,8 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         root.add(topBar, BorderLayout.NORTH);
         root.add(splitPane, BorderLayout.CENTER);
         root.add(statusLabel, BorderLayout.SOUTH);
+        // Add comments panel to the right side
+        root.add(commentsPanel, BorderLayout.EAST);
 
         setContentPane(root);
     }
@@ -200,7 +203,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
             if (choice == JOptionPane.YES_OPTION || choice == JOptionPane.NO_OPTION) {
                 final boolean homeTeamWon = (choice == JOptionPane.YES_OPTION);
-                settleMarketController.settleMarket(currentlySelectedMarket.getId());
+                settleMarketController.settleMarket(currentlySelectedMarket.getId(), homeTeamWon);
             }
         });
     }
@@ -323,6 +326,10 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     public void showSettlementError(final String errorMessage) {
         JOptionPane.showMessageDialog(this, errorMessage,
             "Settlement Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public CommentsPanel getCommentsPanel() {
+        return commentsPanel;
     }
 
     // ---- Order Book Table Model ----
