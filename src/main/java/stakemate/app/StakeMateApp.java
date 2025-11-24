@@ -8,17 +8,15 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import stakemate.data_access.in_memory.InMemoryCommentRepository;
+import stakemate.interface_adapter.view_comments.*;
+import stakemate.use_case.comments.post.*;
+import stakemate.use_case.comments.view.*;
 import stakemate.data_access.api.OddsApiGatewayImpl;
 import stakemate.data_access.api.OddsApiResponseAdapter;
 import stakemate.data_access.in_memory.FakeOrderBookGateway;
-//import stakemate.data_access.in_memory.InMemoryAccountRepository;
-//import stakemate.data_access.in_memory.InMemoryBetRepository;
-import stakemate.use_case.settle_market.AccountRepository;
-import stakemate.use_case.settle_market.BetRepository;
-
-import stakemate.data_access.supabase.SupabaseBetRepository;
-import stakemate.data_access.supabase.SupabaseAccountDataAccess;
-
+import stakemate.data_access.in_memory.InMemoryAccountRepository;
+import stakemate.data_access.in_memory.InMemoryBetRepository;
 import stakemate.data_access.in_memory.InMemoryMarketRepository;
 import stakemate.data_access.in_memory.InMemoryMatchRepository;
 import stakemate.data_access.in_memory.InMemorySettlementRecordRepository;
@@ -62,9 +60,8 @@ public final class StakeMateApp {
     private static final double ODDS_WIN = 0.6;
     private static final double ODDS_LOSE = 0.4;
 
-    private static AccountRepository accountRepo;
-    private static BetRepository betRepo;
-
+    private static InMemoryAccountRepository accountRepo;
+    private static InMemoryBetRepository betRepo;
 
     private StakeMateApp() {
         // Private constructor to prevent instantiation
@@ -75,17 +72,16 @@ public final class StakeMateApp {
      *
      * @return The in-memory account repository.
      */
-    public static AccountRepository getAccountRepo() {
+    public static InMemoryAccountRepository getAccountRepo() {
         return accountRepo;
     }
-
 
     /**
      * Gets the Bet Repository.
      *
      * @return The in-memory bet repository.
      */
-    public static BetRepository getBetRepo() {
+    public static InMemoryBetRepository getBetRepo() {
         return betRepo;
     }
 
@@ -132,6 +128,9 @@ public final class StakeMateApp {
             marketRepository,
             orderBookGateway
         );
+        betRepo = new InMemoryBetRepository();
+        accountRepo = new InMemoryAccountRepository();
+        final InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
         final MarketsFrame marketsFrame = new MarketsFrame();
         final SwingViewMarketsPresenter marketsPresenter =
             new SwingViewMarketsPresenter(marketsFrame);
@@ -146,25 +145,49 @@ public final class StakeMateApp {
             new ViewMarketController(marketInteractor);
         marketsFrame.setController(marketController);
 
+        //COMMENTS SYSTEM WIRING BELOW
+        final InMemoryCommentRepository commentRepo = new InMemoryCommentRepository();
 
-        final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
+        // presenters
+        final SwingPostCommentPresenter postPresenter =
+            new SwingPostCommentPresenter(marketsFrame.getCommentsPanel());
 
-        betRepo = new SupabaseBetRepository(supabaseFactory);
-        accountRepo = new SupabaseAccountDataAccess(supabaseFactory);
+        final SwingViewCommentsPresenter viewPresenter =
+            new SwingViewCommentsPresenter(marketsFrame.getCommentsPanel());
 
-        final InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
+        // interactors
+        final PostCommentInteractor postInteractor =
+            new PostCommentInteractor(commentRepo, postPresenter);
 
+        final ViewCommentsInteractor viewInteractor =
+            new ViewCommentsInteractor(commentRepo, viewPresenter);
+
+        // controllers
+        final PostCommentController postController =
+            new PostCommentController(postInteractor);
+
+        final ViewCommentsController viewController =
+            new ViewCommentsController(viewInteractor);
+
+        // attach to the UI
+        marketsFrame.getCommentsPanel().setControllers(postController, viewController);
+
+        setupDemoData();
         setupSettlementUseCase(marketsFrame, recordRepo);
-
+        final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
         final SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
         setupProfileUseCase(marketsFrame, userRepo);
         setupAuth(marketsFrame, userRepo);
-
-        // Trigger initial load so UI has data when user logs in
-        marketController.refresh();
     }
 
+    private static void setupDemoData() {
+        accountRepo.addDemoUser(new User("alice", "password", INITIAL_BALANCE));
+        accountRepo.addDemoUser(new User("bob", "password", INITIAL_BALANCE));
+
+        betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN));
+        betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE));
+    }
 
     private static void setupSettlementUseCase(final MarketsFrame marketsFrame,
                                                final InMemorySettlementRecordRepository recordRepo) {
@@ -216,6 +239,8 @@ public final class StakeMateApp {
 
         loginFrame.setVisible(true);
     }
+
+
 
     /**
      * Loads environment variables from .env file in project root.
