@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import stakemate.interface_adapter.view_comments.PostCommentController;
+import stakemate.interface_adapter.view_comments.ViewCommentsController;
+
 /**
  * Swing panel for viewing and posting comments.
  */
@@ -21,6 +24,10 @@ public class CommentsPanel extends JPanel {
 
     // Keep a copy of Comment objects for reference
     private final List<Comment> comments;
+
+    // Controllers (injected from MarketsFrame)
+    private PostCommentController postController;
+    private ViewCommentsController viewController;
 
     public CommentsPanel() {
         this.comments = new ArrayList<>();
@@ -104,4 +111,23 @@ public class CommentsPanel extends JPanel {
                 c.getUsername(),
                 c.getMessage());
     }
+
+    public void setControllers(PostCommentController postCtrl,
+                               ViewCommentsController viewCtrl) {
+        this.postController = postCtrl;
+        this.viewController = viewCtrl;
+
+        // Hook Post button NOW that controllers exist
+        addPostButtonListener(e -> {
+            String text = getInputText();
+            if (text == null || text.isBlank()) {
+                showMessage("Comment cannot be empty.");
+                return;
+            }
+
+            // TODO: replace with real selected marketId + logged-in username
+            postController.postComment("M1-ML", "alice", text);
+        });
+    }
+
 }

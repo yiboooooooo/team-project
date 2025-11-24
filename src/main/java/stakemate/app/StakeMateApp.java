@@ -8,6 +8,10 @@ import java.util.List;
 
 import javax.swing.SwingUtilities;
 
+import stakemate.data_access.in_memory.InMemoryCommentRepository;
+import stakemate.interface_adapter.view_comments.*;
+import stakemate.use_case.comments.post.*;
+import stakemate.use_case.comments.view.*;
 import stakemate.data_access.api.OddsApiGatewayImpl;
 import stakemate.data_access.api.OddsApiResponseAdapter;
 import stakemate.data_access.in_memory.FakeOrderBookGateway;
@@ -140,6 +144,34 @@ public final class StakeMateApp {
         final ViewMarketController marketController =
             new ViewMarketController(marketInteractor);
         marketsFrame.setController(marketController);
+
+        //COMMENTS SYSTEM WIRING BELOW
+        final InMemoryCommentRepository commentRepo = new InMemoryCommentRepository();
+
+        // presenters
+        final SwingPostCommentPresenter postPresenter =
+            new SwingPostCommentPresenter(marketsFrame.getCommentsPanel());
+
+        final SwingViewCommentsPresenter viewPresenter =
+            new SwingViewCommentsPresenter(marketsFrame.getCommentsPanel());
+
+        // interactors
+        final PostCommentInteractor postInteractor =
+            new PostCommentInteractor(commentRepo, postPresenter);
+
+        final ViewCommentsInteractor viewInteractor =
+            new ViewCommentsInteractor(commentRepo, viewPresenter);
+
+        // controllers
+        final PostCommentController postController =
+            new PostCommentController(postInteractor);
+
+        final ViewCommentsController viewController =
+            new ViewCommentsController(viewInteractor);
+
+        // attach to the UI
+        marketsFrame.getCommentsPanel().setControllers(postController, viewController);
+
         setupDemoData();
         setupSettlementUseCase(marketsFrame, recordRepo);
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
@@ -207,6 +239,8 @@ public final class StakeMateApp {
 
         loginFrame.setVisible(true);
     }
+
+
 
     /**
      * Loads environment variables from .env file in project root.
