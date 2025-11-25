@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="Sync fix_checkstyle with latest main updates.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +108,7 @@
       <recent name="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.SettleMarketInteractorTest">
+  <component name="RunManager">
     <configuration name="SettleMarketInteractorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="TeamProject" />
       <extension name="coverage">
@@ -192,9 +194,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.SettleMarketInteractorTest" />
-        <item itemvalue="JUnit.stakemate.entity in TeamProject" />
         <item itemvalue="JUnit.stakemate.use_case.settle_market in TeamProject" />
+        <item itemvalue="JUnit.stakemate.entity in TeamProject" />
+        <item itemvalue="JUnit.SettleMarketInteractorTest" />
         <item itemvalue="JUnit.ViewMarketInteractorTest" />
         <item itemvalue="JUnit.stakemate.use_case.view_market in TeamProject" />
       </list>
@@ -324,7 +326,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java</url>
-          <line>206</line>
+          <line>230</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>

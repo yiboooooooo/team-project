@@ -185,8 +185,9 @@ public final class StakeMateApp {
         accountRepo.addDemoUser(new User("alice", "password", INITIAL_BALANCE));
         accountRepo.addDemoUser(new User("bob", "password", INITIAL_BALANCE));
 
-        betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN));
-        betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE));
+        // Added null (outcome unknown) and false (not settled) to match the new 7-arg constructor
+        betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN, null, false));
+        betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE, null, false));
     }
 
     private static void setupSettlementUseCase(final MarketsFrame marketsFrame,

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import stakemate.entity.factory.MarketFactory;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -180,11 +179,6 @@ class EntitiesTest {
         assertEquals(1, book.getBids().size());
         assertEquals(1, book.getAsks().size());
         assertEquals(bid, book.getBids().get(0));
-
-        // Verify Immutability (constructor creates copies)
-        // If we modify the lists passed to constructor, book should not change
-        // (Though here we passed singletons which are immutable, strictly speaking the constructor
-        // creates a new ArrayList and then wraps in unmodifiableList, so it is safe).
     }
 
     // =========================================================================
@@ -223,5 +217,32 @@ class EntitiesTest {
         assertEquals("match2", mlMkt.getMatchId());
         assertEquals("Moneyline", mlMkt.getName());
         assertEquals(MarketStatus.OPEN, mlMkt.getStatus());
+    }
+
+    // =========================================================================
+    // 10. Comment Tests
+    // =========================================================================
+    @Test
+    void testComment() {
+        String id = "cmt_123";
+        String marketId = "mkt_abc";
+        String username = "user_xyz";
+        String message = "Great market!";
+        LocalDateTime timestamp = LocalDateTime.of(2025, 1, 1, 12, 0);
+
+        // Test constructor with explicit timestamp
+        Comment comment = new Comment(id, marketId, username, message, timestamp);
+
+        assertEquals(id, comment.getId());
+        assertEquals(marketId, comment.getMarketId());
+        assertEquals(username, comment.getUsername());
+        assertEquals(message, comment.getMessage());
+        assertEquals(timestamp, comment.getTimestamp());
+
+        // Test constructor with null timestamp (should default to now)
+        Comment commentNow = new Comment(id, marketId, username, message, null);
+        assertNotNull(commentNow.getTimestamp());
+        // Ensure it was created roughly now (within last second)
+        assertTrue(commentNow.getTimestamp().isAfter(LocalDateTime.now().minusSeconds(1)));
     }
 }
