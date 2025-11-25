@@ -29,7 +29,8 @@ public class InMemoryMatchRepository implements MatchRepository {
         this(gameRepository, null);
     }
 
-    public InMemoryMatchRepository(final GameRepository gameRepository, final FetchGamesInputBoundary fetchGamesInteractor) {
+    public InMemoryMatchRepository(final GameRepository gameRepository,
+                                   final FetchGamesInputBoundary fetchGamesInteractor) {
         this.gameRepository = gameRepository;
         this.fetchGamesInteractor = fetchGamesInteractor;
 
@@ -37,8 +38,8 @@ public class InMemoryMatchRepository implements MatchRepository {
         try {
             syncWithApiData();
         }
-        catch (final Exception e) {
-            System.err.println("InMemoryMatchRepository startup sync failed: " + e.getMessage());
+        catch (final RepositoryException ex) {
+            System.err.println("InMemoryMatchRepository startup sync failed: " + ex.getMessage());
             initializeWithDefaultMatches();
         }
     }
@@ -54,6 +55,12 @@ public class InMemoryMatchRepository implements MatchRepository {
             MatchStatus.CLOSED, now.minusHours(4)));
     }
 
+    /**
+     * Retrieves all matches from the repository.
+     *
+     * @return a list of all matches
+     * @throws RepositoryException if retrieval fails
+     */
     @Override
     public List<Match> findAllMatches() throws RepositoryException {
         return new ArrayList<>(matches);
@@ -63,12 +70,13 @@ public class InMemoryMatchRepository implements MatchRepository {
      * Syncs matches with latest games from the API/database.
      * This method fetches games from API, saves to DB, then converts to Match objects.
      * Merges new matches with existing ones instead of replacing all matches.
+     *
+     * @throws RepositoryException if sync fails
      */
     public void syncWithApiData() throws RepositoryException {
         if (gameRepository == null) {
             // No game repository configured, use default matches
             initializeWithDefaultMatches();
-            return;
         }
 
         try {
@@ -103,10 +111,10 @@ public class InMemoryMatchRepository implements MatchRepository {
                 initializeWithDefaultMatches();
             }
         }
-        catch (final Exception e) {
+        catch (final RepositoryException ex) {
             // Fall back to default matches on error
             initializeWithDefaultMatches();
-            throw new RepositoryException("Failed to sync with API data: " + e.getMessage(), e);
+            throw new RepositoryException("Failed to sync with API data: " + ex.getMessage(), ex);
         }
     }
 
@@ -114,6 +122,9 @@ public class InMemoryMatchRepository implements MatchRepository {
      * Converts Game entities to Match entities.
      * This is the Game-to-Match adapter functionality.
      * No filtering applied - all games are converted with their actual status.
+     *
+     * @param games the list of games to convert
+     * @return the list of converted matches
      */
     private List<Match> convertGamesToMatches(final List<Game> games) {
         final List<Match> matchList = new ArrayList<>();
@@ -135,42 +146,63 @@ public class InMemoryMatchRepository implements MatchRepository {
 
     /**
      * Converts a single Game to a Match.
+     *
+     * @param game the game to convert
+     * @return the converted match, or null if game is null
      */
     private Match convertGameToMatch(final Game game) {
+        Match res;
         if (game == null) {
-            return null;
+            res = null;
         }
 
         // Use external ID consistently as match ID to prevent duplicates
-        final String matchId = game.getExternalId() != null ? game.getExternalId() : game.getId().toString();
+        final String matchId;
+        if (game.getExternalId() != null) {
+            matchId = game.getExternalId();
+        }
+        else {
+            matchId = game.getId().toString();
+        }
         final MatchStatus matchStatus = convertGameStatusToMatchStatus(game.getStatus());
 
-        return new Match(
+        res = new Match(
             matchId,
-            game.getTeamA(),  // home team
-            game.getTeamB(),  // away team
+            /* TeamA = home team, TeamB = away team */
+            game.getTeamA(),
+            game.getTeamB(),
             matchStatus,
             game.getGameTime()
         );
+        return res;
     }
 
     /**
      * Maps GameStatus enum values to MatchStatus enum values.
+     *
+     * @param gameStatus the game status to convert
+     * @return the corresponding match status
      */
     private MatchStatus convertGameStatusToMatchStatus(final GameStatus gameStatus) {
+        MatchStatus res;
         if (gameStatus == null) {
-            return MatchStatus.UPCOMING;
+            res = MatchStatus.UPCOMING;
         }
 
         switch (gameStatus) {
             case UPCOMING:
-                return MatchStatus.UPCOMING;
+                res = MatchStatus.UPCOMING;
+                break;
             case LIVE:
-                return MatchStatus.LIVE;
+                res = MatchStatus.LIVE;
+                break;
             case FINISHED:
-                return MatchStatus.CLOSED;
+                res = MatchStatus.CLOSED;
+                break;
             default:
-                return MatchStatus.UPCOMING;
+                res = MatchStatus.UPCOMING;
+                break;
         }
+        return res;
     }
 }
