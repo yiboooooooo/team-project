@@ -202,8 +202,8 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
                 JOptionPane.YES_NO_OPTION);
 
             if (choice == JOptionPane.YES_OPTION || choice == JOptionPane.NO_OPTION) {
-                final boolean homeTeamWon = (choice == JOptionPane.YES_OPTION);
-                settleMarketController.settleMarket(currentlySelectedMarket.getId(), homeTeamWon);
+                // Removed extra boolean argument 'homeTeamWon' to match controller signature
+                settleMarketController.settleMarket(currentlySelectedMarket.getId());
             }
         });
     }
