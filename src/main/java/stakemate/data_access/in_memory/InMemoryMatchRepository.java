@@ -30,6 +30,15 @@ public class InMemoryMatchRepository implements MatchRepository {
     public InMemoryMatchRepository(final GameRepository gameRepository, final FetchGamesInputBoundary fetchGamesInteractor) {
         this.gameRepository = gameRepository;
         this.fetchGamesInteractor = fetchGamesInteractor;
+
+        // Attempt to load data immediately upon creation
+        try {
+            syncWithApiData();
+        }
+        catch (final Exception e) {
+            System.err.println("InMemoryMatchRepository startup sync failed: " + e.getMessage());
+            initializeWithDefaultMatches();
+        }
     }
 
     private void initializeWithDefaultMatches() {

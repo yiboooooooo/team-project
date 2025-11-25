@@ -2,6 +2,9 @@ package stakemate.use_case.settle_market;
 
 import stakemate.entity.Side;
 
+/**
+ * Represents a single bet/position for a user on a specific market.
+ */
 public class Bet {
 
     private final String username;
@@ -9,15 +12,24 @@ public class Bet {
     private final Side side;
     private final double stake;
     private final double price;
-    private boolean settled = false;
-    private boolean won = false;
+    private final Boolean won;
+    private final Boolean settled;
 
-    public Bet(final String username, final String marketId, final Side side, final double stake, final double price) {
+    public Bet(String username,
+               String marketId,
+               Side side,
+               double stake,
+               double price,
+               Boolean won,
+               Boolean settled) {
+
         this.username = username;
         this.marketId = marketId;
         this.side = side;
         this.stake = stake;
         this.price = price;
+        this.won = won;
+        this.settled = settled;
     }
 
     public String getUsername() {
@@ -40,19 +52,11 @@ public class Bet {
         return price;
     }
 
-    public boolean isSettled() {
-        return settled;
-    }
-
-    public void setSettled(final boolean settled) {
-        this.settled = settled;
-    }
-
-    public boolean isWon() {
+    public Boolean isWon() {
         return won;
     }
 
-    public void setWon(final boolean won) {
-        this.won = won;
+    public Boolean isSettled() {
+        return settled;
     }
 }

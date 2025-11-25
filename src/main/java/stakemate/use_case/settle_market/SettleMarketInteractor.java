@@ -3,9 +3,12 @@ package stakemate.use_case.settle_market;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import stakemate.entity.Side;
 import stakemate.entity.User;
 
+/**
+ * Interactor for the Settle Market use case.
+ * Implements the business logic for settling bets on a market.
+ */
 public class SettleMarketInteractor implements SettleMarketInputBoundary {
 
     private final BetRepository betRepository;
@@ -13,6 +16,14 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
     private final SettlementRecordRepository settlementRecordRepository;
     private final SettleMarketOutputBoundary presenter;
 
+    /**
+     * Constructs a new SettleMarketInteractor.
+     *
+     * @param betRepository              the repository for accessing bets.
+     * @param accountRepository          the repository for accessing user accounts.
+     * @param settlementRecordRepository the repository for storing settlement records.
+     * @param presenter                  the output boundary to present results.
+     */
     public SettleMarketInteractor(final BetRepository betRepository,
                                   final AccountRepository accountRepository,
                                   final SettlementRecordRepository settlementRecordRepository,
@@ -28,71 +39,71 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
     public void execute(final SettleMarketRequestModel requestModel) {
 
         final String marketId = requestModel.getMarketId();
-        final boolean homeTeamWon = requestModel.isHomeTeamWon();
-        final List<Bet> bets = betRepository.findByMarketId(marketId);
+        System.out.println("DEBUG - Settling market: " + marketId);
 
+        final List<Bet> bets = betRepository.findByMarketId(marketId);
         if (bets == null || bets.isEmpty()) {
             presenter.presentFailure("No bets found for market " + marketId);
-            return;
         }
+        else {
+            settleBets(marketId, bets);
+        }
+    }
 
-        // 2) Decide which Side is the winner for this demo
-        final Side winningSide = homeTeamWon ? Side.BUY : Side.SELL;
-
+    private void settleBets(String marketId, List<Bet> bets) {
         int settledCount = 0;
         double totalPayout = 0.0;
 
-        // 3) Loop over all bets and update balances
         for (final Bet bet : bets) {
-
-            final boolean won = (bet.getSide() == winningSide);
-            double payout = 0.0;
             final User user = accountRepository.findByUsername(bet.getUsername());
             if (user == null) {
-                // Skip this bet if somehow the user doesn't exist
+                System.out.println("WARN - No user found for bet: " + bet.getUsername());
                 continue;
             }
 
+            final boolean won = Boolean.TRUE.equals(bet.isWon());
+            final double payout = calculatePayout(bet, won);
+
+            final int newBalance = (int) Math.round(user.getBalance() + payout);
+            user.setBalance(newBalance);
+            accountRepository.save(user);
+
             if (won) {
-                // Winner: profit = stake * (1 - price)
-                final double profit = bet.getStake() * (1 - bet.getPrice());
-                payout = profit;
-
-                final int newBalance = (int) Math.round(user.getBalance() + payout);
-                user.setBalance(newBalance);
-                accountRepository.save(user);
-                totalPayout += profit;
-
-            }
-            else {
-                // Loser: lose stake * price (negative payout)
-                payout = -bet.getStake() * bet.getPrice();
-
-                final int newBalance = (int) Math.round(user.getBalance() + payout);
-                user.setBalance(newBalance);
-                accountRepository.save(user);
+                totalPayout += payout;
             }
 
-            // Record this individual settlement (payout is net change, can be + or -)
-            final SettlementRecord record = new SettlementRecord(
-                marketId,
-                bet.getUsername(),
-                bet.getStake(),
-                payout,
-                won,
-                LocalDateTime.now()
-            );
-            settlementRecordRepository.save(record);
+            saveSettlementRecord(marketId, bet, payout, won);
+            betRepository.save(bet);
 
             settledCount++;
         }
 
-        // 5) Send summary back to presenter
         final SettleMarketResponseModel response =
             new SettleMarketResponseModel(marketId, settledCount, totalPayout);
 
         presenter.presentSuccess(response);
     }
 
+    private double calculatePayout(Bet bet, boolean won) {
+        final double payout;
+        if (won) {
+            payout = bet.getStake() * (1 - bet.getPrice());
+        }
+        else {
+            payout = -bet.getStake() * bet.getPrice();
+        }
+        return payout;
+    }
 
+    private void saveSettlementRecord(String marketId, Bet bet, double payout, boolean won) {
+        final SettlementRecord record = new SettlementRecord(
+            marketId,
+            bet.getUsername(),
+            bet.getStake(),
+            payout,
+            won,
+            LocalDateTime.now()
+        );
+        settlementRecordRepository.save(record);
+    }
 }
