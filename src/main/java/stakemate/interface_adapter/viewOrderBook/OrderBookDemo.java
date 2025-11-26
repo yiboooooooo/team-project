@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.List;
 
+import javax.sql.DataSource;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -18,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import stakemate.data_access.supabase.PostgresOrderRepository;
 import stakemate.engine.MatchingEngine;
 import stakemate.engine.Trade;
 import stakemate.entity.OrderBook;
@@ -25,9 +27,10 @@ import stakemate.entity.OrderBookEntry;
 import stakemate.entity.Side;
 import stakemate.service.AccountService;
 import stakemate.service.InMemoryAccountService;
-import stakemate.use_case.PlaceOrderUseCase.PlaceOrderRequest;
-import stakemate.use_case.PlaceOrderUseCase.PlaceOrderResponse;
-import stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase;
+import stakemate.use_case.PlaceOrderUseCase.*;
+import stakemate.use_case.PlaceOrderUseCase.DataSourceFactory;
+import stakemate.data_access.supabase.PostgresPositionRepository;
+import stakemate.data_access.supabase.PostgresOrderRepository;
 
 /**
  * Self-contained Swing demo UI for the matching engine.
@@ -45,11 +48,15 @@ public class OrderBookDemo {
     private final DefaultTableModel asksModel = new DefaultTableModel(new String[]{"Price", "Qty"}, 0);
     private final JTextArea tradesLog = new JTextArea(10, 50);
     private final JTextField userField = new JTextField("alice", 8);
+    DataSource ds = DataSourceFactory.create();
+    OrderRepository repository = new PostgresOrderRepository(ds);
+    PositionRepository positionRepo = new PostgresPositionRepository(ds);
+
 
     public OrderBookDemo() {
         this.engine = new MatchingEngine();
         this.accountService = new InMemoryAccountService();
-        this.useCase = new PlaceOrderUseCase(engine, accountService);
+        this.useCase = new PlaceOrderUseCase(engine, accountService, repository, positionRepo);
 
         final JPanel controls = new JPanel();
 
