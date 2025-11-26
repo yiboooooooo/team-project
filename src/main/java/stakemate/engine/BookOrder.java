@@ -14,10 +14,10 @@ public class BookOrder {
     private final String marketId;
     private final Side side;
     private final Double price;
-    private final Instant timestamp;
-
     private final double originalQty;
     private double remainingQty;
+    private final Instant timestamp;
+
 
     public BookOrder(final String userId, final String marketId, final Side side, final Double price, final double qty) {
         this.id = UUID.randomUUID().toString();

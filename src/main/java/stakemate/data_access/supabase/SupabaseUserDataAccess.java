@@ -103,4 +103,25 @@ public class SupabaseUserDataAccess
             throw new RuntimeException("Error loading user from Supabase", e);
         }
     }
+
+    public String getUserIdByUsername(final String username) {
+        final String sql = "SELECT id FROM public.profiles WHERE username = ?";
+
+        try (final Connection conn = factory.createConnection();
+             final PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (final ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return rs.getString("id"); // UUID as String
+            }
+
+        } catch (final SQLException e) {
+            throw new RuntimeException("Error loading user id from Supabase", e);
+        }
+    }
+
 }
