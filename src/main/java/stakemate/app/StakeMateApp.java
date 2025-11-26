@@ -77,9 +77,11 @@ public final class StakeMateApp {
     private static final double BET_AMOUNT = 50.0;
     private static final double ODDS_WIN = 0.6;
     private static final double ODDS_LOSE = 0.4;
+    private static stakemate.data_access.common.AccountRepository accountRepo;
+    private static stakemate.data_access.common.BetRepository betRepo;
 
-    private static InMemoryAccountRepository accountRepo;
-    private static InMemoryBetRepository betRepo;
+    private static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase placeOrderUseCase;
+    public static SupabaseUserDataAccess userRepo;
 
     private StakeMateApp() {
         // Private constructor to prevent instantiation
@@ -88,19 +90,45 @@ public final class StakeMateApp {
     /**
      * Gets the Account Repository.
      *
-     * @return The in-memory account repository.
+     * @return The account repository.
      */
-    public static InMemoryAccountRepository getAccountRepo() {
+    public static stakemate.data_access.common.AccountRepository getAccountRepo() {
         return accountRepo;
     }
 
     /**
      * Gets the Bet Repository.
      *
-     * @return The in-memory bet repository.
+     * @return The bet repository.
      */
-    public static InMemoryBetRepository getBetRepo() {
+    public static stakemate.data_access.common.BetRepository getBetRepo() {
         return betRepo;
+    }
+
+    public static void initTradingSystem() {
+        // For orders & positions (same DS we already use)
+        javax.sql.DataSource ds = stakemate.use_case.PlaceOrderUseCase.DataSourceFactory.create();
+
+        // Real DB repositories
+        var orderRepo = new stakemate.data_access.supabase.PostgresOrderRepository(ds);
+        var positionRepo = new stakemate.data_access.supabase.PostgresPositionRepository(ds);
+
+        // DbAccountService uses Supabase profiles table
+        var accountService = new stakemate.service.DbAccountService(new SupabaseClientFactory());
+
+        // MatchingEngine
+        var engine = new stakemate.engine.MatchingEngine(orderRepo, positionRepo, accountService);
+
+        // Create use-case
+        placeOrderUseCase = new stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase(
+                engine,
+                accountService,
+                orderRepo,
+                positionRepo);
+    }
+
+    public static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase getPlaceOrderUseCase() {
+        return placeOrderUseCase;
     }
 
     /**
@@ -111,6 +139,7 @@ public final class StakeMateApp {
     // -@cs[UncommentedMain] Main entry point is required for the application
     // execution.
     public static void main(final String[] args) {
+
         // Load .env file if it exists
         loadEnvFile();
 
@@ -129,19 +158,36 @@ public final class StakeMateApp {
                 new InMemoryMarketRepository(),
                 new FakeOrderBookGateway());
 
-        betRepo = new InMemoryBetRepository();
-        accountRepo = new InMemoryAccountRepository();
-        setupDemoData();
+        // Initialize our real order-book trading system
+        initTradingSystem();
 
         final MarketsFrame marketsFrame = new MarketsFrame();
-        setupMarketView(marketsFrame, marketFacade);
+        final SwingViewMarketsPresenter marketsPresenter = new SwingViewMarketsPresenter(marketsFrame);
+
+        final ViewMarketInteractor marketInteractor = new ViewMarketInteractor(
+                marketFacade,
+                marketsPresenter);
+
+        final ViewMarketController marketController = new ViewMarketController(marketInteractor);
+        marketsFrame.setController(marketController);
+        marketsFrame.enableOrderBookPopup();
+
+        // Setup Comment System (from main)
         setupCommentSystem(marketsFrame);
-        setupSettlementUseCase(marketsFrame, new InMemorySettlementRecordRepository());
+
+        // Setup repositories
+        final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
+        betRepo = new stakemate.data_access.supabase.SupabaseBetRepository(supabaseFactory);
+        accountRepo = new stakemate.data_access.supabase.SupabaseAccountDataAccess(supabaseFactory);
+
+        final InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
+        setupSettlementUseCase(marketsFrame, recordRepo);
+
+        // Setup LiveMatchesView from main
         setupLiveMatchesView(marketsFrame, fetchGamesInteractor, gameRepository);
 
-        final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
-        final SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
-
+        // Setup user and auth
+        userRepo = new SupabaseUserDataAccess(supabaseFactory);
         setupProfileUseCase(marketsFrame, userRepo);
         setupAuth(marketsFrame, userRepo);
     }
@@ -153,10 +199,10 @@ public final class StakeMateApp {
 
         if (apiKey == null || apiKey.isEmpty()) {
             System.err.println("WARNING: ODDS_API_KEY not set. Creating interactor with null gateway.");
-            // Create interactor with null gateway to avoid null pointer exceptions downstream
+            // Create interactor with null gateway to avoid null pointer exceptions
+            // downstream
             interactor = new FetchGamesInteractor(null, new OddsApiResponseAdapter(), gameRepo, presenter);
-        }
-        else {
+        } else {
             final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
             final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
             interactor = new FetchGamesInteractor(apiGateway, responseAdapter, gameRepo, presenter);
@@ -223,12 +269,12 @@ public final class StakeMateApp {
     }
 
     private static void setupLiveMatchesView(final MarketsFrame marketsFrame,
-                                            final FetchGamesInteractor fetchGamesInteractor,
-                                            final SupabaseGameRepository gameRepository) {
+            final FetchGamesInteractor fetchGamesInteractor,
+            final SupabaseGameRepository gameRepository) {
         final LiveMatchesFrame liveMatchesFrame = new LiveMatchesFrame();
         final SwingLiveMatchesPresenter livePresenter = new SwingLiveMatchesPresenter(liveMatchesFrame);
-        final LiveMatchesInteractor liveInteractor =
-            new LiveMatchesInteractor(fetchGamesInteractor, gameRepository, livePresenter);
+        final LiveMatchesInteractor liveInteractor = new LiveMatchesInteractor(fetchGamesInteractor, gameRepository,
+                livePresenter);
         final LiveMatchesController liveController = new LiveMatchesController(liveInteractor);
 
         liveMatchesFrame.setController(liveController);

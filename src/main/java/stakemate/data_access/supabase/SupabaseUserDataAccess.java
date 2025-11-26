@@ -26,8 +26,8 @@ import stakemate.use_case.signup.SignupUserDataAccessInterface;
  * );
  */
 public class SupabaseUserDataAccess
-    implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-    stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface  {
+        implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
+        stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface {
     private final SupabaseClientFactory factory;
 
     /**
@@ -46,7 +46,7 @@ public class SupabaseUserDataAccess
         final String sql = "SELECT 1 FROM public.profiles WHERE username = ? LIMIT 1";
 
         try (Connection conn = factory.createConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
@@ -54,8 +54,7 @@ public class SupabaseUserDataAccess
                 return rs.next();
             }
 
-        }
-        catch (final SQLException ex) {
+        } catch (final SQLException ex) {
             throw new RuntimeException("Error checking if user exists", ex);
         }
     }
@@ -64,10 +63,10 @@ public class SupabaseUserDataAccess
     public void save(final User user) {
         // We let Supabase/Postgres generate the UUID id and updated_at
         final String sql = "INSERT INTO public.profiles (username, password, balance) "
-            + "VALUES (?, ?, ?)";
+                + "VALUES (?, ?, ?)";
 
         try (Connection conn = factory.createConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -75,8 +74,7 @@ public class SupabaseUserDataAccess
 
             ps.executeUpdate();
 
-        }
-        catch (final SQLException ex) {
+        } catch (final SQLException ex) {
             throw new RuntimeException("Error saving user to Supabase", ex);
         }
     }
@@ -86,12 +84,12 @@ public class SupabaseUserDataAccess
     @Override
     public User getByUsername(final String username) {
         final String sql = "SELECT username, password, balance "
-            + "FROM public.profiles WHERE username = ?";
+                + "FROM public.profiles WHERE username = ?";
 
         User res;
 
         try (Connection conn = factory.createConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
@@ -107,8 +105,7 @@ public class SupabaseUserDataAccess
             }
             return res;
 
-        }
-        catch (final SQLException ex) {
+        } catch (final SQLException ex) {
             throw new RuntimeException("Error loading user from Supabase", ex);
         }
     }
@@ -180,5 +177,25 @@ public class SupabaseUserDataAccess
         }
 
         return bets;
+    }
+
+    public String getUserIdByUsername(final String username) {
+        final String sql = "SELECT id FROM public.profiles WHERE username = ?";
+
+        try (final Connection conn = factory.createConnection();
+                final PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (final ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return rs.getString("id"); // UUID as String
+            }
+
+        } catch (final SQLException e) {
+            throw new RuntimeException("Error loading user id from Supabase", e);
+        }
     }
 }

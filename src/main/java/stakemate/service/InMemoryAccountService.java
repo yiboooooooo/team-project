@@ -17,6 +17,9 @@ public class InMemoryAccountService implements AccountService {
         // seed demo users (you can top up in the UI)
         balances.put("alice", 1000.0);
         balances.put("bob", 1000.0);
+        balances.put("richard", 1000.0);
+        balances.put("ali", 1000.0);
+        balances.put("rita", 1000.0);
     }
 
     @Override
