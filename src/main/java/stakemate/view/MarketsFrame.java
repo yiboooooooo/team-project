@@ -405,4 +405,40 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
             }
         }
     }
+
+    public void enableOrderBookPopup() {
+
+        buyButton.addActionListener(e -> openOrderBookPopup());
+        sellButton.addActionListener(e -> openOrderBookPopup());
+
+    }
+
+    private void openOrderBookPopup() {
+
+        if (currentlySelectedMarket == null) {
+            JOptionPane.showMessageDialog(this, "Select a market first.");
+            return;
+        }
+
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(this, "No logged-in user.");
+            return;
+        }
+
+        // Convert username -> UUID
+        String userId = StakeMateApp.userRepo.getUserIdByUsername(currentUser);
+        if (userId == null) {
+            JOptionPane.showMessageDialog(this, "Cannot find profile for: " + currentUser);
+            return;
+        }
+
+        var uc = StakeMateApp.getPlaceOrderUseCase();
+
+        new stakemate.interface_adapter.viewOrderBook.OrderBookTradingFrame(
+            uc,
+            userId,                         // UUID
+            currentlySelectedMarket.getId() // Market ID
+        ).setVisible(true);
+    }
+
 }

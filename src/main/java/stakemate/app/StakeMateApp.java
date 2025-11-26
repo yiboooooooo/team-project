@@ -62,8 +62,12 @@ public final class StakeMateApp {
     private static final double ODDS_WIN = 0.6;
     private static final double ODDS_LOSE = 0.4;
 
+
     private static AccountRepository accountRepo;
     private static BetRepository betRepo;
+
+    private static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase placeOrderUseCase;
+    public static SupabaseUserDataAccess userRepo;
 
 
     private StakeMateApp() {
@@ -89,6 +93,35 @@ public final class StakeMateApp {
         return betRepo;
     }
 
+    public static void initTradingSystem() {
+        // For orders & positions (same DS we already use)
+        javax.sql.DataSource ds =
+            stakemate.use_case.PlaceOrderUseCase.DataSourceFactory.create();
+
+        // Real DB repositories
+        var orderRepo = new stakemate.data_access.supabase.PostgresOrderRepository(ds);
+        var positionRepo = new stakemate.data_access.supabase.PostgresPositionRepository(ds);
+
+        // MatchingEngine
+        var engine = new stakemate.engine.MatchingEngine();
+
+        // DbAccountService uses Supabase profiles table
+        var accountService = new stakemate.service.DbAccountService(new SupabaseClientFactory());
+
+        // Create use-case
+        placeOrderUseCase = new stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase(
+            engine,
+            accountService,
+            orderRepo,
+            positionRepo
+        );
+    }
+
+    public static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase getPlaceOrderUseCase() {
+        return placeOrderUseCase;
+    }
+
+
     /**
      * The main entry point of the application.
      *
@@ -96,6 +129,7 @@ public final class StakeMateApp {
      */
     // -@cs[UncommentedMain] Main entry point is required for the application execution.
     public static void main(final String[] args) {
+
         // Load .env file if it exists
         loadEnvFile();
 
@@ -132,6 +166,9 @@ public final class StakeMateApp {
             marketRepository,
             orderBookGateway
         );
+        // Initialize our real order-book trading system
+        initTradingSystem();
+
         final MarketsFrame marketsFrame = new MarketsFrame();
         final SwingViewMarketsPresenter marketsPresenter =
             new SwingViewMarketsPresenter(marketsFrame);
@@ -145,6 +182,8 @@ public final class StakeMateApp {
         final ViewMarketController marketController =
             new ViewMarketController(marketInteractor);
         marketsFrame.setController(marketController);
+        marketsFrame.enableOrderBookPopup();
+
 
 
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
@@ -156,7 +195,7 @@ public final class StakeMateApp {
 
         setupSettlementUseCase(marketsFrame, recordRepo);
 
-        final SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
+        userRepo = new SupabaseUserDataAccess(supabaseFactory);
 
         setupProfileUseCase(marketsFrame, userRepo);
         setupAuth(marketsFrame, userRepo);
