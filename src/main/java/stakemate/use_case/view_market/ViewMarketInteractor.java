@@ -10,7 +10,7 @@ import stakemate.entity.MarketStatus;
 import stakemate.entity.Match;
 import stakemate.entity.OrderBook;
 import stakemate.use_case.view_market.builder.MarketsResponseModelBuilder;
-import stakemate.use_case.view_market.decorator.HotMarketDecorator;
+import stakemate.use_case.view_market.decorator.HotAbstractMarketDecorator;
 import stakemate.use_case.view_market.facade.MarketDataFacade;
 import stakemate.use_case.view_market.strategy.MarketSortStrategy;
 import stakemate.use_case.view_market.strategy.StatusSortStrategy;
@@ -113,7 +113,7 @@ public class ViewMarketInteractor implements
                     open
                 );
                 if (open) {
-                    summary = new HotMarketDecorator(summary);
+                    summary = new HotAbstractMarketDecorator(summary);
                 }
 
                 summaries.add(summary);

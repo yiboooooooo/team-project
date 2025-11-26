@@ -8,7 +8,7 @@ import stakemate.use_case.view_market.MatchSummary;
 import stakemate.use_case.view_market.ViewMarketInputBoundary;
 
 /**
- * [Command Pattern]
+ * Command Pattern
  * Controller creates and executes Commands instead of calling Interactor directly.
  */
 public class ViewMarketController {
@@ -19,16 +19,30 @@ public class ViewMarketController {
         this.inputBoundary = inputBoundary;
     }
 
+    /**
+     * Refreshes the list of matches by executing a LoadMatchesCommand.
+     * This typically loads matches from the local database or cache.
+     */
     public void refresh() {
         // Create command
         final ViewMarketCommand command = new LoadMatchesCommand(inputBoundary);
         command.execute();
     }
 
+    /**
+     * Triggers a refresh of data from the external API.
+     * Delegates directly to the interactor to perform the API sync and subsequent update.
+     */
     public void refreshWithApi() {
         inputBoundary.refreshFromApi();
     }
 
+    /**
+     * Handles the selection of a specific match from the view.
+     * Executes a SelectMatchCommand to load markets for the selected match.
+     *
+     * @param matchSummary The summary object of the selected match.
+     */
     public void onMatchSelected(final MatchSummary matchSummary) {
         if (matchSummary != null) {
             final ViewMarketCommand command = new SelectMatchCommand(inputBoundary, matchSummary.getId());
@@ -36,6 +50,12 @@ public class ViewMarketController {
         }
     }
 
+    /**
+     * Handles the selection of a specific market from the view.
+     * Delegates to the interactor to load the order book for the selected market.
+     *
+     * @param marketSummary The summary object of the selected market.
+     */
     public void onMarketSelected(final MarketSummary marketSummary) {
         if (marketSummary != null) {
             // Direct call or Command, staying consistent
