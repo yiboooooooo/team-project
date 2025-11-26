@@ -8,7 +8,7 @@ import stakemate.use_case.view_market.MatchSummary;
 import stakemate.use_case.view_market.ViewMarketInputBoundary;
 
 /**
- * Command Pattern
+ * [Command Pattern]
  * Controller creates and executes Commands instead of calling Interactor directly.
  */
 public class ViewMarketController {

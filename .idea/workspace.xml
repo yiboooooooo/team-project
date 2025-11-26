@@ -4,31 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="">
+    <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.).">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/FakeOrderBookGateway.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/FakeOrderBookGateway.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMarketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMarketRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMatchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/in_memory/InMemoryMatchRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseClientFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseClientFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/factory/MarketFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/factory/MarketFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/SwingViewMarketsPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/SwingViewMarketsPresenter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/ViewMarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/ViewMarketController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/commands/ViewMarketCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/commands/ViewMarketCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MarketRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/MatchRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/OrderBookGateway.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/OrderBookGateway.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/OrderBookSubscriber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/OrderBookSubscriber.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInputBoundary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketOutputBoundary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/builder/MarketsResponseModelBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/builder/MarketsResponseModelBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/HotMarketDecorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/HotAbstractMarketDecorator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/MarketSummaryDecorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/decorator/AbstractMarketSummaryDecorator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/facade/MarketDataFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/facade/MarketDataFacade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/MarketSortStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/strategy/MarketSortStrategy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +48,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "Use-Case-2",
     "junie.onboarding.icon.badge.shown": "true",
@@ -78,6 +57,7 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
@@ -140,8 +120,19 @@
       <workItem from="1764138221112" duration="7000" />
       <workItem from="1764170401027" duration="3310000" />
       <workItem from="1764175810590" duration="517000" />
-      <workItem from="1764176821078" duration="4657000" />
+      <workItem from="1764176821078" duration="4921000" />
+      <workItem from="1764191040328" duration="18000" />
+      <workItem from="1764191066820" duration="1953000" />
     </task>
+    <task id="LOCAL-00001" summary="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.).">
+      <option name="closed" value="true" />
+      <created>1764190838339</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1764190838339</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -157,6 +148,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.)." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764116533823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
