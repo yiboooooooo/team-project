@@ -9,7 +9,7 @@ public class DataSourceFactory {
 
     public static DataSource create() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://aws-1-ca-central-1.pooler.supabase.com:6543/postgres");
+        config.setJdbcUrl("jdbc:postgresql://aws-1-ca-central-1.pooler.supabase.com:5432/postgres");
         config.setUsername("postgres.huqjovbougtvwlqtxppo");
         config.setPassword("stakematedb");
         config.setMaximumPoolSize(5);

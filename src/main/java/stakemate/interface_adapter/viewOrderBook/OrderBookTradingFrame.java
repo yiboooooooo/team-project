@@ -49,7 +49,7 @@ public class OrderBookTradingFrame extends JFrame {
         this.currentMarketId = initialMarketId;
 
         // ---- window basics ----
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(950, 600);
         setLocationRelativeTo(null);
 

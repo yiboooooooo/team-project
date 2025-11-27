@@ -77,8 +77,9 @@ public final class StakeMateApp {
     private static final double BET_AMOUNT = 50.0;
     private static final double ODDS_WIN = 0.6;
     private static final double ODDS_LOSE = 0.4;
-    private static stakemate.data_access.common.AccountRepository accountRepo;
-    private static stakemate.data_access.common.BetRepository betRepo;
+
+    private static stakemate.use_case.settle_market.AccountRepository accountRepo;
+    private static stakemate.use_case.settle_market.BetRepository betRepo;
 
     private static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase placeOrderUseCase;
     public static SupabaseUserDataAccess userRepo;
@@ -92,7 +93,7 @@ public final class StakeMateApp {
      *
      * @return The account repository.
      */
-    public static stakemate.data_access.common.AccountRepository getAccountRepo() {
+    public static stakemate.use_case.settle_market.AccountRepository getAccountRepo() {
         return accountRepo;
     }
 
@@ -101,7 +102,7 @@ public final class StakeMateApp {
      *
      * @return The bet repository.
      */
-    public static stakemate.data_access.common.BetRepository getBetRepo() {
+    public static stakemate.use_case.settle_market.BetRepository getBetRepo() {
         return betRepo;
     }
 
