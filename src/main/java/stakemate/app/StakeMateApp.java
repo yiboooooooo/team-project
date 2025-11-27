@@ -18,6 +18,7 @@ import stakemate.data_access.in_memory.InMemoryMarketRepository;
 import stakemate.data_access.in_memory.InMemoryMatchRepository;
 import stakemate.data_access.in_memory.InMemorySettlementRecordRepository;
 import stakemate.data_access.supabase.SupabaseClientFactory;
+import stakemate.data_access.supabase.SupabaseCommentRepository;
 import stakemate.data_access.supabase.SupabaseGameRepository;
 import stakemate.data_access.supabase.SupabaseUserDataAccess;
 import stakemate.entity.Game;
@@ -155,19 +156,29 @@ public final class StakeMateApp {
 
     private static void setupCommentSystem(final MarketsFrame marketsFrame) {
         // COMMENTS SYSTEM WIRING BELOW
-        final InMemoryCommentRepository commentRepo = new InMemoryCommentRepository();
+        final SupabaseCommentRepository commentRepo = new SupabaseCommentRepository();
 
-        final SwingPostCommentPresenter postPresenter =
-            new SwingPostCommentPresenter(marketsFrame.getCommentsPanel());
+        // First create the view presenter
         final SwingViewCommentsPresenter viewPresenter =
             new SwingViewCommentsPresenter(marketsFrame.getCommentsPanel());
 
+        // Then create the view controller (needed for the post presenter)
+        final ViewCommentsController viewController =
+            new ViewCommentsController(new ViewCommentsInteractor(commentRepo, viewPresenter));
+
+        // Now create the post presenter with BOTH arguments
+        final SwingPostCommentPresenter postPresenter =
+            new SwingPostCommentPresenter(marketsFrame.getCommentsPanel(), viewController);
+
+        // Create the interactors
         final PostCommentInteractor postInteractor = new PostCommentInteractor(commentRepo, postPresenter);
         final ViewCommentsInteractor viewInteractor = new ViewCommentsInteractor(commentRepo, viewPresenter);
 
+        // Create the controllers
         final PostCommentController postController = new PostCommentController(postInteractor);
-        final ViewCommentsController viewController = new ViewCommentsController(viewInteractor);
+        // viewController already created above
 
+        // Wire everything into the UI
         marketsFrame.getCommentsPanel().setControllers(postController, viewController);
     }
 

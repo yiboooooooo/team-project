@@ -81,6 +81,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
     private ViewMarketController viewController;
     private SettleMarketController settleMarketController;
+    private stakemate.interface_adapter.view_comments.ViewCommentsController viewCommentsController;
     private MarketSummary currentlySelectedMarket;
     private ProfileFrame profileFrame;
     private stakemate.interface_adapter.view_profile.ViewProfileController profileController;
@@ -111,6 +112,15 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
      */
     public void setSettleMarketController(final SettleMarketController controller) {
         this.settleMarketController = controller;
+    }
+
+    /**
+     * Sets the ViewComment Controller.
+     *
+     * @param controller The controller for settlement operations.
+     */
+    public void setViewCommentsController(stakemate.interface_adapter.view_comments.ViewCommentsController controller) {
+        this.viewCommentsController = controller;
     }
 
     /**
@@ -263,10 +273,18 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         });
 
         marketsList.addListSelectionListener(evt -> {
-            if (!evt.getValueIsAdjusting() && viewController != null) {
+            if (!evt.getValueIsAdjusting()) {
                 final MarketSummary selected = marketsList.getSelectedValue();
                 currentlySelectedMarket = selected;
-                viewController.onMarketSelected(selected);
+
+                if (viewController != null && selected != null) {
+                    viewController.onMarketSelected(selected);
+                }
+
+                // >>> ADD THIS: automatically load comments
+                if (viewCommentsController != null && selected != null) {
+                    viewCommentsController.fetchComments(selected.getId());
+                }
             }
         });
 
