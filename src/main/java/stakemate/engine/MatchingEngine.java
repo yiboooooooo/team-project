@@ -137,14 +137,13 @@ public class MatchingEngine {
         List<OrderBookEntry> askEntries = new ArrayList<>();
 
         for (BookOrder b : bids) {
-            if (b.getPrice() != null && b.getRemainingQty() > 0) {
-                bidEntries.add(new OrderBookEntry(Side.BUY, b.getPrice(), b.getRemainingQty()));
-            }
+            double priceValue = (b.getPrice() == null) ? -1.0 : b.getPrice();
+            bidEntries.add(new OrderBookEntry(Side.BUY, priceValue, b.getRemainingQty()));
         }
+
         for (BookOrder a : asks) {
-            if (a.getPrice() != null && a.getRemainingQty() > 0) {
-                askEntries.add(new OrderBookEntry(Side.SELL, a.getPrice(), a.getRemainingQty()));
-            }
+            double priceValue = (a.getPrice() == null) ? -1.0 : a.getPrice();
+            askEntries.add(new OrderBookEntry(Side.SELL, priceValue, a.getRemainingQty()));
         }
 
         return new OrderBook(marketId, bidEntries, askEntries);
