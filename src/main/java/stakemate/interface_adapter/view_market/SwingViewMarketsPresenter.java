@@ -26,9 +26,9 @@ public class SwingViewMarketsPresenter implements ViewMarketOutputBoundary {
 
     @Override
     public void presentMatches(final MatchesResponseModel responseModel) {
-        runOnEdt(() ->
-            view.showMatches(responseModel.getMatches(), responseModel.getEmptyStateMessage())
-        );
+        runOnEdt(() -> {
+            view.showMatches(responseModel.getMatches(), responseModel.getEmptyStateMessage());
+        });
     }
 
     @Override

@@ -4,23 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="Sync fix_checkstyle with latest main updates.">
+    <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.).">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/ViewMarketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market/ViewMarketController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Interface" />
-        <option value="Class" />
-      </list>
-    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -36,90 +27,54 @@
     &quot;assignee&quot;: &quot;gchoi123x&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/yiboooooooo/team-project.git",
-    "accountId": "38337a79-22c7-4447-a609-2318ffbab6e1"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/yiboooooooo/team-project.git&quot;,
+    &quot;accountId&quot;: &quot;f74a48d8-1d70-4128-b15b-e5b25550325c&quot;
   }
-}]]></component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" root0="FORCE_HIGHLIGHTING" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 2
 }</component>
-  <component name="ProjectId" id="358ioihnthhaz7d1Bacu1JZ9e7L" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="360JdnNyBShFSmU0tOnQjW95HG1" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.OddsApiTest.executor": "Run",
-    "Application.SettleMarketManualTest.executor": "Run",
-    "Application.StakeMateApp (1).executor": "Run",
     "Application.StakeMateApp.executor": "Run",
-    "Application.stakemate.interface_adapter.viewOrderBook.OrderBookDemo.executor": "Run",
-    "JUnit.EntitiesTest.executor": "Run",
-    "JUnit.SettleMarketInteractorTest.executor": "Run",
-    "JUnit.ViewMarketInteractorTest.executor": "Coverage",
-    "JUnit.stakemate.entity in TeamProject.executor": "Coverage",
-    "JUnit.stakemate.use_case.settle_market in TeamProject.executor": "Run",
-    "JUnit.stakemate.use_case.view_market in TeamProject.executor": "Coverage",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "JUnit.ViewMarketInteractorTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "fix__checkstyle",
+    "git-widget-placeholder": "Use-Case-2",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/garychoi/IdeaProjects/team-project",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.sourceCode.JAVA",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="stakemate.entity" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/.idea" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/test/java/skatemate" />
-      <recent name="$PROJECT_DIR$/src/test/java/stakemate/use_case" />
-      <recent name="$PROJECT_DIR$/src/test/java/stakemate" />
-      <recent name="$PROJECT_DIR$/src/test/java" />
-      <recent name="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_market" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration name="SettleMarketInteractorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+}]]></component>
+  <component name="RunManager" selected="Application.StakeMateApp">
+    <configuration name="StakeMateApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="stakemate.app.StakeMateApp" />
       <module name="TeamProject" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="stakemate.use_case.settle_market.*" />
+          <option name="PATTERN" value="stakemate.app.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="stakemate.use_case.settle_market" />
-      <option name="MAIN_CLASS_NAME" value="stakemate.use_case.settle_market.SettleMarketInteractorTest" />
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -139,214 +94,71 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="stakemate.entity in TeamProject" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="TeamProject" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="stakemate.entity.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="stakemate.entity" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="stakemate.use_case.settle_market in TeamProject" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="TeamProject" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="stakemate.use_case.settle_market.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="stakemate.use_case.settle_market" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="stakemate.use_case.view_market in TeamProject" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="TeamProject" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="stakemate.use_case.view_market.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="stakemate.use_case.view_market" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="team-project" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="team-project" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.stakemate.use_case.settle_market in TeamProject" />
-        <item itemvalue="JUnit.stakemate.entity in TeamProject" />
-        <item itemvalue="JUnit.SettleMarketInteractorTest" />
+        <item itemvalue="Application.StakeMateApp" />
         <item itemvalue="JUnit.ViewMarketInteractorTest" />
-        <item itemvalue="JUnit.stakemate.use_case.view_market in TeamProject" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
       </set>
     </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="" />
-      <created>1756884723241</created>
+      <changelist id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="" />
+      <created>1764137645518</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1756884723241</updated>
-      <workItem from="1756884726170" duration="869000" />
-      <workItem from="1762498276339" duration="1741000" />
-      <workItem from="1762500044038" duration="357000" />
-      <workItem from="1762501942874" duration="2000" />
-      <workItem from="1762535883323" duration="100000" />
-      <workItem from="1762535998410" duration="68000" />
-      <workItem from="1762536078190" duration="1022000" />
-      <workItem from="1763316364473" duration="24000" />
-      <workItem from="1763245252762" duration="571000" />
-      <workItem from="1763245863352" duration="9819000" />
-      <workItem from="1763257206685" duration="1520000" />
-      <workItem from="1763407136595" duration="4466000" />
-      <workItem from="1763511638597" duration="1872000" />
-      <workItem from="1763513551773" duration="2359000" />
-      <workItem from="1763602846400" duration="7533000" />
-      <workItem from="1763850345882" duration="4532000" />
-      <workItem from="1763859015665" duration="5088000" />
-      <workItem from="1763872808066" duration="176000" />
-      <workItem from="1763873163239" duration="890000" />
-      <workItem from="1763874065922" duration="57000" />
-      <workItem from="1763874123721" duration="143000" />
+      <updated>1764137645518</updated>
+      <workItem from="1764137646761" duration="457000" />
+      <workItem from="1764138221112" duration="7000" />
+      <workItem from="1764170401027" duration="3310000" />
+      <workItem from="1764175810590" duration="517000" />
+      <workItem from="1764176821078" duration="4921000" />
+      <workItem from="1764191040328" duration="18000" />
+      <workItem from="1764191066820" duration="1953000" />
     </task>
-    <task id="LOCAL-00001" summary="Set up Checkstyle and added dependencies for unit testing in pom.xml">
+    <task id="LOCAL-00001" summary="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.).">
       <option name="closed" value="true" />
-      <created>1763601865046</created>
+      <created>1764190838339</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1763601865046</updated>
+      <updated>1764190838339</updated>
     </task>
-    <task id="LOCAL-00002" summary="Reformatted project files">
-      <option name="closed" value="true" />
-      <created>1763601985472</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1763601985472</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Added strategy, observer, factory, builder, facade, adapter, command, and decorator design patterns to Use Case 2 and reformatted files">
-      <option name="closed" value="true" />
-      <created>1763604290012</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1763604290012</updated>
-    </task>
-    <task id="LOCAL-00004" summary="ViewMarketInteractor unit tests with 100% code coverage">
-      <option name="closed" value="true" />
-      <created>1763605353727</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1763605353727</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Checkstyle fixes">
-      <option name="closed" value="true" />
-      <created>1763606707269</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1763606707269</updated>
-    </task>
-    <task id="LOCAL-00006" summary="unit test for uc6 interactor">
-      <option name="closed" value="true" />
-      <created>1764025205834</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1764025205834</updated>
-    </task>
-    <task id="LOCAL-00007" summary="unit test for the entities with 100 % coverage">
-      <option name="closed" value="true" />
-      <created>1764025536143</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1764025536143</updated>
-    </task>
-    <task id="LOCAL-00008" summary="implemented Checkstyle fixes for the SettleMarket use case and for my(three) Supabase files.">
-      <option name="closed" value="true" />
-      <created>1764027054207</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1764027054207</updated>
-    </task>
-    <option name="localTasksCounter" value="9" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="my changes" />
-    <MESSAGE value="Set up Checkstyle and added dependencies for unit testing in pom.xml" />
-    <MESSAGE value="Reformatted project files" />
-    <MESSAGE value="Added strategy, observer, factory, builder, facade, adapter, command, and decorator design patterns to Use Case 2 and reformatted files" />
-    <MESSAGE value="ViewMarketInteractor unit tests with 100% code coverage" />
-    <MESSAGE value="Checkstyle fixes" />
-    <MESSAGE value="unit test for uc6 interactor" />
-    <MESSAGE value="unit test for the entities with 100 % coverage" />
-    <MESSAGE value="implemented Checkstyle fixes for the SettleMarket use case and for my(three) Supabase files." />
-    <MESSAGE value="Sync fix_checkstyle with latest main updates." />
-    <option name="LAST_COMMIT_MESSAGE" value="Sync fix_checkstyle with latest main updates." />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java</url>
-          <line>230</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.)." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764020955832" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+    <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764116533823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.view_market.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/team_project$stakemate_use_case_view_market_in_TeamProject.ic" NAME="stakemate.use_case.view_market in TeamProject Coverage Results" MODIFIED="1764019295619" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+    <SUITE FILE_PATH="coverage/FakeOrderBookGateway_java$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764175871652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.view_market.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/team_project$SettleMarketInteractorTest.ic" NAME="SettleMarketInteractorTest Coverage Results" MODIFIED="1764026261891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>stakemate.use_case.settle_market.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/team_project$stakemate_entity_in_TeamProject.ic" NAME="stakemate.entity in TeamProject Coverage Results" MODIFIED="1764025462778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>stakemate.entity.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/team_project$stakemate_use_case_settle_market_in_TeamProject.ic" NAME="stakemate.use_case.settle_market in TeamProject Coverage Results" MODIFIED="1764021529043" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>stakemate.use_case.settle_market.*</FILTER>
     </SUITE>
   </component>
 </project>

@@ -9,5 +9,10 @@ import stakemate.use_case.view_market.MarketSummary;
  * Interface for sorting algorithms.
  */
 public interface MarketSortStrategy {
+    /**
+     * Sorts a list of market summaries according to the strategy implementation.
+     *
+     * @param markets the list of markets to sort.
+     */
     void sort(List<MarketSummary> markets);
 }
