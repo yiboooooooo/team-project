@@ -301,10 +301,12 @@ public class OrderBookTradingFrame extends JFrame {
         asksModel.setRowCount(0);
 
         for (OrderBookEntry e : ob.getAsks()) {
-            asksModel.addRow(new Object[]{e.getPrice(), e.getQuantity()});
+            Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
+            asksModel.addRow(new Object[]{ priceDisplay, e.getQuantity() });
         }
         for (OrderBookEntry e : ob.getBids()) {
-            bidsModel.addRow(new Object[]{e.getPrice(), e.getQuantity()});
+            Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
+            bidsModel.addRow(new Object[]{ priceDisplay, e.getQuantity() });
         }
     }
 
