@@ -25,17 +25,18 @@ public class PostgresPositionRepository implements PositionRepository {
 
 
         final String sql = """
-                INSERT INTO positions (
-                    user_id,
-                    asset_name,
-                    amount,
-                    settled,
-                    market_id,
-                    price,
-                    won,
-                    side
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """;
+        INSERT INTO positions (
+            user_id,
+            asset_name,
+            amount,
+            settled,
+            market_id,
+            price,
+            "won?",
+            side
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """;
+
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
