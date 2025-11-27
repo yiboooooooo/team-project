@@ -57,11 +57,6 @@ import stakemate.view.SignupFrame;
 // -@cs[ClassFanOutComplexity] Main class depends on many components for dependency injection.
 public final class StakeMateApp {
 
-    private static final int INITIAL_BALANCE = 1000;
-    private static final double BET_AMOUNT = 50.0;
-    private static final double ODDS_WIN = 0.6;
-    private static final double ODDS_LOSE = 0.4;
-
     private static AccountRepository accountRepo;
     private static BetRepository betRepo;
 
