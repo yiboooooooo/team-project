@@ -12,7 +12,7 @@ public class SupabaseClientFactory {
 
     // Default values (can be overridden by environment variables)
     private static final String DEFAULT_HOST = "aws-1-ca-central-1.pooler.supabase.com";
-    private static final String DEFAULT_PORT = "6543";
+    private static final String DEFAULT_PORT = "5432";
     private static final String DEFAULT_DATABASE = "postgres";
 
     private final String host;
