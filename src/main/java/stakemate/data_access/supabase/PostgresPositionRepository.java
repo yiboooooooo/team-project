@@ -47,12 +47,7 @@ public class PostgresPositionRepository implements PositionRepository {
             ps.setBoolean(4, false);                    // settled = false initially
             ps.setString(5, order.getMarketId());       // market_id
 
-            if (order.getPrice() == null) {
-                ps.setNull(6, java.sql.Types.NUMERIC);
-            }
-            else {
-                ps.setDouble(6, executedPrice);         // trade execution price
-            }
+            ps.setDouble(6, executedPrice);   // <-- ALWAYS write the ratio, even for market orders
 
             ps.setNull(7, java.sql.Types.BOOLEAN);      // won is unknown until settlement logic
             ps.setString(8, order.getSide().name());    // BUY or SELL
