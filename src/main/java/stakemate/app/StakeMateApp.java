@@ -65,8 +65,8 @@ public final class StakeMateApp {
     private static final double ODDS_LOSE = 0.4;
 
 <<<<<<< HEAD
-    private static stakemate.data_access.common.AccountRepository accountRepo;
-    private static stakemate.data_access.common.BetRepository betRepo;
+    private static stakemate.use_case.settle_market.AccountRepository accountRepo;
+    private static stakemate.use_case.settle_market.BetRepository betRepo;
 
     private static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase placeOrderUseCase;
     public static SupabaseUserDataAccess userRepo;
@@ -80,7 +80,7 @@ public final class StakeMateApp {
      *
      * @return The account repository.
      */
-    public static stakemate.data_access.common.AccountRepository getAccountRepo() {
+    public static stakemate.use_case.settle_market.AccountRepository getAccountRepo() {
         return accountRepo;
     }
 
@@ -89,7 +89,7 @@ public final class StakeMateApp {
      *
      * @return The bet repository.
      */
-    public static stakemate.data_access.common.BetRepository getBetRepo() {
+    public static stakemate.use_case.settle_market.BetRepository getBetRepo() {
         return betRepo;
     }
 
@@ -102,11 +102,9 @@ public final class StakeMateApp {
         var orderRepo = new stakemate.data_access.supabase.PostgresOrderRepository(ds);
         var positionRepo = new stakemate.data_access.supabase.PostgresPositionRepository(ds);
 
-        // MatchingEngine
-        var engine = new stakemate.engine.MatchingEngine();
-
         // DbAccountService uses Supabase profiles table
         var accountService = new stakemate.service.DbAccountService(new SupabaseClientFactory());
+        var engine = new stakemate.engine.MatchingEngine(orderRepo, positionRepo, accountService);
 
         // Create use-case
         placeOrderUseCase = new stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase(

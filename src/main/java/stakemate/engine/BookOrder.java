@@ -18,6 +18,25 @@ public class BookOrder {
     private double remainingQty;
     private final Instant timestamp;
 
+    public BookOrder(String id,
+                     String userId,
+                     String marketId,
+                     Side side,
+                     Double price,
+                     double originalQty,
+                     double remainingQty,
+                     Instant timestamp) {
+
+        this.id = id;
+        this.userId = userId;
+        this.marketId = marketId;
+        this.side = side;
+        this.price = price;
+        this.originalQty = originalQty;
+        this.remainingQty = remainingQty;
+        this.timestamp = timestamp;
+    }
+
 
     public BookOrder(final String userId, final String marketId, final Side side, final Double price, final double qty) {
         this.id = UUID.randomUUID().toString();
@@ -74,3 +93,4 @@ public class BookOrder {
         return price == null;
     }
 }
+

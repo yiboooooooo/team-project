@@ -20,12 +20,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import stakemate.data_access.supabase.PostgresOrderRepository;
+import stakemate.data_access.supabase.SupabaseClientFactory;
 import stakemate.engine.MatchingEngine;
 import stakemate.engine.Trade;
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.entity.Side;
 import stakemate.service.AccountService;
+import stakemate.service.DbAccountService;
 import stakemate.service.InMemoryAccountService;
 import stakemate.use_case.PlaceOrderUseCase.*;
 import stakemate.use_case.PlaceOrderUseCase.DataSourceFactory;
@@ -54,7 +56,7 @@ public class OrderBookDemo {
 
 
     public OrderBookDemo() {
-        this.engine = new MatchingEngine();
+        this.engine = new MatchingEngine((PostgresOrderRepository) repository, positionRepo, new DbAccountService(new SupabaseClientFactory()));
         this.accountService = new InMemoryAccountService();
         this.useCase = new PlaceOrderUseCase(engine, accountService, repository, positionRepo);
 
