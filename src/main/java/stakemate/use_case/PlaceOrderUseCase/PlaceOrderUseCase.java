@@ -2,6 +2,8 @@ package stakemate.use_case.PlaceOrderUseCase;
 
 
 import java.util.List;
+
+import stakemate.data_access.supabase.PostgresOrderRepository;
 import stakemate.engine.BookOrder;
 import stakemate.engine.MatchingEngine;
 import stakemate.engine.Trade;
@@ -44,6 +46,14 @@ public class PlaceOrderUseCase {
             return PlaceOrderResponse.fail("Insufficient funds");
         }
 
+        double calcPrice = (req.price == null ? 1.0 : req.price);
+        double upfrontCost = calcPrice * req.quantity;
+
+        if (accountService instanceof stakemate.service.DbAccountService dbAcc) {
+            dbAcc.adjustBalance(req.userId, -upfrontCost);
+        }
+
+
         // create internal order (price == null => market)
         final BookOrder incoming = new BookOrder(req.userId, req.marketId, req.side, req.price, req.quantity);
         accountService.reserveForOrder(req.userId, incoming.getId(), estimateReservationAmount(incoming));
@@ -51,25 +61,6 @@ public class PlaceOrderUseCase {
 
         final List<Trade> trades = engine.placeOrder(incoming);
         System.out.println("DEBUG: trades.size = " + trades.size());
-        for (final Trade t : trades) {
-            final BookOrder buy = orderRepository.findById(t.getBuyOrderId());
-            final BookOrder sell = orderRepository.findById(t.getSellOrderId());
-
-            if (buy != null) {
-                positionRepository.savePosition(buy, t.getSize(), t.getPrice());
-            }
-            if (sell != null) {
-                positionRepository.savePosition(sell, t.getSize(), t.getPrice());
-            }
-
-            // Optional generic hook (keeps interface happy)
-            accountService.capture(t);
-
-            // If our AccountService is the DB-backed one, settle balances now
-            if (accountService instanceof stakemate.service.DbAccountService && buy != null && sell != null) {
-                ((stakemate.service.DbAccountService) accountService).applyTrade(buy, sell, t);
-            }
-        }
 
         final String msg = trades.isEmpty() ? "Order placed (no immediate trades)" : String.format("Executed %d trades", trades.size());
         return PlaceOrderResponse.success(msg);
@@ -94,17 +85,14 @@ public class PlaceOrderUseCase {
      * Return all open orders (bids + asks) for a given user.
      * This is used by the UI to populate the "Open Orders" table.
      */
-    public List<BookOrder> openOrdersForUser(final String userId) {
-        final List<BookOrder> all = new ArrayList<>();
-        all.addAll(engine.getBids());
-        all.addAll(engine.getAsks());
-        return all.stream()
-            .filter(o -> o.getUserId().equals(userId))
-            .collect(Collectors.toList());
+    public List<BookOrder> openOrdersForUser(String userId) {
+        return orderRepository.findOpenOrdersForUser(userId);
     }
 
-
 }
+
+
+
 
 
 

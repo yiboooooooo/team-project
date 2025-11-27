@@ -102,11 +102,9 @@ public final class StakeMateApp {
         var orderRepo = new stakemate.data_access.supabase.PostgresOrderRepository(ds);
         var positionRepo = new stakemate.data_access.supabase.PostgresPositionRepository(ds);
 
-        // MatchingEngine
-        var engine = new stakemate.engine.MatchingEngine();
-
         // DbAccountService uses Supabase profiles table
         var accountService = new stakemate.service.DbAccountService(new SupabaseClientFactory());
+        var engine = new stakemate.engine.MatchingEngine(orderRepo, positionRepo, accountService);
 
         // Create use-case
         placeOrderUseCase = new stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase(
