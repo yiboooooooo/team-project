@@ -79,7 +79,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private final JButton sellButton = new JButton("Sell");
     private final JButton myProfileButton = new JButton("My Profile");
     private final JButton liveMatchesButton = new JButton("Live Matches");
-    private final JButton settleButton = new JButton("Settle");
+//    private final JButton settleButton = new JButton("Settle");
     private ViewMarketController controller;
     private final JButton settleButton = new JButton("Settle (Demo)");
     private final CommentsPanel commentsPanel = new CommentsPanel();
@@ -201,8 +201,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         matchesSouthPanel.add(matchesEmptyLabel, BorderLayout.NORTH);
         matchesSouthPanel.add(liveMatchesButton, BorderLayout.SOUTH);
         leftPanel.add(matchesSouthPanel, BorderLayout.SOUTH);
-        final JPanel marketsPanel = new JPanel(new BorderLayout(4, 4));
-        leftPanel.add(matchesEmptyLabel, BorderLayout.SOUTH);
 
         // --- Right Panel (Markets + OrderBook + Controls) ---
         final JPanel rightPanel = createRightPanel();

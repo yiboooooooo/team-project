@@ -126,6 +126,7 @@ public final class StakeMateApp {
         setupMarketView(marketsFrame, marketFacade);
         setupCommentSystem(marketsFrame);
         setupSettlementUseCase(marketsFrame, new InMemorySettlementRecordRepository());
+        setupLiveMatchesView(marketsFrame, fetchGamesInteractor, gameRepository);
 
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
         final SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
@@ -195,6 +196,20 @@ public final class StakeMateApp {
         final SettleMarketController settleController =
             new SettleMarketController(settleInteractor);
         marketsFrame.setSettleMarketController(settleController);
+    }
+
+    private static void setupLiveMatchesView(final MarketsFrame marketsFrame,
+                                            final FetchGamesInteractor fetchGamesInteractor,
+                                            final SupabaseGameRepository gameRepository) {
+        final LiveMatchesFrame liveMatchesFrame = new LiveMatchesFrame();
+        final SwingLiveMatchesPresenter livePresenter = new SwingLiveMatchesPresenter(liveMatchesFrame);
+        final LiveMatchesInteractor liveInteractor =
+            new LiveMatchesInteractor(fetchGamesInteractor, gameRepository, livePresenter);
+        final LiveMatchesController liveController = new LiveMatchesController(liveInteractor);
+
+        liveMatchesFrame.setController(liveController);
+        marketsFrame.setLiveMatchesFrame(liveMatchesFrame);
+        marketsFrame.setLiveMatchesController(liveController);
     }
 
     private static void setupProfileUseCase(final MarketsFrame marketsFrame,
