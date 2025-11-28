@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="Implemented a lot of the matching logic, and OrderBook view now correctly populates the positions table.">
+    <list default="true" id="22eb63ef-ade0-4ad3-8ca2-736166866beb" name="Changes" comment="Fixed some issues, and implemented the UI to also show market orders on the orderbook.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/engine/MatchingEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/engine/MatchingEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/viewOrderBook/OrderBookTradingFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/viewOrderBook/OrderBookTradingFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,12 +34,12 @@
     &quot;assignee&quot;: &quot;gchoi123x&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/yiboooooooo/team-project.git",
-    "accountId": "46272f12-d03f-465e-8a5a-727a4c53c414"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/yiboooooooo/team-project.git&quot;,
+    &quot;accountId&quot;: &quot;46272f12-d03f-465e-8a5a-727a4c53c414&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/main/java/stakemate/use_case/settle_market/SettleMarketInteractor.java" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -292,7 +290,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764229818308</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Fixed some issues, and implemented the UI to also show market orders on the orderbook.">
+      <option name="closed" value="true" />
+      <created>1764230327610</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1764230327610</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -308,7 +314,8 @@
     <MESSAGE value="Implemented creating orders, matching orders, UI of the orderbook and integrated all that into main program." />
     <MESSAGE value="Implemented functions to push positions into DB, improved the UI. Added logic for matching and continued work on partial filling." />
     <MESSAGE value="Implemented a lot of the matching logic, and OrderBook view now correctly populates the positions table." />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented a lot of the matching logic, and OrderBook view now correctly populates the positions table." />
+    <MESSAGE value="Fixed some issues, and implemented the UI to also show market orders on the orderbook." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed some issues, and implemented the UI to also show market orders on the orderbook." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1763605039137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
