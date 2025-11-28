@@ -29,6 +29,7 @@ import stakemate.app.StakeMateApp;
 import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.interface_adapter.controllers.SettleMarketController;
+import stakemate.interface_adapter.view_comments.PostCommentController;
 import stakemate.interface_adapter.view_market.MarketsView;
 import stakemate.interface_adapter.view_market.SettleMarketView;
 import stakemate.interface_adapter.view_market.ViewMarketController;
@@ -82,6 +83,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private ViewMarketController viewController;
     private SettleMarketController settleMarketController;
     private stakemate.interface_adapter.view_comments.ViewCommentsController viewCommentsController;
+    private stakemate.interface_adapter.view_comments.PostCommentController postCommentController;
     private MarketSummary currentlySelectedMarket;
     private ProfileFrame profileFrame;
     private stakemate.interface_adapter.view_profile.ViewProfileController profileController;
@@ -117,10 +119,30 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     /**
      * Sets the ViewComment Controller.
      *
-     * @param controller The controller for settlement operations.
+     * @param controller The controller for comments
      */
     public void setViewCommentsController(stakemate.interface_adapter.view_comments.ViewCommentsController controller) {
         this.viewCommentsController = controller;
+    }
+
+    /**
+     * Sets the PostCommentController.
+     *
+     * @param controller The controller for posting comments
+     */
+    public void setPostCommentController(PostCommentController controller) {
+        this.postCommentController = controller;
+    }
+
+    /**
+     * Sets up the comments panel.
+     *
+     */
+    public void wireCommentsPanel() {
+        if (postCommentController != null && viewCommentsController != null) {
+            commentsPanel.setMarketsFrame(this);
+            commentsPanel.setControllers(postCommentController, viewCommentsController);
+        }
     }
 
     /**
@@ -512,6 +534,14 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
     public CommentsPanel getCommentsPanel() {
         return commentsPanel;
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
+    }
+
+    public MarketSummary getCurrentlySelectedMarket() {
+        return currentlySelectedMarket;
     }
 
     // ---- Order Book Table Model ----

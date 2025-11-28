@@ -179,7 +179,9 @@ public final class StakeMateApp {
         // viewController already created above
 
         // Wire everything into the UI
-        marketsFrame.getCommentsPanel().setControllers(postController, viewController);
+        marketsFrame.setPostCommentController(postController);   // sets the post controller in MarketsFrame
+        marketsFrame.setViewCommentsController(viewController);  // sets the view controller in MarketsFrame
+        marketsFrame.wireCommentsPanel();                        // wires commentsPanel with both controllers
     }
 
     private static void setupDemoData() {

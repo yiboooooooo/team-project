@@ -5,13 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.).">
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/SupabaseCommentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/SwingPostCommentPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_comments/SwingPostCommentPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/CommentsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/CommentsPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
