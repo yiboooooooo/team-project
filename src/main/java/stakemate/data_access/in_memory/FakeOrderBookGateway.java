@@ -18,6 +18,16 @@ import stakemate.use_case.view_market.RepositoryException;
 
 public class FakeOrderBookGateway implements OrderBookGateway {
 
+    private static final long TIMER_PERIOD_MS = 2000L;
+    private static final double SIMULATED_ERROR_RATE = 0.05;
+    private static final double RECONNECT_RATE = 0.1;
+    private static final double EMPTY_BOOK_PROBABILITY = 0.3;
+    private static final int BOOK_DEPTH = 3;
+    private static final double BASE_PRICE = 2.0;
+    private static final double PRICE_INCREMENT = 0.1;
+    private static final int BASE_QTY = 10;
+    private static final int QTY_VARIANCE = 20;
+
     private final Map<String, OrderBook> orderBooks = new ConcurrentHashMap<>();
     private final Map<String, List<OrderBookSubscriber>> subscribers = new ConcurrentHashMap<>();
     private final Timer timer = new Timer("OrderBookTimer", true);
@@ -29,12 +39,12 @@ public class FakeOrderBookGateway implements OrderBookGateway {
             public void run() {
                 updateAllOrderBooks();
             }
-        }, 2000L, 2000L);
+        }, TIMER_PERIOD_MS, TIMER_PERIOD_MS);
     }
 
     @Override
     public OrderBook getSnapshot(final String marketId) throws RepositoryException {
-        if (random.nextDouble() < 0.05) {
+        if (random.nextDouble() < SIMULATED_ERROR_RATE) {
             throw new RepositoryException("Simulated DB connectivity issue.");
         }
         return orderBooks.computeIfAbsent(marketId, this::createRandomOrderBookPossiblyEmpty);
@@ -42,7 +52,7 @@ public class FakeOrderBookGateway implements OrderBookGateway {
 
     @Override
     public void subscribe(final String marketId, final OrderBookSubscriber subscriber) {
-        subscribers.computeIfAbsent(marketId, k -> new ArrayList<>()).add(subscriber);
+        subscribers.computeIfAbsent(marketId, key -> new ArrayList<>()).add(subscriber);
     }
 
     @Override
@@ -54,7 +64,7 @@ public class FakeOrderBookGateway implements OrderBookGateway {
     }
 
     private OrderBook createRandomOrderBookPossiblyEmpty(final String marketId) {
-        final boolean startEmpty = random.nextDouble() < 0.3;
+        final boolean startEmpty = random.nextDouble() < EMPTY_BOOK_PROBABILITY;
         if (startEmpty) {
             return new OrderBook(marketId, Collections.emptyList(), Collections.emptyList());
         }
@@ -65,13 +75,13 @@ public class FakeOrderBookGateway implements OrderBookGateway {
         final List<OrderBookEntry> bids = new ArrayList<>();
         final List<OrderBookEntry> asks = new ArrayList<>();
 
-        final double mid = 2.0 + random.nextDouble();
+        final double mid = BASE_PRICE + random.nextDouble();
 
-        for (int i = 0; i < 3; i++) {
-            final double bidPrice = mid - 0.1 * i;
-            final double askPrice = mid + 0.1 * i;
-            final double bidQty = 10 + random.nextInt(20);
-            final double askQty = 10 + random.nextInt(20);
+        for (int i = 0; i < BOOK_DEPTH; i++) {
+            final double bidPrice = mid - PRICE_INCREMENT * i;
+            final double askPrice = mid + PRICE_INCREMENT * i;
+            final double bidQty = BASE_QTY + random.nextInt(QTY_VARIANCE);
+            final double askQty = BASE_QTY + random.nextInt(QTY_VARIANCE);
 
             bids.add(new OrderBookEntry(Side.BUY, bidPrice, bidQty));
             asks.add(new OrderBookEntry(Side.SELL, askPrice, askQty));
@@ -82,7 +92,7 @@ public class FakeOrderBookGateway implements OrderBookGateway {
 
     private void updateAllOrderBooks() {
         for (final String marketId : new ArrayList<>(orderBooks.keySet())) {
-            if (random.nextDouble() < 0.05) {
+            if (random.nextDouble() < SIMULATED_ERROR_RATE) {
                 final List<OrderBookSubscriber> subs = subscribers.get(marketId);
                 if (subs != null) {
                     for (final OrderBookSubscriber s : subs) {
@@ -99,7 +109,7 @@ public class FakeOrderBookGateway implements OrderBookGateway {
             if (subs != null) {
                 for (final OrderBookSubscriber s : subs) {
                     s.onOrderBookUpdated(updated);
-                    if (random.nextDouble() < 0.1) {
+                    if (random.nextDouble() < RECONNECT_RATE) {
                         s.onConnectionRestored();
                     }
                 }

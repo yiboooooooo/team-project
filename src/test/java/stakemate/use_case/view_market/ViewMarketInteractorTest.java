@@ -22,67 +22,31 @@ import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.entity.Side;
 import stakemate.use_case.view_market.facade.MarketDataFacade;
-import stakemate.use_case.view_market.strategy.NameSortStrategy;
 
 class ViewMarketInteractorTest {
 
-    // Define dummy repositories to satisfy Facade constructor,
-    // though we will override Facade methods in the Stub.
     private static final MatchRepository DUMMY_MATCH_REPO = () -> new ArrayList<>();
     private static final MarketRepository DUMMY_MARKET_REPO = matchId -> new ArrayList<>();
-    private static final OrderBookGateway DUMMY_OB_GATEWAY = new OrderBookGateway() {
-        @Override
-        public OrderBook getSnapshot(final String marketId) {
-            return null;
-        }
 
-        @Override
-        public void subscribe(final String marketId, final OrderBookSubscriber subscriber) {
-        }
-
-        @Override
-        public void unsubscribe(final String marketId, final OrderBookSubscriber subscriber) {
-        }
-    };
     private StubMarketDataFacade stubFacade;
     private ViewMarketInteractor interactor;
 
     @BeforeEach
     void setUp() {
-        // Initialize the Stub Facade
         stubFacade = new StubMarketDataFacade();
     }
 
-    // =========================================================================
-    // Test: loadMatches()
-    // =========================================================================
-
     @Test
-    void testLoadMatches_Success() {
-        // Arrange
-        stubFacade.matchesToReturn.add(new Match("match1", "Home", "Away", MatchStatus.UPCOMING, LocalDateTime.now()));
+    void testLoadMatchesSuccess() {
+        stubFacade.addMatch(new Match("match1", "Home", "Away",
+            MatchStatus.UPCOMING, LocalDateTime.now()));
 
-        final ViewMarketOutputBoundary successPresenter = new ViewMarketOutputBoundary() {
+        final ViewMarketOutputBoundary successPresenter = new TestOutputBoundary() {
             @Override
             public void presentMatches(final MatchesResponseModel responseModel) {
                 assertEquals(1, responseModel.getMatches().size());
                 assertEquals("Home vs Away", responseModel.getMatches().get(0).getLabel());
                 assertNull(responseModel.getEmptyStateMessage());
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-                fail("Unexpected call");
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
-                fail("Unexpected call");
-            }
-
-            @Override
-            public void presentError(final String m) {
-                fail("Unexpected error: " + m);
             }
         };
 
@@ -91,30 +55,14 @@ class ViewMarketInteractorTest {
     }
 
     @Test
-    void testLoadMatches_Empty() {
-        // Arrange
-        stubFacade.matchesToReturn.clear();
+    void testLoadMatchesEmpty() {
+        stubFacade.clearMatches();
 
-        final ViewMarketOutputBoundary emptyPresenter = new ViewMarketOutputBoundary() {
+        final ViewMarketOutputBoundary emptyPresenter = new TestOutputBoundary() {
             @Override
             public void presentMatches(final MatchesResponseModel responseModel) {
                 assertTrue(responseModel.getMatches().isEmpty());
                 assertEquals("No upcoming games", responseModel.getEmptyStateMessage());
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-                fail("Unexpected call");
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
-                fail("Unexpected call");
-            }
-
-            @Override
-            public void presentError(final String m) {
-                fail("Unexpected error: " + m);
             }
         };
 
@@ -123,24 +71,13 @@ class ViewMarketInteractorTest {
     }
 
     @Test
-    void testLoadMatches_Failure() {
-        // Arrange
-        stubFacade.shouldThrowOnMatches = true;
+    void testLoadMatchesFailure() {
+        stubFacade.setShouldThrowOnMatches(true);
 
-        final ViewMarketOutputBoundary errorPresenter = new ViewMarketOutputBoundary() {
+        final ViewMarketOutputBoundary errorPresenter = new TestOutputBoundary() {
             @Override
             public void presentMatches(final MatchesResponseModel r) {
                 fail("Unexpected success");
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-                fail("Unexpected call");
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
-                fail("Unexpected call");
             }
 
             @Override
@@ -153,56 +90,28 @@ class ViewMarketInteractorTest {
         interactor.loadMatches();
     }
 
-    // =========================================================================
-    // Test: refreshFromApi()
-    // =========================================================================
-
     @Test
-    void testRefreshFromApi_Success() {
-        // Arrange
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
+    void testRefreshFromApiSuccess() {
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentMatches(final MatchesResponseModel responseModel) {
-                // Should be called after refresh logic inside loadMatches
                 assertNotNull(responseModel);
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
-            }
-
-            @Override
-            public void presentError(final String m) {
-                fail("Unexpected error");
             }
         };
 
         interactor = new ViewMarketInteractor(stubFacade, presenter);
         interactor.refreshFromApi();
-        assertTrue(stubFacade.refreshCalled);
+        assertTrue(stubFacade.isRefreshCalled());
     }
 
     @Test
-    void testRefreshFromApi_Failure() {
-        // Arrange
-        stubFacade.shouldThrowOnRefresh = true;
+    void testRefreshFromApiFailure() {
+        stubFacade.setShouldThrowOnRefresh(true);
 
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentMatches(final MatchesResponseModel r) {
                 fail("Unexpected success");
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
             }
 
             @Override
@@ -215,25 +124,20 @@ class ViewMarketInteractorTest {
         interactor.refreshFromApi();
     }
 
-    // =========================================================================
-    // Test: matchSelected() (includes Decorator, Builder, Strategy tests)
-    // =========================================================================
-
     @Test
-    void testMatchSelected_WithCachedMatch_AndMarkets() {
-        // Arrange
-        // 1. Populate cache via loadMatches first
-        final Match match = new Match("m1", "Raptors", "Celtics", MatchStatus.UPCOMING, LocalDateTime.now());
-        stubFacade.matchesToReturn.add(match);
-        // Constructor: id, matchId, name, status
+    void testMatchSelectedWithCachedMatchAndMarkets() {
+        final Match match = new Match("m1", "Raptors", "Celtics",
+            MatchStatus.UPCOMING, LocalDateTime.now());
+        stubFacade.addMatch(match);
         final Market openMarket = new Market("mk1", "m1", "Moneyline", MarketStatus.OPEN);
         final Market closedMarket = new Market("mk2", "m1", "Total", MarketStatus.CLOSED);
-        stubFacade.marketsToReturn.add(closedMarket);
-        stubFacade.marketsToReturn.add(openMarket);
+        stubFacade.addMarket(closedMarket);
+        stubFacade.addMarket(openMarket);
 
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentMatches(final MatchesResponseModel r) {
+                // Do nothing
             }
 
             @Override
@@ -243,54 +147,26 @@ class ViewMarketInteractorTest {
 
                 final List<MarketSummary> markets = responseModel.getMarkets();
                 assertEquals(2, markets.size());
-                // mk1 is OPEN, mk2 is CLOSED. mk1 should be first.
                 assertEquals("mk1", markets.get(0).getId());
                 assertTrue(markets.get(0).getName().contains("Moneyline"));
-                assertTrue(markets.get(0).toString().contains("HOT"), "Decorator should add HOT tag");
+                assertTrue(markets.get(0).toString().contains("HOT"),
+                    "Decorator should add HOT tag");
                 assertFalse(markets.get(1).toString().contains("HOT"));
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
-            }
-
-            @Override
-            public void presentError(final String m) {
-                fail("Unexpected error");
             }
         };
 
         interactor = new ViewMarketInteractor(stubFacade, presenter);
         interactor.loadMatches();
-
-        // Act
         interactor.matchSelected("m1");
     }
 
     @Test
-    void testMatchSelected_MatchNotInCache() {
-        // Arrange
-        // Not calling loadMatches, so cache is empty
-
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
-
+    void testMatchSelectedMatchNotInCache() {
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentMarketsForMatch(final MarketsResponseModel responseModel) {
-                // Fallback title logic
                 assertEquals("Match m99", responseModel.getMatchTitle());
                 assertEquals("No markets available.", responseModel.getEmptyStateMessage());
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
-            }
-
-            @Override
-            public void presentError(final String m) {
-                fail("Unexpected error");
             }
         };
 
@@ -299,22 +175,13 @@ class ViewMarketInteractorTest {
     }
 
     @Test
-    void testMatchSelected_Failure() {
-        // Arrange
-        stubFacade.shouldThrowOnMarkets = true;
+    void testMatchSelectedFailure() {
+        stubFacade.setShouldThrowOnMarkets(true);
 
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
-
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentMarketsForMatch(final MarketsResponseModel r) {
                 fail("Unexpected success");
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
             }
 
             @Override
@@ -328,106 +195,62 @@ class ViewMarketInteractorTest {
 
     @Test
     void testSetStrategy() {
-        // Arrange
-        // Fix: Added matchId "m1" to constructors
         final Market openMarket = new Market("mk1", "m1", "Z-Name", MarketStatus.OPEN);
         final Market closedMarket = new Market("mk2", "m1", "A-Name", MarketStatus.CLOSED);
-        stubFacade.marketsToReturn.add(openMarket);
-        stubFacade.marketsToReturn.add(closedMarket);
+        stubFacade.addMarket(openMarket);
+        stubFacade.addMarket(closedMarket);
 
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
-
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentMarketsForMatch(final MarketsResponseModel responseModel) {
-                // With NameSortStrategy, "A-Name" (closed) should come before "Z-Name" (open)
                 assertEquals("mk2", responseModel.getMarkets().get(0).getId());
-            }
-
-            @Override
-            public void presentOrderBook(final OrderBookResponseModel r) {
-            }
-
-            @Override
-            public void presentError(final String m) {
             }
         };
 
         interactor = new ViewMarketInteractor(stubFacade, presenter);
-        interactor.setMarketSortStrategy(new NameSortStrategy());
+        interactor.setMarketSortStrategy(markets -> {
+            markets.sort((market1, market2) -> {
+                return market1.getName().compareTo(market2.getName());
+            });
+        });
         interactor.matchSelected("m1");
     }
 
-    // =========================================================================
-    // Test: marketSelected() & Observer Logic
-    // =========================================================================
-
     @Test
-    void testMarketSelected_Success_And_Switching() {
-        // Arrange
-        // Use a mutable array to update the expected ID dynamically
+    void testMarketSelectedSuccessAndSwitching() {
         final String[] expectedId = {"mk1"};
-
         final OrderBook book1 = new OrderBook("mk1", new ArrayList<>(), new ArrayList<>());
-        stubFacade.snapshotToReturn = book1;
+        stubFacade.setSnapshotToReturn(book1);
 
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-            }
-
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentOrderBook(final OrderBookResponseModel responseModel) {
                 assertNotNull(responseModel.getOrderBook());
                 assertEquals(expectedId[0], responseModel.getOrderBook().getMarketId());
             }
-
-            @Override
-            public void presentError(final String m) {
-            }
         };
 
         interactor = new ViewMarketInteractor(stubFacade, presenter);
         interactor.marketSelected("mk1");
-        assertTrue(stubFacade.subscribedMarkets.contains("mk1"));
-        // Reset spy list
-        stubFacade.subscribedMarkets.clear();
-        stubFacade.unsubscribedMarkets.clear();
+        assertTrue(stubFacade.getSubscribedMarkets().contains("mk1"));
+
+        stubFacade.clearSubscriptions();
         expectedId[0] = "mk2";
-        stubFacade.snapshotToReturn = new OrderBook("mk2", new ArrayList<>(), new ArrayList<>());
+        stubFacade.setSnapshotToReturn(new OrderBook("mk2", new ArrayList<>(), new ArrayList<>()));
         interactor.marketSelected("mk2");
-        assertTrue(stubFacade.unsubscribedMarkets.contains("mk1"));
-        assertTrue(stubFacade.subscribedMarkets.contains("mk2"));
+        assertTrue(stubFacade.getUnsubscribedMarkets().contains("mk1"));
+        assertTrue(stubFacade.getSubscribedMarkets().contains("mk2"));
     }
 
     @Test
-    void testMarketSelected_Failure() {
-        // Arrange
-        stubFacade.shouldThrowOnSnapshot = true;
+    void testMarketSelectedFailure() {
+        stubFacade.setShouldThrowOnSnapshot(true);
 
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-            }
-
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentOrderBook(final OrderBookResponseModel responseModel) {
                 assertTrue(responseModel.isReconnecting());
                 assertEquals("Reconnecting...", responseModel.getMessage());
-            }
-
-            @Override
-            public void presentError(final String m) {
             }
         };
 
@@ -437,26 +260,12 @@ class ViewMarketInteractorTest {
 
     @Test
     void testObserverMethods() {
-        // Test onOrderBookUpdated
-        final ViewMarketOutputBoundary presenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
-
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-            }
-
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentOrderBook(final OrderBookResponseModel responseModel) {
-                if (responseModel.isReconnecting()) {
-                    return;
+                if (!responseModel.isReconnecting()) {
+                    assertFalse(responseModel.isEmpty());
                 }
-                assertFalse(responseModel.isEmpty());
-            }
-
-            @Override
-            public void presentError(final String m) {
             }
         };
         interactor = new ViewMarketInteractor(stubFacade, presenter);
@@ -464,71 +273,189 @@ class ViewMarketInteractorTest {
         final List<OrderBookEntry> bids = List.of(new OrderBookEntry(Side.BUY, 1.5, 10));
         final OrderBook update = new OrderBook("mk1", bids, new ArrayList<>());
         interactor.onOrderBookUpdated(update);
-        final ViewMarketOutputBoundary errorPresenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
 
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-            }
-
+        final ViewMarketOutputBoundary errorPresenter = new TestOutputBoundary() {
             @Override
             public void presentOrderBook(final OrderBookResponseModel responseModel) {
                 assertTrue(responseModel.isReconnecting());
                 assertEquals("Lost connection", responseModel.getMessage());
             }
-
-            @Override
-            public void presentError(final String m) {
-            }
         };
         interactor = new ViewMarketInteractor(stubFacade, errorPresenter);
         interactor.onConnectionError("Lost connection");
-        final ViewMarketOutputBoundary restorePresenter = new ViewMarketOutputBoundary() {
-            @Override
-            public void presentMatches(final MatchesResponseModel r) {
-            }
 
-            @Override
-            public void presentMarketsForMatch(final MarketsResponseModel r) {
-            }
-
+        final ViewMarketOutputBoundary restorePresenter = new TestOutputBoundary() {
             @Override
             public void presentOrderBook(final OrderBookResponseModel responseModel) {
                 assertFalse(responseModel.isReconnecting());
                 assertEquals("Connection restored", responseModel.getMessage());
-            }
-
-            @Override
-            public void presentError(final String m) {
             }
         };
         interactor = new ViewMarketInteractor(stubFacade, restorePresenter);
         interactor.onConnectionRestored();
     }
 
-    // =========================================================================
-    // Internal Stub Class to Mock MarketDataFacade
-    // =========================================================================
+    @Test
+    void testMarketSelectedSameMarketTwiceBranchCoverage() {
+        stubFacade.setSnapshotToReturn(new OrderBook("mk1",
+            new ArrayList<>(), new ArrayList<>()));
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
+            @Override
+            public void presentOrderBook(final OrderBookResponseModel responseModel) {
+                // Do nothing
+            }
+        };
+        interactor = new ViewMarketInteractor(stubFacade, presenter);
+
+        interactor.marketSelected("mk1");
+        stubFacade.clearSubscriptions();
+
+        interactor.marketSelected("mk1");
+
+        assertFalse(stubFacade.getUnsubscribedMarkets().contains("mk1"));
+    }
+
+    @Test
+    void testOnOrderBookUpdatedEmptyBranchCoverage() {
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
+            @Override
+            public void presentOrderBook(final OrderBookResponseModel responseModel) {
+                assertTrue(responseModel.isEmpty());
+                assertEquals("No orders yet", responseModel.getMessage());
+            }
+        };
+        interactor = new ViewMarketInteractor(stubFacade, presenter);
+
+        interactor.onOrderBookUpdated(new OrderBook("m1",
+            new ArrayList<>(), new ArrayList<>()));
+    }
+
+    @Test
+    void testOnConnectionErrorNullMessageBranchCoverage() {
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
+            @Override
+            public void presentOrderBook(final OrderBookResponseModel responseModel) {
+                assertTrue(responseModel.isReconnecting());
+                assertEquals("Reconnecting...", responseModel.getMessage());
+            }
+        };
+        interactor = new ViewMarketInteractor(stubFacade, presenter);
+
+        interactor.onConnectionError(null);
+    }
+
+    @Test
+    void testMarketSelectedWithPopulatedOrderBookBranchCoverage() {
+        final List<OrderBookEntry> bids = new ArrayList<>();
+        bids.add(new OrderBookEntry(Side.BUY, 10.0, 1.0));
+        final OrderBook populatedBook = new OrderBook("mk1", bids, new ArrayList<>());
+
+        stubFacade.setSnapshotToReturn(populatedBook);
+
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
+            @Override
+            public void presentOrderBook(final OrderBookResponseModel responseModel) {
+                assertFalse(responseModel.isEmpty());
+                assertNull(responseModel.getMessage());
+            }
+        };
+
+        interactor = new ViewMarketInteractor(stubFacade, presenter);
+
+        interactor.marketSelected("mk1");
+    }
+
+    /**
+     * Helper class to reduce anonymous inner class length in tests.
+     */
+    private static class TestOutputBoundary implements ViewMarketOutputBoundary {
+        @Override
+        public void presentMatches(final MatchesResponseModel responseModel) {
+            fail("Unexpected call to presentMatches");
+        }
+
+        @Override
+        public void presentMarketsForMatch(final MarketsResponseModel responseModel) {
+            fail("Unexpected call to presentMarketsForMatch");
+        }
+
+        @Override
+        public void presentOrderBook(final OrderBookResponseModel responseModel) {
+            fail("Unexpected call to presentOrderBook");
+        }
+
+        @Override
+        public void presentError(final String error) {
+            fail("Unexpected error: " + error);
+        }
+    }
 
     private static class StubMarketDataFacade extends MarketDataFacade {
-        boolean shouldThrowOnMatches = false;
-        boolean shouldThrowOnRefresh = false;
-        boolean shouldThrowOnMarkets = false;
-        boolean shouldThrowOnSnapshot = false;
+        private boolean shouldThrowOnMatches;
+        private boolean shouldThrowOnRefresh;
+        private boolean shouldThrowOnMarkets;
+        private boolean shouldThrowOnSnapshot;
 
-        boolean refreshCalled = false;
+        private boolean refreshCalled;
 
-        List<Match> matchesToReturn = new ArrayList<>();
-        List<Market> marketsToReturn = new ArrayList<>();
-        OrderBook snapshotToReturn = null;
+        private final List<Match> matchesToReturn = new ArrayList<>();
+        private final List<Market> marketsToReturn = new ArrayList<>();
+        private OrderBook snapshotToReturn;
 
-        List<String> subscribedMarkets = new ArrayList<>();
-        List<String> unsubscribedMarkets = new ArrayList<>();
+        private final List<String> subscribedMarkets = new ArrayList<>();
+        private final List<String> unsubscribedMarkets = new ArrayList<>();
 
-        public StubMarketDataFacade() {
-            super(DUMMY_MATCH_REPO, DUMMY_MARKET_REPO, DUMMY_OB_GATEWAY);
+        StubMarketDataFacade() {
+            super(DUMMY_MATCH_REPO, DUMMY_MARKET_REPO, null);
+        }
+
+        void setShouldThrowOnMatches(final boolean shouldThrow) {
+            this.shouldThrowOnMatches = shouldThrow;
+        }
+
+        void setShouldThrowOnRefresh(final boolean shouldThrow) {
+            this.shouldThrowOnRefresh = shouldThrow;
+        }
+
+        void setShouldThrowOnMarkets(final boolean shouldThrow) {
+            this.shouldThrowOnMarkets = shouldThrow;
+        }
+
+        void setShouldThrowOnSnapshot(final boolean shouldThrow) {
+            this.shouldThrowOnSnapshot = shouldThrow;
+        }
+
+        boolean isRefreshCalled() {
+            return refreshCalled;
+        }
+
+        void addMatch(final Match match) {
+            matchesToReturn.add(match);
+        }
+
+        void clearMatches() {
+            matchesToReturn.clear();
+        }
+
+        void addMarket(final Market market) {
+            marketsToReturn.add(market);
+        }
+
+        void setSnapshotToReturn(final OrderBook snapshot) {
+            this.snapshotToReturn = snapshot;
+        }
+
+        List<String> getSubscribedMarkets() {
+            return subscribedMarkets;
+        }
+
+        List<String> getUnsubscribedMarkets() {
+            return unsubscribedMarkets;
+        }
+
+        void clearSubscriptions() {
+            subscribedMarkets.clear();
+            unsubscribedMarkets.clear();
         }
 
         @Override
@@ -560,19 +487,25 @@ class ViewMarketInteractorTest {
             if (shouldThrowOnSnapshot) {
                 throw new RepositoryException("DB Error");
             }
+            final OrderBook result;
             if (snapshotToReturn == null) {
-                return new OrderBook(marketId, new ArrayList<>(), new ArrayList<>());
+                result = new OrderBook(marketId, new ArrayList<>(), new ArrayList<>());
             }
-            return snapshotToReturn;
+            else {
+                result = snapshotToReturn;
+            }
+            return result;
         }
 
         @Override
-        public void subscribeToOrderBook(final String marketId, final OrderBookSubscriber subscriber) {
+        public void subscribeToOrderBook(final String marketId,
+                                         final OrderBookSubscriber subscriber) {
             subscribedMarkets.add(marketId);
         }
 
         @Override
-        public void unsubscribeFromOrderBook(final String marketId, final OrderBookSubscriber subscriber) {
+        public void unsubscribeFromOrderBook(final String marketId,
+                                             final OrderBookSubscriber subscriber) {
             unsubscribedMarkets.add(marketId);
         }
     }
