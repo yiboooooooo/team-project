@@ -248,16 +248,6 @@ public final class StakeMateApp {
         marketsFrame.wireCommentsPanel(); // wires commentsPanel with both controllers
     }
 
-    private static void setupDemoData() {
-        accountRepo.addDemoUser(new User("alice", "password", INITIAL_BALANCE));
-        accountRepo.addDemoUser(new User("bob", "password", INITIAL_BALANCE));
-
-        // Added null (outcome unknown) and false (not settled) to match the new 7-arg
-        // constructor
-        betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN, null, false));
-        betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE, null, false));
-    }
-
     private static void setupSettlementUseCase(final MarketsFrame marketsFrame,
             final InMemorySettlementRecordRepository recordRepo) {
         final SwingSettleMarketPresenter settlePresenter = new SwingSettleMarketPresenter(marketsFrame);
