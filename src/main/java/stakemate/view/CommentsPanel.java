@@ -28,6 +28,7 @@ public class CommentsPanel extends JPanel {
     // Controllers (injected from MarketsFrame)
     private PostCommentController postController;
     private ViewCommentsController viewController;
+    private MarketsFrame marketsFrame;
 
     public CommentsPanel() {
         this.comments = new ArrayList<>();
@@ -117,7 +118,7 @@ public class CommentsPanel extends JPanel {
         this.postController = postCtrl;
         this.viewController = viewCtrl;
 
-        // Hook Post button NOW that controllers exist
+        // Hook Post button
         addPostButtonListener(e -> {
             String text = getInputText();
             if (text == null || text.isBlank()) {
@@ -125,9 +126,29 @@ public class CommentsPanel extends JPanel {
                 return;
             }
 
-            // TODO: replace with real selected marketId + logged-in username
-            postController.postComment("M1-ML", "alice", text);
+            if (marketsFrame == null) {
+                showMessage("MarketsFrame not set.");
+                return;
+            }
+
+            String marketId = null;
+            if (marketsFrame.getCurrentlySelectedMarket() != null) {
+                marketId = marketsFrame.getCurrentlySelectedMarket().getId();
+            }
+
+            String username = marketsFrame.getCurrentUser();
+
+            if (marketId == null || username == null) {
+                showMessage("Select a market and log in first.");
+                return;
+            }
+
+            postController.postComment(marketId, username, text);
+            clearInput();
         });
     }
 
+    public void setMarketsFrame(MarketsFrame frame) {
+        this.marketsFrame = frame;
+    }
 }
