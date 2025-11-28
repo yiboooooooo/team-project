@@ -1,6 +1,5 @@
 package stakemate.use_case.PlaceOrderUseCase;
 
-
 import java.util.List;
 
 import stakemate.data_access.supabase.PostgresOrderRepository;
@@ -10,7 +9,6 @@ import stakemate.engine.Trade;
 import stakemate.service.AccountService;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-
 
 /**
  * Orchestrates funds checks (optional) + matching engine.
@@ -22,8 +20,8 @@ public class PlaceOrderUseCase {
     private final OrderRepository orderRepository;
     private final PositionRepository positionRepository;
 
-
-    public PlaceOrderUseCase(final MatchingEngine engine, final AccountService accountService, final OrderRepository orderRepository, PositionRepository positionRepository) {
+    public PlaceOrderUseCase(final MatchingEngine engine, final AccountService accountService,
+            final OrderRepository orderRepository, PositionRepository positionRepository) {
         this.engine = engine;
         this.accountService = accountService;
         this.orderRepository = orderRepository;
@@ -49,10 +47,10 @@ public class PlaceOrderUseCase {
         double calcPrice = (req.price == null ? 1.0 : req.price);
         double upfrontCost = calcPrice * req.quantity;
 
-        if (accountService instanceof stakemate.service.DbAccountService dbAcc) {
+        if (accountService instanceof stakemate.service.DbAccountService) {
+            stakemate.service.DbAccountService dbAcc = (stakemate.service.DbAccountService) accountService;
             dbAcc.adjustBalance(req.userId, -upfrontCost);
         }
-
 
         // create internal order (price == null => market)
         final BookOrder incoming = new BookOrder(req.userId, req.marketId, req.side, req.price, req.quantity);
@@ -62,7 +60,8 @@ public class PlaceOrderUseCase {
         final List<Trade> trades = engine.placeOrder(incoming);
         System.out.println("DEBUG: trades.size = " + trades.size());
 
-        final String msg = trades.isEmpty() ? "Order placed (no immediate trades)" : String.format("Executed %d trades", trades.size());
+        final String msg = trades.isEmpty() ? "Order placed (no immediate trades)"
+                : String.format("Executed %d trades", trades.size());
         return PlaceOrderResponse.success(msg);
 
     }
@@ -90,9 +89,3 @@ public class PlaceOrderUseCase {
     }
 
 }
-
-
-
-
-
-

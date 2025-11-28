@@ -53,10 +53,13 @@ import stakemate.view.SignupFrame;
 
 /**
  * The Main Application Class for StakeMate.
- * Wires together the Clean Architecture layers (Entity, Use Case, Interface Adapter, View).
+ * Wires together the Clean Architecture layers (Entity, Use Case, Interface
+ * Adapter, View).
  */
-// -@cs[ClassDataAbstractionCoupling] Main class wires the entire application together.
-// -@cs[ClassFanOutComplexity] Main class depends on many components for dependency injection.
+// -@cs[ClassDataAbstractionCoupling] Main class wires the entire application
+// together.
+// -@cs[ClassFanOutComplexity] Main class depends on many components for
+// dependency injection.
 public final class StakeMateApp {
 
     private static final int INITIAL_BALANCE = 1000;
@@ -64,7 +67,6 @@ public final class StakeMateApp {
     private static final double ODDS_WIN = 0.6;
     private static final double ODDS_LOSE = 0.4;
 
-<<<<<<< HEAD
     private static stakemate.use_case.settle_market.AccountRepository accountRepo;
     private static stakemate.use_case.settle_market.BetRepository betRepo;
 
@@ -95,8 +97,7 @@ public final class StakeMateApp {
 
     public static void initTradingSystem() {
         // For orders & positions (same DS we already use)
-        javax.sql.DataSource ds =
-            stakemate.use_case.PlaceOrderUseCase.DataSourceFactory.create();
+        javax.sql.DataSource ds = stakemate.use_case.PlaceOrderUseCase.DataSourceFactory.create();
 
         // Real DB repositories
         var orderRepo = new stakemate.data_access.supabase.PostgresOrderRepository(ds);
@@ -108,24 +109,23 @@ public final class StakeMateApp {
 
         // Create use-case
         placeOrderUseCase = new stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase(
-            engine,
-            accountService,
-            orderRepo,
-            positionRepo
-        );
+                engine,
+                accountService,
+                orderRepo,
+                positionRepo);
     }
 
     public static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase getPlaceOrderUseCase() {
         return placeOrderUseCase;
     }
 
-
     /**
      * The main entry point of the application.
      *
      * @param args Command line arguments.
      */
-    // -@cs[UncommentedMain] Main entry point is required for the application execution.
+    // -@cs[UncommentedMain] Main entry point is required for the application
+    // execution.
     public static void main(final String[] args) {
 
         // Load .env file if it exists
@@ -139,29 +139,24 @@ public final class StakeMateApp {
         final SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
         final FetchGamesInteractor fetchGamesInteractor = createFetchGamesInteractor(gameRepository);
 
-        final InMemoryMatchRepository matchRepository =
-            new InMemoryMatchRepository(gameRepository, fetchGamesInteractor);
+        final InMemoryMatchRepository matchRepository = new InMemoryMatchRepository(gameRepository,
+                fetchGamesInteractor);
         final MarketDataFacade marketFacade = new MarketDataFacade(
-            matchRepository,
-            new InMemoryMarketRepository(),
-            new FakeOrderBookGateway()
-        );
+                matchRepository,
+                new InMemoryMarketRepository(),
+                new FakeOrderBookGateway());
 
         // Initialize our real order-book trading system
         initTradingSystem();
 
         final MarketsFrame marketsFrame = new MarketsFrame();
-        final SwingViewMarketsPresenter marketsPresenter =
-            new SwingViewMarketsPresenter(marketsFrame);
+        final SwingViewMarketsPresenter marketsPresenter = new SwingViewMarketsPresenter(marketsFrame);
 
-        final ViewMarketInteractor marketInteractor =
-            new ViewMarketInteractor(
+        final ViewMarketInteractor marketInteractor = new ViewMarketInteractor(
                 marketFacade,
-                marketsPresenter
-            );
+                marketsPresenter);
 
-        final ViewMarketController marketController =
-            new ViewMarketController(marketInteractor);
+        final ViewMarketController marketController = new ViewMarketController(marketInteractor);
         marketsFrame.setController(marketController);
         marketsFrame.enableOrderBookPopup();
 
@@ -189,8 +184,7 @@ public final class StakeMateApp {
 
         if (apiKey == null || apiKey.isEmpty()) {
             System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
-        }
-        else {
+        } else {
             final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
             final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
             final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
@@ -211,16 +205,16 @@ public final class StakeMateApp {
         final SupabaseCommentRepository commentRepo = new SupabaseCommentRepository();
 
         // First create the view presenter
-        final SwingViewCommentsPresenter viewPresenter =
-            new SwingViewCommentsPresenter(marketsFrame.getCommentsPanel());
+        final SwingViewCommentsPresenter viewPresenter = new SwingViewCommentsPresenter(
+                marketsFrame.getCommentsPanel());
 
         // Then create the view controller (needed for the post presenter)
-        final ViewCommentsController viewController =
-            new ViewCommentsController(new ViewCommentsInteractor(commentRepo, viewPresenter));
+        final ViewCommentsController viewController = new ViewCommentsController(
+                new ViewCommentsInteractor(commentRepo, viewPresenter));
 
         // Now create the post presenter with BOTH arguments
-        final SwingPostCommentPresenter postPresenter =
-            new SwingPostCommentPresenter(marketsFrame.getCommentsPanel(), viewController);
+        final SwingPostCommentPresenter postPresenter = new SwingPostCommentPresenter(marketsFrame.getCommentsPanel(),
+                viewController);
 
         // Create the interactors
         final PostCommentInteractor postInteractor = new PostCommentInteractor(commentRepo, postPresenter);
@@ -231,48 +225,46 @@ public final class StakeMateApp {
         // viewController already created above
 
         // Wire everything into the UI
-        marketsFrame.setPostCommentController(postController);   // sets the post controller in MarketsFrame
-        marketsFrame.setViewCommentsController(viewController);  // sets the view controller in MarketsFrame
-        marketsFrame.wireCommentsPanel();                        // wires commentsPanel with both controllers
+        marketsFrame.setPostCommentController(postController); // sets the post controller in MarketsFrame
+        marketsFrame.setViewCommentsController(viewController); // sets the view controller in MarketsFrame
+        marketsFrame.wireCommentsPanel(); // wires commentsPanel with both controllers
     }
 
     private static void setupDemoData() {
         accountRepo.addDemoUser(new User("alice", "password", INITIAL_BALANCE));
         accountRepo.addDemoUser(new User("bob", "password", INITIAL_BALANCE));
 
-        // Added null (outcome unknown) and false (not settled) to match the new 7-arg constructor
+        // Added null (outcome unknown) and false (not settled) to match the new 7-arg
+        // constructor
         betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN, null, false));
         betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE, null, false));
     }
 
     private static void setupSettlementUseCase(final MarketsFrame marketsFrame,
-                                               final InMemorySettlementRecordRepository recordRepo) {
-        final SwingSettleMarketPresenter settlePresenter =
-            new SwingSettleMarketPresenter(marketsFrame);
+            final InMemorySettlementRecordRepository recordRepo) {
+        final SwingSettleMarketPresenter settlePresenter = new SwingSettleMarketPresenter(marketsFrame);
 
-        final SettleMarketInteractor settleInteractor =
-            new SettleMarketInteractor(betRepo, accountRepo, recordRepo, settlePresenter);
+        final SettleMarketInteractor settleInteractor = new SettleMarketInteractor(betRepo, accountRepo, recordRepo,
+                settlePresenter);
 
-        final SettleMarketController settleController =
-            new SettleMarketController(settleInteractor);
+        final SettleMarketController settleController = new SettleMarketController(settleInteractor);
         marketsFrame.setSettleMarketController(settleController);
     }
 
     private static void setupProfileUseCase(final MarketsFrame marketsFrame,
-                                            final SupabaseUserDataAccess userRepo) {
+            final SupabaseUserDataAccess userRepo) {
         final stakemate.view.ProfileFrame profileFrame = new stakemate.view.ProfileFrame();
-        final stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel =
-            new stakemate.interface_adapter.view_profile.ProfileViewModel();
+        final stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel = new stakemate.interface_adapter.view_profile.ProfileViewModel();
         profileFrame.setViewModel(profileViewModel);
 
-        final stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter =
-            new stakemate.interface_adapter.view_profile.ViewProfilePresenter(profileViewModel);
+        final stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter = new stakemate.interface_adapter.view_profile.ViewProfilePresenter(
+                profileViewModel);
 
-        final stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor =
-            new stakemate.use_case.view_profile.ViewProfileInteractor(userRepo, profilePresenter);
+        final stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor = new stakemate.use_case.view_profile.ViewProfileInteractor(
+                userRepo, profilePresenter);
 
-        final stakemate.interface_adapter.view_profile.ViewProfileController profileController =
-            new stakemate.interface_adapter.view_profile.ViewProfileController(profileInteractor);
+        final stakemate.interface_adapter.view_profile.ViewProfileController profileController = new stakemate.interface_adapter.view_profile.ViewProfileController(
+                profileInteractor);
 
         marketsFrame.setProfileFrame(profileFrame);
         marketsFrame.setProfileController(profileController);
@@ -325,8 +317,7 @@ public final class StakeMateApp {
                 }
                 reader.close();
             }
-        }
-        catch (final IOException ex) {
+        } catch (final IOException ex) {
             System.err.println("Warning: Could not read .env file: " + ex.getMessage());
         }
     }
