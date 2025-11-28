@@ -20,43 +20,38 @@ public class PostgresPositionRepository implements PositionRepository {
     @Override
     public void savePosition(BookOrder order, double executedAmount, double executedPrice) {
         System.out.println("DEBUG: savePosition called for order " + order.getId()
-            + ", executedAmount=" + executedAmount
-            + ", executedPrice=" + executedPrice);
+                + ", executedAmount=" + executedAmount
+                + ", executedPrice=" + executedPrice);
 
-
-        final String sql = """
-        INSERT INTO positions (
-            user_id,
-            asset_name,
-            amount,
-            settled,
-            market_id,
-            price,
-            "won?",
-            side
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    """;
-
+        final String sql = "INSERT INTO positions (" +
+                "    user_id," +
+                "    asset_name," +
+                "    amount," +
+                "    settled," +
+                "    market_id," +
+                "    price," +
+                "    \"won?\"," +
+                "    side" +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setObject(1, java.util.UUID.fromString(order.getUserId()), java.sql.Types.OTHER); // uuid
-            ps.setString(2, order.getMarketId());       // asset_name
-            ps.setDouble(3, executedAmount);            // amount filled in trade
-            ps.setBoolean(4, false);                    // settled = false initially
-            ps.setString(5, order.getMarketId());       // market_id
+            ps.setString(2, order.getMarketId()); // asset_name
+            ps.setDouble(3, executedAmount); // amount filled in trade
+            ps.setBoolean(4, false); // settled = false initially
+            ps.setString(5, order.getMarketId()); // market_id
 
-            ps.setDouble(6, executedPrice);   // <-- ALWAYS write the ratio, even for market orders
+            ps.setDouble(6, executedPrice); // <-- ALWAYS write the ratio, even for market orders
 
-            ps.setNull(7, java.sql.Types.BOOLEAN);      // won is unknown until settlement logic
-            ps.setString(8, order.getSide().name());    // BUY or SELL
+            ps.setNull(7, java.sql.Types.BOOLEAN); // won is unknown until settlement logic
+            ps.setString(8, order.getSide().name()); // BUY or SELL
 
             ps.executeUpdate();
             System.out.println("Position inserted for order " + order.getId());
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to save position", e);
         }

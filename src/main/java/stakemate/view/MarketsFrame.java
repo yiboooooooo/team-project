@@ -73,7 +73,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
     private final OrderBookTableModel orderBookTableModel = new OrderBookTableModel();
     private final JTable orderBookTable = new JTable(orderBookTableModel);
-    private final JLabel orderBookEmptyLabel = new JLabel("Select a market to see orders.");<<<<<<<HEAD
+    private final JLabel orderBookEmptyLabel = new JLabel("Select a market to see orders.");
 
     private final JLabel statusLabel = new JLabel(" ");
 
@@ -216,7 +216,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         marketsEmptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
         orderBookEmptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-<<<<<<< HEAD
         final JPanel leftPanel = new JPanel(new BorderLayout(4, 4));
         final JLabel matchesLabel = new JLabel("Matches");
         leftPanel.add(matchesLabel, BorderLayout.NORTH);
@@ -238,7 +237,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         orderBookPanel.add(new JScrollPane(orderBookTable), BorderLayout.CENTER);
         orderBookPanel.add(orderBookEmptyLabel, BorderLayout.SOUTH);
 
-
         final JPanel buySellPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         buyButton.setEnabled(false);
@@ -255,9 +253,9 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         rightPanel.add(buySellPanel, BorderLayout.SOUTH);
 
         final JSplitPane splitPane = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT,
-            leftPanel,
-            rightPanel);
+                JSplitPane.HORIZONTAL_SPLIT,
+                leftPanel,
+                rightPanel);
         splitPane.setDividerLocation(DIVIDER_LOC);
         return splitPane;
     }
@@ -637,16 +635,18 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         @Override
         public Object getValueAt(final int rowIndex, final int columnIndex) {
             final Row row = rows.get(rowIndex);
-            Object result = "";
             switch (columnIndex) {
-<<<<<<< HEAD
-                case 0: return row.bidQty;
-                case 1: return row.bidPrice;
-                case 2: return row.askPrice;
-                case 3: return row.askQty;
-                default: return "";
+                case 0:
+                    return row.bidQty;
+                case 1:
+                    return row.bidPrice;
+                case 2:
+                    return row.askPrice;
+                case 3:
+                    return row.askQty;
+                default:
+                    return "";
             }
-            return result;
         }
 
         private String formatVal(final Double val) {
