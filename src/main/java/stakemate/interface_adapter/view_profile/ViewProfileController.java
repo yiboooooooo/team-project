@@ -11,7 +11,15 @@ public class ViewProfileController {
     }
 
     public void execute(final String username) {
-        final ViewProfileInputData inputData = new ViewProfileInputData(username);
+        execute(username,
+                stakemate.use_case.view_profile.SortCriteria.DATE,
+                stakemate.use_case.view_profile.SortCriteria.DATE);
+    }
+
+    public void execute(final String username,
+            final stakemate.use_case.view_profile.SortCriteria openSort,
+            final stakemate.use_case.view_profile.SortCriteria historicalSort) {
+        final ViewProfileInputData inputData = new ViewProfileInputData(username, openSort, historicalSort);
         interactor.execute(inputData);
     }
 }

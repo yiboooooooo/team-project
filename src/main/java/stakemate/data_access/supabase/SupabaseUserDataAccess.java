@@ -111,7 +111,8 @@ public class SupabaseUserDataAccess
                 "       pos.\"won?\" AS won_flag, " +
                 "       pos.settled AS settled_flag, " +
                 "       g.team_a, " +
-                "       g.team_b " +
+                "       g.team_b, " +
+                "       pos.updated_at " +
                 "FROM public.positions pos " +
                 "JOIN public.profiles p ON pos.user_id = p.id " +
                 "LEFT JOIN public.games g ON pos.market_id = g.market_id::text " +
@@ -130,6 +131,8 @@ public class SupabaseUserDataAccess
                     final String marketIdRaw = rs.getString("market_id");
                     final String teamA = rs.getString("team_a");
                     final String teamB = rs.getString("team_b");
+                    final java.sql.Timestamp ts = rs.getTimestamp("updated_at");
+                    final java.time.Instant updatedAt = (ts != null) ? ts.toInstant() : java.time.Instant.now();
 
                     // Construct market name: "Team A vs Team B"
                     // Fallback to market_id if game info is missing
@@ -154,7 +157,7 @@ public class SupabaseUserDataAccess
                     }
 
                     final stakemate.use_case.settle_market.Bet bet = new stakemate.use_case.settle_market.Bet(uName,
-                            marketName, side, amount, price, won, settled, teamName);
+                            marketName, side, amount, price, won, settled, teamName, updatedAt);
 
                     bets.add(bet);
                 }
