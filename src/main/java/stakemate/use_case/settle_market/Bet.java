@@ -10,10 +10,10 @@ public class Bet {
     private final String username;
     private final String marketId;
     private final Side side;
-    private final double stake;   // corresponds to positions.amount
-    private final double price;   // price/odds
-    private final Boolean won;    // true = won, false = lost, null = not settled yet
-    private final Boolean settled; // true = already settled, false = not settled
+    private final double stake;
+    private final double price;
+    private final Boolean won;
+    private final Boolean settled;
 
     public Bet(String username,
                String marketId,

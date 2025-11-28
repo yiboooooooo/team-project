@@ -11,17 +11,22 @@ import stakemate.use_case.view_market.RepositoryException;
 
 public class InMemoryMarketRepository implements MarketRepository {
 
+    private static final String MONEYLINE = "Moneyline";
+    private static final String SPREAD = "Spread";
+    private static final String TOTAL = "Total";
+    private static final String UNDERSCORE = "_";
+
     private final List<Market> markets = new ArrayList<>();
 
     public InMemoryMarketRepository() {
         // Default hardcoded markets for testing with M1/M2
-        markets.add(new Market("M1-ML", "M1", "Moneyline", MarketStatus.OPEN));
+        markets.add(new Market("M1-ML", "M1", MONEYLINE, MarketStatus.OPEN));
         markets.add(new Market("M1-TOTAL", "M1", "Total Points O/U", MarketStatus.OPEN));
 
-        markets.add(new Market("M2-ML", "M2", "Moneyline", MarketStatus.OPEN));
+        markets.add(new Market("M2-ML", "M2", MONEYLINE, MarketStatus.OPEN));
         markets.add(new Market("M2-SPREAD", "M2", "Point Spread", MarketStatus.OPEN));
 
-        markets.add(new Market("M3-ML", "M3", "Moneyline", MarketStatus.CLOSED));
+        markets.add(new Market("M3-ML", "M3", MONEYLINE, MarketStatus.CLOSED));
     }
 
     @Override
@@ -39,13 +44,16 @@ public class InMemoryMarketRepository implements MarketRepository {
         if (result.isEmpty()) {
             // Generate deterministic UUIDs based on the matchId so they stay consistent
             // We use UUIDs to be compatible if you switch to a real DB later
-            final String mlId = UUID.nameUUIDFromBytes((matchId + "_Moneyline").getBytes()).toString();
-            final String spreadId = UUID.nameUUIDFromBytes((matchId + "_Spread").getBytes()).toString();
-            final String totalId = UUID.nameUUIDFromBytes((matchId + "_Total").getBytes()).toString();
+            final String mlId = UUID.nameUUIDFromBytes(
+                (matchId + UNDERSCORE + MONEYLINE).getBytes()).toString();
+            final String spreadId = UUID.nameUUIDFromBytes(
+                (matchId + UNDERSCORE + SPREAD).getBytes()).toString();
+            final String totalId = UUID.nameUUIDFromBytes(
+                (matchId + UNDERSCORE + TOTAL).getBytes()).toString();
 
-            final Market moneyline = new Market(mlId, matchId, "Moneyline", MarketStatus.OPEN);
-            final Market spread = new Market(spreadId, matchId, "Spread", MarketStatus.OPEN);
-            final Market total = new Market(totalId, matchId, "Total", MarketStatus.OPEN);
+            final Market moneyline = new Market(mlId, matchId, MONEYLINE, MarketStatus.OPEN);
+            final Market spread = new Market(spreadId, matchId, SPREAD, MarketStatus.OPEN);
+            final Market total = new Market(totalId, matchId, TOTAL, MarketStatus.OPEN);
 
             // Add to our in-memory storage
             markets.add(moneyline);

@@ -18,6 +18,7 @@ public class Game {
     private final GameStatus status;
     private final String externalId;
 
+    // -@cs[ParameterNumber] Entity constructor requires all fields to ensure immutability.
     public Game(final UUID id,
                 final UUID marketId,
                 final LocalDateTime gameTime,
@@ -70,15 +71,16 @@ public class Game {
 
     @Override
     public boolean equals(final Object o) {
+        boolean result = false;
         if (this == o) {
-            return true;
+            result = true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        else if (o != null && getClass() == o.getClass()) {
+            final Game game = (Game) o;
+            result = Objects.equals(id, game.id)
+                && Objects.equals(externalId, game.externalId);
         }
-        final Game game = (Game) o;
-        return Objects.equals(id, game.id) &&
-            Objects.equals(externalId, game.externalId);
+        return result;
     }
 
     @Override
@@ -88,14 +90,13 @@ public class Game {
 
     @Override
     public String toString() {
-        return "Game{" +
-            "id=" + id +
-            ", teamA='" + teamA + '\'' +
-            ", teamB='" + teamB + '\'' +
-            ", sport='" + sport + '\'' +
-            ", gameTime=" + gameTime +
-            ", status=" + status +
-            '}';
+        return "Game{"
+            + "id=" + id
+            + ", teamA='" + teamA + '\''
+            + ", teamB='" + teamB + '\''
+            + ", sport='" + sport + '\''
+            + ", gameTime=" + gameTime
+            + ", status=" + status
+            + '}';
     }
 }
-

@@ -11,18 +11,14 @@ import javax.swing.SwingUtilities;
 import stakemate.data_access.api.OddsApiGatewayImpl;
 import stakemate.data_access.api.OddsApiResponseAdapter;
 import stakemate.data_access.in_memory.FakeOrderBookGateway;
-//import stakemate.data_access.in_memory.InMemoryAccountRepository;
-//import stakemate.data_access.in_memory.InMemoryBetRepository;
-import stakemate.use_case.settle_market.AccountRepository;
-import stakemate.use_case.settle_market.BetRepository;
-
-import stakemate.data_access.supabase.SupabaseBetRepository;
-import stakemate.data_access.supabase.SupabaseAccountDataAccess;
-
+import stakemate.data_access.in_memory.InMemoryAccountRepository;
+import stakemate.data_access.in_memory.InMemoryBetRepository;
+import stakemate.data_access.in_memory.InMemoryCommentRepository;
 import stakemate.data_access.in_memory.InMemoryMarketRepository;
 import stakemate.data_access.in_memory.InMemoryMatchRepository;
 import stakemate.data_access.in_memory.InMemorySettlementRecordRepository;
 import stakemate.data_access.supabase.SupabaseClientFactory;
+import stakemate.data_access.supabase.SupabaseCommentRepository;
 import stakemate.data_access.supabase.SupabaseGameRepository;
 import stakemate.data_access.supabase.SupabaseUserDataAccess;
 import stakemate.entity.Game;
@@ -31,11 +27,17 @@ import stakemate.entity.User;
 import stakemate.interface_adapter.controllers.LoginController;
 import stakemate.interface_adapter.controllers.SettleMarketController;
 import stakemate.interface_adapter.controllers.SignupController;
+import stakemate.interface_adapter.view_comments.PostCommentController;
+import stakemate.interface_adapter.view_comments.SwingPostCommentPresenter;
+import stakemate.interface_adapter.view_comments.SwingViewCommentsPresenter;
+import stakemate.interface_adapter.view_comments.ViewCommentsController;
 import stakemate.interface_adapter.view_login.SwingLoginPresenter;
 import stakemate.interface_adapter.view_market.SwingSettleMarketPresenter;
 import stakemate.interface_adapter.view_market.SwingViewMarketsPresenter;
 import stakemate.interface_adapter.view_market.ViewMarketController;
 import stakemate.interface_adapter.view_signup.SwingSignupPresenter;
+import stakemate.use_case.comments.post.PostCommentInteractor;
+import stakemate.use_case.comments.view.ViewCommentsInteractor;
 import stakemate.use_case.fetch_games.FetchGamesInteractor;
 import stakemate.use_case.fetch_games.FetchGamesOutputBoundary;
 import stakemate.use_case.fetch_games.FetchGamesResponseModel;
@@ -62,13 +64,12 @@ public final class StakeMateApp {
     private static final double ODDS_WIN = 0.6;
     private static final double ODDS_LOSE = 0.4;
 
-
-    private static AccountRepository accountRepo;
-    private static BetRepository betRepo;
+<<<<<<< HEAD
+    private static stakemate.use_case.settle_market.AccountRepository accountRepo;
+    private static stakemate.use_case.settle_market.BetRepository betRepo;
 
     private static stakemate.use_case.PlaceOrderUseCase.PlaceOrderUseCase placeOrderUseCase;
     public static SupabaseUserDataAccess userRepo;
-
 
     private StakeMateApp() {
         // Private constructor to prevent instantiation
@@ -77,19 +78,18 @@ public final class StakeMateApp {
     /**
      * Gets the Account Repository.
      *
-     * @return The in-memory account repository.
+     * @return The account repository.
      */
-    public static AccountRepository getAccountRepo() {
+    public static stakemate.use_case.settle_market.AccountRepository getAccountRepo() {
         return accountRepo;
     }
-
 
     /**
      * Gets the Bet Repository.
      *
-     * @return The in-memory bet repository.
+     * @return The bet repository.
      */
-    public static BetRepository getBetRepo() {
+    public static stakemate.use_case.settle_market.BetRepository getBetRepo() {
         return betRepo;
     }
 
@@ -135,35 +135,18 @@ public final class StakeMateApp {
     }
 
     private static void runApp() {
-        // 1. Infrastructure
         final SupabaseClientFactory gamesSupabaseFactory = new SupabaseClientFactory();
         final SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
-        final String apiKey = getEnvVar("ODDS_API_KEY");
-        if (apiKey == null || apiKey.isEmpty()) {
-            System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
-        }
+        final FetchGamesInteractor fetchGamesInteractor = createFetchGamesInteractor(gameRepository);
 
-        FetchGamesInteractor fetchGamesInteractor = null;
-        if (apiKey != null && !apiKey.isEmpty()) {
-            final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
-            final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
-            final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
-
-            fetchGamesInteractor = new FetchGamesInteractor(
-                apiGateway, responseAdapter, gameRepository, presenter
-            );
-        }
-
-        // 3. Repositories
         final InMemoryMatchRepository matchRepository =
             new InMemoryMatchRepository(gameRepository, fetchGamesInteractor);
-        final InMemoryMarketRepository marketRepository = new InMemoryMarketRepository();
-        final FakeOrderBookGateway orderBookGateway = new FakeOrderBookGateway();
         final MarketDataFacade marketFacade = new MarketDataFacade(
             matchRepository,
-            marketRepository,
-            orderBookGateway
+            new InMemoryMarketRepository(),
+            new FakeOrderBookGateway()
         );
+
         // Initialize our real order-book trading system
         initTradingSystem();
 
@@ -182,12 +165,13 @@ public final class StakeMateApp {
         marketsFrame.setController(marketController);
         marketsFrame.enableOrderBookPopup();
 
-
+        // Setup Comment System (from main)
+        setupCommentSystem(marketsFrame);
 
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
 
-        betRepo = new SupabaseBetRepository(supabaseFactory);
-        accountRepo = new SupabaseAccountDataAccess(supabaseFactory);
+        betRepo = new stakemate.data_access.supabase.SupabaseBetRepository(supabaseFactory);
+        accountRepo = new stakemate.data_access.supabase.SupabaseAccountDataAccess(supabaseFactory);
 
         final InMemorySettlementRecordRepository recordRepo = new InMemorySettlementRecordRepository();
 
@@ -197,11 +181,69 @@ public final class StakeMateApp {
 
         setupProfileUseCase(marketsFrame, userRepo);
         setupAuth(marketsFrame, userRepo);
-
-        // Trigger initial load so UI has data when user logs in
-        marketController.refresh();
     }
 
+    private static FetchGamesInteractor createFetchGamesInteractor(final SupabaseGameRepository gameRepo) {
+        final String apiKey = getEnvVar("ODDS_API_KEY");
+        FetchGamesInteractor interactor = null;
+
+        if (apiKey == null || apiKey.isEmpty()) {
+            System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
+        }
+        else {
+            final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
+            final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
+            final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
+            interactor = new FetchGamesInteractor(apiGateway, responseAdapter, gameRepo, presenter);
+        }
+        return interactor;
+    }
+
+    private static void setupMarketView(final MarketsFrame marketsFrame, final MarketDataFacade marketFacade) {
+        final SwingViewMarketsPresenter marketsPresenter = new SwingViewMarketsPresenter(marketsFrame);
+        final ViewMarketInteractor marketInteractor = new ViewMarketInteractor(marketFacade, marketsPresenter);
+        final ViewMarketController marketController = new ViewMarketController(marketInteractor);
+        marketsFrame.setController(marketController);
+    }
+
+    private static void setupCommentSystem(final MarketsFrame marketsFrame) {
+        // COMMENTS SYSTEM WIRING BELOW
+        final SupabaseCommentRepository commentRepo = new SupabaseCommentRepository();
+
+        // First create the view presenter
+        final SwingViewCommentsPresenter viewPresenter =
+            new SwingViewCommentsPresenter(marketsFrame.getCommentsPanel());
+
+        // Then create the view controller (needed for the post presenter)
+        final ViewCommentsController viewController =
+            new ViewCommentsController(new ViewCommentsInteractor(commentRepo, viewPresenter));
+
+        // Now create the post presenter with BOTH arguments
+        final SwingPostCommentPresenter postPresenter =
+            new SwingPostCommentPresenter(marketsFrame.getCommentsPanel(), viewController);
+
+        // Create the interactors
+        final PostCommentInteractor postInteractor = new PostCommentInteractor(commentRepo, postPresenter);
+        final ViewCommentsInteractor viewInteractor = new ViewCommentsInteractor(commentRepo, viewPresenter);
+
+        // Create the controllers
+        final PostCommentController postController = new PostCommentController(postInteractor);
+        // viewController already created above
+
+        // Wire everything into the UI
+        marketsFrame.setPostCommentController(postController);   // sets the post controller in MarketsFrame
+        marketsFrame.setViewCommentsController(viewController);  // sets the view controller in MarketsFrame
+        marketsFrame.wireCommentsPanel();                        // wires commentsPanel with both controllers
+    }
+
+    private static void setupDemoData() {
+        accountRepo.addDemoUser(new User("alice", "password", INITIAL_BALANCE));
+        accountRepo.addDemoUser(new User("bob", "password", INITIAL_BALANCE));
+
+        // Added null (outcome unknown) and false (not settled) to match the new 7-arg constructor
+        betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN, null, false));
+        betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE, null, false));
+    }
 
     private static void setupSettlementUseCase(final MarketsFrame marketsFrame,
                                                final InMemorySettlementRecordRepository recordRepo) {

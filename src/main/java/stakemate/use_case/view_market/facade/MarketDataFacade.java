@@ -29,29 +29,64 @@ public class MarketDataFacade {
         this.orderBookGateway = obGateway;
     }
 
+    /**
+     * Retrieves all available matches from the underlying repository.
+     *
+     * @return a list of matches.
+     * @throws RepositoryException if data retrieval fails.
+     */
     public List<Match> getAllMatches() throws RepositoryException {
         // Facade could also handle caching or complex fetching logic here
         return matchRepository.findAllMatches();
     }
 
+    /**
+     * Retrieves all markets associated with a specific match ID.
+     *
+     * @param matchId the ID of the match.
+     * @return a list of markets for the given match.
+     * @throws RepositoryException if data retrieval fails.
+     */
     public List<Market> getMarketsForMatch(final String matchId) throws RepositoryException {
         return marketRepository.findByMatchId(matchId);
     }
 
+    /**
+     * Gets a snapshot of the current order book for a specific market.
+     *
+     * @param marketId the ID of the market.
+     * @return the current order book.
+     * @throws RepositoryException if data retrieval fails.
+     */
     public OrderBook getOrderBookSnapshot(final String marketId) throws RepositoryException {
         return orderBookGateway.getSnapshot(marketId);
     }
 
-    // Pass-through for subscription management
+    /**
+     * Subscribes an observer to real-time updates for a specific order book.
+     *
+     * @param marketId   the ID of the market to watch.
+     * @param subscriber the observer to notify.
+     */
     public void subscribeToOrderBook(final String marketId, final OrderBookSubscriber subscriber) {
         orderBookGateway.subscribe(marketId, subscriber);
     }
 
+    /**
+     * Unsubscribes an observer from updates for a specific market.
+     *
+     * @param marketId   the ID of the market.
+     * @param subscriber the observer to remove.
+     */
     public void unsubscribeFromOrderBook(final String marketId, final OrderBookSubscriber subscriber) {
         orderBookGateway.unsubscribe(marketId, subscriber);
     }
 
-    // API Refresh Trigger (Bridge to repo specific logic)
+    /**
+     * Triggers a refresh of data from the external API if the repository supports it.
+     *
+     * @throws RepositoryException if the refresh operation fails.
+     */
     public void refreshApi() throws RepositoryException {
         if (matchRepository instanceof stakemate.data_access.in_memory.InMemoryMatchRepository) {
             ((stakemate.data_access.in_memory.InMemoryMatchRepository) matchRepository).syncWithApiData();
