@@ -39,18 +39,22 @@ public class PlaceOrderUseCase {
             return PlaceOrderResponse.fail("Price must be > 0 for limit orders.");
         }
 
-        // optional funds check
-        if (!accountService.hasSufficientFunds(req.userId, req.marketId, req.quantity, req.price)) {
-            return PlaceOrderResponse.fail("Insufficient funds");
+        // For limit orders, check funds and deduct balance upfront
+        if (req.price != null) {
+            double upfrontCost = req.price * req.quantity;
+
+            if (!accountService.hasSufficientFunds(req.userId, req.marketId, req.quantity, req.price)) {
+                return PlaceOrderResponse.fail("Insufficient funds");
+            }
+
+            if (accountService instanceof stakemate.service.DbAccountService) {
+                stakemate.service.DbAccountService dbAcc = (stakemate.service.DbAccountService) accountService;
+                dbAcc.adjustBalance(req.userId, -upfrontCost);
+            }
         }
 
-        double calcPrice = (req.price == null ? 1.0 : req.price);
-        double upfrontCost = calcPrice * req.quantity;
-
-        if (accountService instanceof stakemate.service.DbAccountService) {
-            stakemate.service.DbAccountService dbAcc = (stakemate.service.DbAccountService) accountService;
-            dbAcc.adjustBalance(req.userId, -upfrontCost);
-        }
+        // For market orders, balance will be checked and deducted during matching
+        // using the actual limit order price
 
         // create internal order (price == null => market)
         final BookOrder incoming = new BookOrder(req.userId, req.marketId, req.side, req.price, req.quantity);
