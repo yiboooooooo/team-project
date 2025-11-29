@@ -37,6 +37,8 @@ import stakemate.use_case.view_market.MarketSummary;
 import stakemate.use_case.view_market.MarketsResponseModel;
 import stakemate.use_case.view_market.MatchSummary;
 import stakemate.use_case.view_market.OrderBookResponseModel;
+import stakemate.view.LiveMatchesFrame;
+import stakemate.interface_adapter.view_live.LiveMatchesController;
 
 /**
  * The main frame for viewing markets and order books.
@@ -77,6 +79,9 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private final JButton buyButton = new JButton("Buy");
     private final JButton sellButton = new JButton("Sell");
     private final JButton myProfileButton = new JButton("My Profile");
+    private final JButton liveMatchesButton = new JButton("Live Matches");
+//    private final JButton settleButton = new JButton("Settle");
+    private ViewMarketController controller;
     private final JButton settleButton = new JButton("Settle (Demo)");
     private final CommentsPanel commentsPanel = new CommentsPanel();
 
@@ -88,6 +93,8 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private ProfileFrame profileFrame;
     private stakemate.interface_adapter.view_profile.ViewProfileController profileController;
     private String currentUser;
+    private LiveMatchesFrame liveMatchesFrame;
+    private LiveMatchesController liveMatchesController;
 
     private Timer autoRefreshTimer;
 
@@ -164,6 +171,14 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         this.profileController = profileController;
     }
 
+    public void setLiveMatchesFrame(final LiveMatchesFrame liveMatchesFrame) {
+        this.liveMatchesFrame = liveMatchesFrame;
+    }
+
+    public void setLiveMatchesController(final LiveMatchesController liveMatchesController) {
+        this.liveMatchesController = liveMatchesController;
+    }
+
     /**
      * Sets the currently logged-in user.
      *
@@ -213,7 +228,11 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         leftPanel.add(matchesLabel, BorderLayout.NORTH);
         matchesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         leftPanel.add(new JScrollPane(matchesList), BorderLayout.CENTER);
-        leftPanel.add(matchesEmptyLabel, BorderLayout.SOUTH);
+
+        final JPanel matchesSouthPanel = new JPanel(new BorderLayout());
+        matchesSouthPanel.add(matchesEmptyLabel, BorderLayout.NORTH);
+        matchesSouthPanel.add(liveMatchesButton, BorderLayout.SOUTH);
+        leftPanel.add(matchesSouthPanel, BorderLayout.SOUTH);
 
         // --- Right Panel (Markets + OrderBook + Controls) ---
         final JPanel rightPanel = createRightPanel();
@@ -286,6 +305,14 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
         myProfileButton.addActionListener(evt -> openProfile());
 
+        liveMatchesButton.addActionListener(e -> {
+            if (liveMatchesFrame != null && liveMatchesController != null) {
+                liveMatchesFrame.setVisible(true);
+                liveMatchesController.startTracking();
+            } else {
+                JOptionPane.showMessageDialog(this, "Live Matches view not connected.");
+            }
+        });
         matchesList.addListSelectionListener(evt -> {
             if (!evt.getValueIsAdjusting() && viewController != null) {
                 final MatchSummary selected = matchesList.getSelectedValue();

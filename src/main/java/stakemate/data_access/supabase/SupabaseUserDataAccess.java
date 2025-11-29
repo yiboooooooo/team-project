@@ -12,8 +12,10 @@ import stakemate.use_case.signup.SignupUserDataAccessInterface;
 /**
  * Data access implementation that stores users in the Supabase "profiles"
  * table.
+ *
  * <p>
  * Expected table:
+ *
  * <p>
  * create table public.profiles (
  * id uuid primary key default gen_random_uuid(),
@@ -24,9 +26,8 @@ import stakemate.use_case.signup.SignupUserDataAccessInterface;
  * );
  */
 public class SupabaseUserDataAccess
-        implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-        stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface {
-
+    implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
+    stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface  {
     private final SupabaseClientFactory factory;
 
     public SupabaseUserDataAccess(final SupabaseClientFactory factory) {
@@ -39,28 +40,29 @@ public class SupabaseUserDataAccess
     public boolean existsByUsername(final String username) {
         final String sql = "SELECT 1 FROM public.profiles WHERE username = ? LIMIT 1";
 
-        try (final Connection conn = factory.createConnection();
-                final PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = factory.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
-            try (final ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
 
-        } catch (final SQLException e) {
-            throw new RuntimeException("Error checking if user exists", e);
+        }
+        catch (final SQLException ex) {
+            throw new RuntimeException("Error checking if user exists", ex);
         }
     }
 
     @Override
     public void save(final User user) {
         // We let Supabase/Postgres generate the UUID id and updated_at
-        final String sql = "INSERT INTO public.profiles (username, password, balance) " +
-                "VALUES (?, ?, ?)";
+        final String sql = "INSERT INTO public.profiles (username, password, balance) "
+            + "VALUES (?, ?, ?)";
 
-        try (final Connection conn = factory.createConnection();
-                final PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = factory.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -68,8 +70,9 @@ public class SupabaseUserDataAccess
 
             ps.executeUpdate();
 
-        } catch (final SQLException e) {
-            throw new RuntimeException("Error saving user to Supabase", e);
+        }
+        catch (final SQLException ex) {
+            throw new RuntimeException("Error saving user to Supabase", ex);
         }
     }
 
@@ -77,27 +80,31 @@ public class SupabaseUserDataAccess
 
     @Override
     public User getByUsername(final String username) {
-        final String sql = "SELECT username, password, balance " +
-                "FROM public.profiles WHERE username = ?";
+        final String sql = "SELECT username, password, balance "
+            + "FROM public.profiles WHERE username = ?";
 
-        try (final Connection conn = factory.createConnection();
-                final PreparedStatement ps = conn.prepareStatement(sql)) {
+        User res;
+
+        try (Connection conn = factory.createConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
-            try (final ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
-                    return null;
+                    res = null;
                 }
 
                 final String uname = rs.getString("username");
                 final String pwd = rs.getString("password");
                 final int balance = rs.getInt("balance");
-                return new User(uname, pwd, balance);
+                res = new User(uname, pwd, balance);
             }
+            return res;
 
-        } catch (final SQLException e) {
-            throw new RuntimeException("Error loading user from Supabase", e);
+        }
+        catch (final SQLException ex) {
+            throw new RuntimeException("Error loading user from Supabase", ex);
         }
     }
 
