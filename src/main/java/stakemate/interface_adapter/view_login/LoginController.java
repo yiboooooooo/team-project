@@ -1,4 +1,4 @@
-package stakemate.interface_adapter.controllers;
+package stakemate.interface_adapter.view_login;
 
 import stakemate.use_case.login.LoginInputBoundary;
 import stakemate.use_case.login.LoginInputData;

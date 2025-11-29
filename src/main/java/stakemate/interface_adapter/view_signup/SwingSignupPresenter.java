@@ -8,24 +8,29 @@ import stakemate.use_case.signup.SignupOutputData;
  */
 public class SwingSignupPresenter implements SignupOutputBoundary {
 
-    private final SignupView view;
+    private final SignupViewModel viewModel;
 
     /**
      * Constructs a SwingSignupPresenter.
      * 
-     * @param view the signup view.
+     * @param viewModel the signup view model.
      */
-    public SwingSignupPresenter(final SignupView view) {
-        this.view = view;
+    public SwingSignupPresenter(final SignupViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @Override
     public void prepareSuccessView(final SignupOutputData data) {
-        view.onSignupSuccess(data.getUsername());
+        final SignupState state = viewModel.getState();
+        state.setUsername(data.getUsername());
+        state.setError(null);
+        viewModel.setState(state);
     }
 
     @Override
     public void prepareFailView(final String error) {
-        view.showError(error);
+        final SignupState state = viewModel.getState();
+        state.setError(error);
+        viewModel.setState(state);
     }
 }

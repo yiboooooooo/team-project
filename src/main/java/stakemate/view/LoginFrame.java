@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,13 +15,14 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import stakemate.interface_adapter.controllers.LoginController;
-import stakemate.interface_adapter.view_login.LoginView;
+import stakemate.interface_adapter.view_login.LoginController;
+import stakemate.interface_adapter.view_login.LoginState;
+import stakemate.interface_adapter.view_login.LoginViewModel;
 
 /**
  * Frame for the Login View.
  */
-public class LoginFrame extends JFrame implements LoginView {
+public class LoginFrame extends JFrame implements PropertyChangeListener {
 
     private final MarketsFrame marketsFrame;
     // Buttons as FIELDS so we can access them in hookEvents()
@@ -30,6 +33,7 @@ public class LoginFrame extends JFrame implements LoginView {
     private final JLabel errorLabel = new JLabel(" ");
     private LoginController controller;
     private SignupFrame signupFrame;
+    private LoginViewModel viewModel;
 
     /**
      * Constructs a LoginFrame.
@@ -59,6 +63,16 @@ public class LoginFrame extends JFrame implements LoginView {
     public void setController(final LoginController controller) {
         this.controller = controller;
         hookEvents();
+    }
+
+    /**
+     * Sets the login view model.
+     * 
+     * @param viewModel the login view model.
+     */
+    public void setViewModel(final LoginViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
     }
 
     private void initUi() {
@@ -105,21 +119,18 @@ public class LoginFrame extends JFrame implements LoginView {
         });
     }
 
-    // ---- LoginView implementation ----
-
     @Override
-    public void showError(final String message) {
-        errorLabel.setText(message != null ? message : " ");
-    }
+    public void propertyChange(final PropertyChangeEvent evt) {
+        final LoginState state = (LoginState) evt.getNewValue();
+        if (state.getError() != null) {
+            errorLabel.setText(state.getError());
+        } else if (state.getUsername() != null && !state.getUsername().isEmpty()) {
+            // Hide login window and show the markets window
+            this.setVisible(false);
+            this.dispose();
 
-    @Override
-    public void onLoginSuccess(final String username) {
-        // Hide login window and show the markets window
-        this.setVisible(false);
-        this.dispose();
-
-        marketsFrame.setLoggedInUser(username);
-        marketsFrame.setVisible(true);
-        // (assuming you can get a reference to the ViewMarketController)
+            marketsFrame.setLoggedInUser(state.getUsername());
+            marketsFrame.setVisible(true);
+        }
     }
 }

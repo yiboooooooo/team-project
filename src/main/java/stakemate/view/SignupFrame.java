@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,13 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import stakemate.interface_adapter.controllers.SignupController;
-import stakemate.interface_adapter.view_signup.SignupView;
+import stakemate.interface_adapter.view_signup.SignupController;
+import stakemate.interface_adapter.view_signup.SignupState;
+import stakemate.interface_adapter.view_signup.SignupViewModel;
 
 /**
  * Frame for the Signup View.
  */
-public class SignupFrame extends JFrame implements SignupView {
+public class SignupFrame extends JFrame implements PropertyChangeListener {
 
     private final JFrame loginFrame;
     private final JTextField usernameField = new JTextField(15);
@@ -30,6 +33,7 @@ public class SignupFrame extends JFrame implements SignupView {
     private final JButton signupButton = new JButton("Sign Up");
     private final JButton cancelButton = new JButton("Cancel");
     private SignupController controller;
+    private SignupViewModel viewModel;
 
     /**
      * Constructs a SignupFrame.
@@ -51,6 +55,16 @@ public class SignupFrame extends JFrame implements SignupView {
     public void setController(final SignupController controller) {
         this.controller = controller;
         hookSignup();
+    }
+
+    /**
+     * Sets the signup view model.
+     * 
+     * @param viewModel the signup view model.
+     */
+    public void setViewModel(final SignupViewModel viewModel) {
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
     }
 
     private void initUi() {
@@ -93,7 +107,7 @@ public class SignupFrame extends JFrame implements SignupView {
             final String confirm = new String(confirmField.getPassword());
 
             if (!password.equals(confirm)) {
-                showError("Passwords do not match.");
+                errorLabel.setText("Passwords do not match.");
                 return;
             }
 
@@ -113,25 +127,23 @@ public class SignupFrame extends JFrame implements SignupView {
         });
     }
 
-    // ===== SignupView implementation =====
-
     @Override
-    public void showError(final String message) {
-        errorLabel.setText(message != null ? message : " ");
-    }
+    public void propertyChange(final PropertyChangeEvent evt) {
+        final SignupState state = (SignupState) evt.getNewValue();
+        if (state.getError() != null) {
+            errorLabel.setText(state.getError());
+        } else if (state.getUsername() != null && !state.getUsername().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Account created for " + state.getUsername() + ". Please log in.",
+                    "Signup Successful",
+                    JOptionPane.INFORMATION_MESSAGE);
+            this.setVisible(false);
+            this.dispose();
 
-    @Override
-    public void onSignupSuccess(final String username) {
-        JOptionPane.showMessageDialog(
-                this,
-                "Account created for " + username + ". Please log in.",
-                "Signup Successful",
-                JOptionPane.INFORMATION_MESSAGE);
-        this.setVisible(false);
-        this.dispose();
-
-        if (loginFrame != null) {
-            loginFrame.setVisible(true);
+            if (loginFrame != null) {
+                loginFrame.setVisible(true);
+            }
         }
     }
 }

@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class ProfileState {
     private String username = "";
-    private int balance = 0;
-    private int pnl = 0;
+    private double balance = 0;
+    private double pnl = 0;
     private List<String[]> openPositions = new ArrayList<>();
     private List<String[]> historicalPositions = new ArrayList<>();
     private String error = null;
@@ -57,7 +57,7 @@ public class ProfileState {
      * 
      * @return the balance.
      */
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
@@ -66,7 +66,7 @@ public class ProfileState {
      * 
      * @param balance the balance to set.
      */
-    public void setBalance(final int balance) {
+    public void setBalance(final double balance) {
         this.balance = balance;
     }
 
@@ -75,7 +75,7 @@ public class ProfileState {
      * 
      * @return the PnL.
      */
-    public int getPnl() {
+    public double getPnl() {
         return pnl;
     }
 
@@ -84,7 +84,7 @@ public class ProfileState {
      * 
      * @param pnl the PnL to set.
      */
-    public void setPnl(final int pnl) {
+    public void setPnl(final double pnl) {
         this.pnl = pnl;
     }
 

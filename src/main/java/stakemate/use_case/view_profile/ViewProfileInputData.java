@@ -1,26 +1,29 @@
 package stakemate.use_case.view_profile;
 
+import stakemate.use_case.view_profile.strategy.BetComparator;
+import stakemate.use_case.view_profile.strategy.DateBetComparator;
+
 /**
  * Input Data for the View Profile Use Case.
  */
 public class ViewProfileInputData {
     private final String username;
-    private final SortCriteria openSortCriteria;
-    private final SortCriteria historicalSortCriteria;
+    private final BetComparator openSortStrategy;
+    private final BetComparator historicalSortStrategy;
 
     /**
      * Constructs a ViewProfileInputData with specified sorting.
      * 
      * @param username               the username.
-     * @param openSortCriteria       the sorting criteria for open positions.
-     * @param historicalSortCriteria the sorting criteria for historical positions.
+     * @param openSortStrategy       the sorting strategy for open positions.
+     * @param historicalSortStrategy the sorting strategy for historical positions.
      */
     public ViewProfileInputData(final String username,
-            final SortCriteria openSortCriteria,
-            final SortCriteria historicalSortCriteria) {
+            final BetComparator openSortStrategy,
+            final BetComparator historicalSortStrategy) {
         this.username = username;
-        this.openSortCriteria = openSortCriteria;
-        this.historicalSortCriteria = historicalSortCriteria;
+        this.openSortStrategy = openSortStrategy;
+        this.historicalSortStrategy = historicalSortStrategy;
     }
 
     /**
@@ -29,7 +32,7 @@ public class ViewProfileInputData {
      * @param username the username.
      */
     public ViewProfileInputData(final String username) {
-        this(username, SortCriteria.DATE, SortCriteria.DATE);
+        this(username, new DateBetComparator(), new DateBetComparator());
     }
 
     /**
@@ -42,20 +45,20 @@ public class ViewProfileInputData {
     }
 
     /**
-     * Gets the sorting criteria for open positions.
+     * Gets the sorting strategy for open positions.
      * 
-     * @return the sorting criteria.
+     * @return the sorting strategy.
      */
-    public SortCriteria getOpenSortCriteria() {
-        return openSortCriteria;
+    public BetComparator getOpenSortStrategy() {
+        return openSortStrategy;
     }
 
     /**
-     * Gets the sorting criteria for historical positions.
+     * Gets the sorting strategy for historical positions.
      * 
-     * @return the sorting criteria.
+     * @return the sorting strategy.
      */
-    public SortCriteria getHistoricalSortCriteria() {
-        return historicalSortCriteria;
+    public BetComparator getHistoricalSortStrategy() {
+        return historicalSortStrategy;
     }
 }

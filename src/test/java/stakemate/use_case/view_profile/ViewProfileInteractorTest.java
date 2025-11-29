@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import stakemate.entity.Side;
 import stakemate.entity.User;
 import stakemate.use_case.settle_market.Bet;
+import stakemate.use_case.view_profile.strategy.DateBetComparator;
+import stakemate.use_case.view_profile.strategy.SizeBetComparator;
 
 /**
  * Tests for the View Profile Interactor.
@@ -87,8 +89,8 @@ class ViewProfileInteractorTest {
             public void presentProfile(final ViewProfileOutputData outputData) {
                 assertEquals(1, outputData.getOpenPositions().size());
                 assertEquals(1, outputData.getHistoricalPositions().size());
-                assertEquals("m1", outputData.getOpenPositions().get(0)[0]);
-                assertEquals("m2", outputData.getHistoricalPositions().get(0)[0]);
+                assertEquals("m1", outputData.getOpenPositions().get(0).getMarketId());
+                assertEquals("m2", outputData.getHistoricalPositions().get(0).getMarketId());
             }
         };
 
@@ -116,13 +118,13 @@ class ViewProfileInteractorTest {
         final ViewProfileOutputBoundary successPresenter = new TestOutputBoundary() {
             @Override
             public void presentProfile(final ViewProfileOutputData outputData) {
-                assertEquals("m2", outputData.getOpenPositions().get(0)[0]); // Newer first
-                assertEquals("m1", outputData.getOpenPositions().get(1)[0]);
+                assertEquals("m2", outputData.getOpenPositions().get(0).getMarketId()); // Newer first
+                assertEquals("m1", outputData.getOpenPositions().get(1).getMarketId());
             }
         };
 
         interactor = new ViewProfileInteractor(stubUserDataAccess, successPresenter);
-        interactor.execute(new ViewProfileInputData("testUser", SortCriteria.DATE, SortCriteria.DATE));
+        interactor.execute(new ViewProfileInputData("testUser", new DateBetComparator(), new DateBetComparator()));
     }
 
     @Test
@@ -142,13 +144,13 @@ class ViewProfileInteractorTest {
         final ViewProfileOutputBoundary successPresenter = new TestOutputBoundary() {
             @Override
             public void presentProfile(final ViewProfileOutputData outputData) {
-                assertEquals("m2", outputData.getOpenPositions().get(0)[0]); // Larger first
-                assertEquals("m1", outputData.getOpenPositions().get(1)[0]);
+                assertEquals("m2", outputData.getOpenPositions().get(0).getMarketId()); // Larger first
+                assertEquals("m1", outputData.getOpenPositions().get(1).getMarketId());
             }
         };
 
         interactor = new ViewProfileInteractor(stubUserDataAccess, successPresenter);
-        interactor.execute(new ViewProfileInputData("testUser", SortCriteria.SIZE, SortCriteria.DATE));
+        interactor.execute(new ViewProfileInputData("testUser", new SizeBetComparator(), new DateBetComparator()));
     }
 
     @Test
@@ -171,13 +173,13 @@ class ViewProfileInteractorTest {
         final ViewProfileOutputBoundary successPresenter = new TestOutputBoundary() {
             @Override
             public void presentProfile(final ViewProfileOutputData outputData) {
-                assertEquals("m2", outputData.getHistoricalPositions().get(0)[0]); // Newer first
-                assertEquals("m1", outputData.getHistoricalPositions().get(1)[0]);
+                assertEquals("m2", outputData.getHistoricalPositions().get(0).getMarketId()); // Newer first
+                assertEquals("m1", outputData.getHistoricalPositions().get(1).getMarketId());
             }
         };
 
         interactor = new ViewProfileInteractor(stubUserDataAccess, successPresenter);
-        interactor.execute(new ViewProfileInputData("testUser", SortCriteria.DATE, SortCriteria.DATE));
+        interactor.execute(new ViewProfileInputData("testUser", new DateBetComparator(), new DateBetComparator()));
     }
 
     @Test
@@ -199,29 +201,32 @@ class ViewProfileInteractorTest {
         final ViewProfileOutputBoundary successPresenter = new TestOutputBoundary() {
             @Override
             public void presentProfile(final ViewProfileOutputData outputData) {
-                assertEquals("m3", outputData.getHistoricalPositions().get(0)[0]); // 150
-                assertEquals("m1", outputData.getHistoricalPositions().get(1)[0]); // 100
-                assertEquals("m2", outputData.getHistoricalPositions().get(2)[0]); // 0
+                assertEquals("m3", outputData.getHistoricalPositions().get(0).getMarketId()); // 150
+                assertEquals("m1", outputData.getHistoricalPositions().get(1).getMarketId()); // 100
+                assertEquals("m2", outputData.getHistoricalPositions().get(2).getMarketId()); // 0
             }
         };
 
         interactor = new ViewProfileInteractor(stubUserDataAccess, successPresenter);
-        interactor.execute(new ViewProfileInputData("testUser", SortCriteria.DATE, SortCriteria.SIZE));
+        interactor.execute(new ViewProfileInputData("testUser", new DateBetComparator(), new SizeBetComparator()));
     }
 
     @Test
-    void testOutputFormatting() {
+    void testDataPassing() {
         final User user = new User("testUser", "password", 10000);
         stubUserDataAccess.setUserToReturn(user);
 
+        final Instant now = Instant.now();
+
         // Open Bet with Team Name
-        final Bet openBet = new Bet("testUser", "m1", Side.BUY, 100.0, 0.5, null, false, "TeamA");
+        final Bet openBet = new Bet("testUser", "m1", Side.BUY, 100.0, 0.5, null, false, "TeamA", now);
 
-        // Historical Won with Team Name
-        final Bet histBetWon = new Bet("testUser", "m2", Side.BUY, 100.0, 0.5, true, true, "TeamB");
+        // Historical Won with Team Name (Older)
+        final Bet histBetWon = new Bet("testUser", "m2", Side.BUY, 100.0, 0.5, true, true, "TeamB",
+                now.minus(1, ChronoUnit.HOURS));
 
-        // Historical Lost with Team Name
-        final Bet histBetLost = new Bet("testUser", "m3", Side.BUY, 100.0, 0.5, false, true, "TeamC");
+        // Historical Lost with Team Name (Newer)
+        final Bet histBetLost = new Bet("testUser", "m3", Side.BUY, 100.0, 0.5, false, true, "TeamC", now);
 
         final List<Bet> bets = new ArrayList<>();
         bets.add(openBet);
@@ -232,31 +237,52 @@ class ViewProfileInteractorTest {
         final ViewProfileOutputBoundary successPresenter = new TestOutputBoundary() {
             @Override
             public void presentProfile(final ViewProfileOutputData outputData) {
-                // Open Position: [marketName, team, buyPrice, size, buyAmt, potentialProfit]
-                final String[] open = outputData.getOpenPositions().get(0);
-                assertEquals("m1", open[0]);
-                assertEquals("TeamA", open[1]);
-                assertEquals("0.50", open[2]);
-                assertEquals("100", open[3]);
-                assertEquals("50.00", open[4]); // 100 * 0.5
-                assertEquals("50.00", open[5]); // 100 * (1 - 0.5)
+                // Verify Open Position Data
+                final Bet open = outputData.getOpenPositions().get(0);
+                assertEquals("m1", open.getMarketId());
+                assertEquals("TeamA", open.getTeamName());
+                assertEquals(0.5, open.getPrice());
+                assertEquals(100.0, open.getStake());
 
-                // Historical Won: [marketName, team, buyPrice, size, profit]
-                // Profit = (1 - 0.5) * 100 = 50.00
-                final String[] histWon = outputData.getHistoricalPositions().get(0);
-                assertEquals("m2", histWon[0]);
-                assertEquals("50.00", histWon[4]);
+                // Verify Historical Positions (Sorted by Date Descending)
+                final Bet histLost = outputData.getHistoricalPositions().get(0);
+                assertEquals("m3", histLost.getMarketId());
+                assertEquals("TeamC", histLost.getTeamName());
 
-                // Historical Lost: [marketName, team, buyPrice, size, profit]
-                // Profit = -1 * 0.5 * 100 = -50.00
-                final String[] histLost = outputData.getHistoricalPositions().get(1);
-                assertEquals("m3", histLost[0]);
-                assertEquals("-50.00", histLost[4]);
+                final Bet histWon = outputData.getHistoricalPositions().get(1);
+                assertEquals("m2", histWon.getMarketId());
+                assertEquals("TeamB", histWon.getTeamName());
             }
         };
 
         interactor = new ViewProfileInteractor(stubUserDataAccess, successPresenter);
-        interactor.execute(new ViewProfileInputData("testUser", SortCriteria.DATE, SortCriteria.DATE));
+        interactor.execute(new ViewProfileInputData("testUser", new DateBetComparator(), new DateBetComparator()));
+    }
+
+    @Test
+    void testSortCriteriaNull() {
+        final User user = new User("testUser", "password", 10000);
+        stubUserDataAccess.setUserToReturn(user);
+
+        final Bet bet1 = new Bet("testUser", "m1", Side.BUY, 100.0, 0.5, null, false);
+        final Bet bet2 = new Bet("testUser", "m2", Side.BUY, 100.0, 0.5, null, false);
+
+        final List<Bet> bets = new ArrayList<>();
+        bets.add(bet1);
+        bets.add(bet2);
+        stubUserDataAccess.setBetsToReturn(bets);
+
+        final ViewProfileOutputBoundary successPresenter = new TestOutputBoundary() {
+            @Override
+            public void presentProfile(final ViewProfileOutputData outputData) {
+                // Order should be preserved (insertion order) or undefined but no crash
+                assertEquals(2, outputData.getOpenPositions().size());
+            }
+        };
+
+        interactor = new ViewProfileInteractor(stubUserDataAccess, successPresenter);
+        // Pass null for sort criteria to hit the implicit else branches
+        interactor.execute(new ViewProfileInputData("testUser", null, null));
     }
 
     // =========================================================================
@@ -268,20 +294,20 @@ class ViewProfileInteractorTest {
         private User userToReturn;
         private List<Bet> betsToReturn = new ArrayList<>();
 
-        void setReturnNullUser(boolean returnNullUser) {
+        void setReturnNullUser(final boolean returnNullUser) {
             this.returnNullUser = returnNullUser;
         }
 
-        void setUserToReturn(User user) {
+        void setUserToReturn(final User user) {
             this.userToReturn = user;
         }
 
-        void setBetsToReturn(List<Bet> bets) {
+        void setBetsToReturn(final List<Bet> bets) {
             this.betsToReturn = bets;
         }
 
         @Override
-        public User getByUsername(String username) {
+        public User getByUsername(final String username) {
             if (returnNullUser) {
                 return null;
             }
@@ -289,19 +315,19 @@ class ViewProfileInteractorTest {
         }
 
         @Override
-        public List<Bet> getPositionsByUsername(String username) {
+        public List<Bet> getPositionsByUsername(final String username) {
             return betsToReturn;
         }
     }
 
     private static class TestOutputBoundary implements ViewProfileOutputBoundary {
         @Override
-        public void presentProfile(ViewProfileOutputData outputData) {
+        public void presentProfile(final ViewProfileOutputData outputData) {
             fail("Unexpected call to presentProfile");
         }
 
         @Override
-        public void presentError(String error) {
+        public void presentError(final String error) {
             fail("Unexpected call to presentError: " + error);
         }
     }
