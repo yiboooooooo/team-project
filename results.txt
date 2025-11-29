@@ -1,0 +1,44 @@
+Scanning usecase4\team-project and comparing with ....
+
+==============================
+SUMMARY
+==============================
+Total files scanned in source: 221
+Identical files: 190
+New files (safe to merge): 12
+POTENTIAL CONFLICTS (Modified files): 19
+
+[!] The following files exist in both locations but have DIFFERENT content:
+  - .gitignore
+  - pom.xml
+  - .git\config
+  - .git\HEAD
+  - .git\index
+  - .git\packed-refs
+  - .git\logs\HEAD
+  - .git\logs\refs\heads\main
+  - .git\logs\refs\remotes\origin\HEAD
+  - .idea\checkstyle-idea.xml
+  - src\main\java\stakemate\app\StakeMateApp.java
+  - src\main\java\stakemate\data_access\supabase\SupabaseUserDataAccess.java
+  - src\main\java\stakemate\engine\BookOrder.java
+  - src\main\java\stakemate\engine\MatchingEngine.java
+  - src\main\java\stakemate\interface_adapter\viewOrderBook\OrderBookDemo.java
+  - src\main\java\stakemate\service\InMemoryAccountService.java
+  - src\main\java\stakemate\use_case\PlaceOrderUseCase\PlaceOrderRequest.java
+  - src\main\java\stakemate\use_case\PlaceOrderUseCase\PlaceOrderUseCase.java
+  - src\main\java\stakemate\view\MarketsFrame.java
+
+[+] The following files are NEW in the source (will be added):
+  - .git\logs\refs\heads\use-case4-rebased
+  - .git\objects\pack\pack-eaeb3b694cc93a91c8cc96c119609895611642b9.idx
+  - .git\objects\pack\pack-eaeb3b694cc93a91c8cc96c119609895611642b9.pack
+  - .git\objects\pack\pack-eaeb3b694cc93a91c8cc96c119609895611642b9.rev
+  - .git\refs\heads\use-case4-rebased
+  - src\main\java\stakemate\data_access\supabase\PostgresOrderRepository.java
+  - src\main\java\stakemate\data_access\supabase\PostgresPositionRepository.java
+  - src\main\java\stakemate\interface_adapter\viewOrderBook\OrderBookTradingFrame.java
+  - src\main\java\stakemate\service\DbAccountService.java
+  - src\main\java\stakemate\use_case\PlaceOrderUseCase\DataSourceFactory.java
+  - src\main\java\stakemate\use_case\PlaceOrderUseCase\OrderRepository.java
+  - src\main\java\stakemate\use_case\PlaceOrderUseCase\PositionRepository.java

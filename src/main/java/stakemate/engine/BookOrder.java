@@ -19,7 +19,8 @@ public class BookOrder {
     private final double originalQty;
     private double remainingQty;
 
-    public BookOrder(final String userId, final String marketId, final Side side, final Double price, final double qty) {
+    public BookOrder(final String userId, final String marketId, final Side side, final Double price,
+            final double qty) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.marketId = marketId;
@@ -28,6 +29,27 @@ public class BookOrder {
         this.originalQty = qty;
         this.remainingQty = qty;
         this.timestamp = Instant.now();
+    }
+
+    /**
+     * Constructor for reconstruction from DB.
+     */
+    public BookOrder(final String id,
+            final String userId,
+            final String marketId,
+            final Side side,
+            final Double price,
+            final double originalQty,
+            final double remainingQty,
+            final Instant timestamp) {
+        this.id = id;
+        this.userId = userId;
+        this.marketId = marketId;
+        this.side = side;
+        this.price = price;
+        this.originalQty = originalQty;
+        this.remainingQty = remainingQty;
+        this.timestamp = timestamp;
     }
 
     public String getId() {
