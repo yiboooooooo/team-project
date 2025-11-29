@@ -30,6 +30,11 @@ public class SupabaseUserDataAccess
     stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface  {
     private final SupabaseClientFactory factory;
 
+    /**
+     * Constructs a SupabaseUserDataAccess.
+     * 
+     * @param factory the Supabase client factory.
+     */
     public SupabaseUserDataAccess(final SupabaseClientFactory factory) {
         this.factory = factory;
     }

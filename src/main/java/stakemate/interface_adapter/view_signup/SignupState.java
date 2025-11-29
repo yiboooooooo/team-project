@@ -1,11 +1,11 @@
-package stakemate.interface_adapter.view_login;
+package stakemate.interface_adapter.view_signup;
 
 /**
- * State for the Login View.
+ * State for the Signup View.
  */
-public class LoginState {
+public class SignupState {
     private String username = "";
-    private String error = "";
+    private String error;
 
     /**
      * Gets the username.
@@ -19,9 +19,9 @@ public class LoginState {
     /**
      * Sets the username.
      * 
-     * @param username the username to set.
+     * @param username the username.
      */
-    public void setUsername(final String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -37,9 +37,9 @@ public class LoginState {
     /**
      * Sets the error message.
      * 
-     * @param error the error message to set.
+     * @param error the error message.
      */
-    public void setError(final String error) {
+    public void setError(String error) {
         this.error = error;
     }
 }

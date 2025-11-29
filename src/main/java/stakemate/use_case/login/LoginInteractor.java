@@ -2,12 +2,21 @@ package stakemate.use_case.login;
 
 import stakemate.entity.User;
 
+/**
+ * Interactor for the Login Use Case.
+ */
 public class LoginInteractor implements LoginInputBoundary {
     private final LoginUserDataAccessInterface userDataAccess;
     private final LoginOutputBoundary presenter;
 
+    /**
+     * Constructs a LoginInteractor.
+     * 
+     * @param userDataAccess the data access interface.
+     * @param presenter      the output boundary.
+     */
     public LoginInteractor(final LoginUserDataAccessInterface userDataAccess,
-                           final LoginOutputBoundary presenter) {
+            final LoginOutputBoundary presenter) {
         this.userDataAccess = userDataAccess;
         this.presenter = presenter;
     }

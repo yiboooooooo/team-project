@@ -24,17 +24,22 @@ import stakemate.data_access.supabase.SupabaseUserDataAccess;
 import stakemate.entity.Game;
 import stakemate.entity.Side;
 import stakemate.entity.User;
-import stakemate.interface_adapter.controllers.LoginController;
 import stakemate.interface_adapter.controllers.SettleMarketController;
-import stakemate.interface_adapter.controllers.SignupController;
 import stakemate.interface_adapter.view_comments.PostCommentController;
 import stakemate.interface_adapter.view_comments.SwingPostCommentPresenter;
 import stakemate.interface_adapter.view_comments.SwingViewCommentsPresenter;
 import stakemate.interface_adapter.view_comments.ViewCommentsController;
+import stakemate.interface_adapter.view_login.LoginController;
+import stakemate.interface_adapter.view_login.LoginViewModel;
 import stakemate.interface_adapter.view_login.SwingLoginPresenter;
 import stakemate.interface_adapter.view_market.SwingSettleMarketPresenter;
 import stakemate.interface_adapter.view_market.SwingViewMarketsPresenter;
 import stakemate.interface_adapter.view_market.ViewMarketController;
+import stakemate.interface_adapter.view_profile.ProfileViewModel;
+import stakemate.interface_adapter.view_profile.ViewProfileController;
+import stakemate.interface_adapter.view_profile.ViewProfilePresenter;
+import stakemate.interface_adapter.view_signup.SignupController;
+import stakemate.interface_adapter.view_signup.SignupViewModel;
 import stakemate.interface_adapter.view_signup.SwingSignupPresenter;
 import stakemate.use_case.comments.post.PostCommentInteractor;
 import stakemate.use_case.comments.view.ViewCommentsInteractor;
@@ -51,8 +56,10 @@ import stakemate.use_case.settle_market.SettleMarketInteractor;
 import stakemate.use_case.signup.SignupInteractor;
 import stakemate.use_case.view_market.ViewMarketInteractor;
 import stakemate.use_case.view_market.facade.MarketDataFacade;
+import stakemate.use_case.view_profile.ViewProfileOutputBoundary;
 import stakemate.view.LoginFrame;
 import stakemate.view.MarketsFrame;
+import stakemate.view.ProfileFrame;
 import stakemate.view.SignupFrame;
 
 /**
@@ -115,13 +122,12 @@ public final class StakeMateApp {
         final SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
         final FetchGamesInteractor fetchGamesInteractor = createFetchGamesInteractor(gameRepository);
 
-        final InMemoryMatchRepository matchRepository =
-            new InMemoryMatchRepository(gameRepository, fetchGamesInteractor);
+        final InMemoryMatchRepository matchRepository = new InMemoryMatchRepository(gameRepository,
+                fetchGamesInteractor);
         final MarketDataFacade marketFacade = new MarketDataFacade(
-            matchRepository,
-            new InMemoryMarketRepository(),
-            new FakeOrderBookGateway()
-        );
+                matchRepository,
+                new InMemoryMarketRepository(),
+                new FakeOrderBookGateway());
 
         betRepo = new InMemoryBetRepository();
         accountRepo = new InMemoryAccountRepository();
@@ -170,16 +176,16 @@ public final class StakeMateApp {
         final SupabaseCommentRepository commentRepo = new SupabaseCommentRepository();
 
         // First create the view presenter
-        final SwingViewCommentsPresenter viewPresenter =
-            new SwingViewCommentsPresenter(marketsFrame.getCommentsPanel());
+        final SwingViewCommentsPresenter viewPresenter = new SwingViewCommentsPresenter(
+                marketsFrame.getCommentsPanel());
 
         // Then create the view controller (needed for the post presenter)
-        final ViewCommentsController viewController =
-            new ViewCommentsController(new ViewCommentsInteractor(commentRepo, viewPresenter));
+        final ViewCommentsController viewController = new ViewCommentsController(
+                new ViewCommentsInteractor(commentRepo, viewPresenter));
 
         // Now create the post presenter with BOTH arguments
-        final SwingPostCommentPresenter postPresenter =
-            new SwingPostCommentPresenter(marketsFrame.getCommentsPanel(), viewController);
+        final SwingPostCommentPresenter postPresenter = new SwingPostCommentPresenter(marketsFrame.getCommentsPanel(),
+                viewController);
 
         // Create the interactors
         final PostCommentInteractor postInteractor = new PostCommentInteractor(commentRepo, postPresenter);
@@ -190,16 +196,17 @@ public final class StakeMateApp {
         // viewController already created above
 
         // Wire everything into the UI
-        marketsFrame.setPostCommentController(postController);   // sets the post controller in MarketsFrame
-        marketsFrame.setViewCommentsController(viewController);  // sets the view controller in MarketsFrame
-        marketsFrame.wireCommentsPanel();                        // wires commentsPanel with both controllers
+        marketsFrame.setPostCommentController(postController); // sets the post controller in MarketsFrame
+        marketsFrame.setViewCommentsController(viewController); // sets the view controller in MarketsFrame
+        marketsFrame.wireCommentsPanel(); // wires commentsPanel with both controllers
     }
 
     private static void setupDemoData() {
         accountRepo.addDemoUser(new User("alice", "password", INITIAL_BALANCE));
         accountRepo.addDemoUser(new User("bob", "password", INITIAL_BALANCE));
 
-        // Added null (outcome unknown) and false (not settled) to match the new 7-arg constructor
+        // Added null (outcome unknown) and false (not settled) to match the new 7-arg
+        // constructor
         betRepo.addDemoBet(new Bet("alice", "M1-ML", Side.BUY, BET_AMOUNT, ODDS_WIN, null, false));
         betRepo.addDemoBet(new Bet("bob", "M1-ML", Side.SELL, BET_AMOUNT, ODDS_LOSE, null, false));
     }
@@ -231,18 +238,16 @@ public final class StakeMateApp {
 
     private static void setupProfileUseCase(final MarketsFrame marketsFrame,
             final SupabaseUserDataAccess userRepo) {
-        final stakemate.view.ProfileFrame profileFrame = new stakemate.view.ProfileFrame();
-        final stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel = new stakemate.interface_adapter.view_profile.ProfileViewModel();
+        final ProfileFrame profileFrame = new ProfileFrame();
+        final ProfileViewModel profileViewModel = new ProfileViewModel();
         profileFrame.setViewModel(profileViewModel);
 
-        final stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter = new stakemate.interface_adapter.view_profile.ViewProfilePresenter(
-                profileViewModel);
+        final ViewProfileOutputBoundary profilePresenter = new ViewProfilePresenter(profileViewModel);
 
         final stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor = new stakemate.use_case.view_profile.ViewProfileInteractor(
                 userRepo, profilePresenter);
 
-        final stakemate.interface_adapter.view_profile.ViewProfileController profileController = new stakemate.interface_adapter.view_profile.ViewProfileController(
-                profileInteractor);
+        final ViewProfileController profileController = new ViewProfileController(profileInteractor);
 
         marketsFrame.setProfileFrame(profileFrame);
         marketsFrame.setProfileController(profileController);
@@ -252,18 +257,24 @@ public final class StakeMateApp {
     private static void setupAuth(final MarketsFrame marketsFrame, final SupabaseUserDataAccess userRepo) {
         final LoginFrame loginFrame = new LoginFrame(marketsFrame);
         final SignupFrame signupFrame = new SignupFrame(loginFrame);
-        final SwingLoginPresenter loginPresenter = new SwingLoginPresenter(loginFrame);
+
+        // Login MVVM
+        final LoginViewModel loginViewModel = new LoginViewModel();
+        loginFrame.setViewModel(loginViewModel);
+        final SwingLoginPresenter loginPresenter = new SwingLoginPresenter(loginViewModel);
         final LoginInteractor loginInteractor = new LoginInteractor(userRepo, loginPresenter);
         final LoginController loginController = new LoginController(loginInteractor);
-
         loginFrame.setController(loginController);
-        loginFrame.setSignupFrame(signupFrame);
-        final SwingSignupPresenter signupPresenter = new SwingSignupPresenter(signupFrame);
+
+        // Signup MVVM
+        final SignupViewModel signupViewModel = new SignupViewModel();
+        signupFrame.setViewModel(signupViewModel);
+        final SwingSignupPresenter signupPresenter = new SwingSignupPresenter(signupViewModel);
         final SignupInteractor signupInteractor = new SignupInteractor(userRepo, signupPresenter);
         final SignupController signupController = new SignupController(signupInteractor);
-
         signupFrame.setController(signupController);
 
+        loginFrame.setSignupFrame(signupFrame);
         loginFrame.setVisible(true);
     }
 

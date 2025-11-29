@@ -2,12 +2,21 @@ package stakemate.use_case.signup;
 
 import stakemate.entity.User;
 
+/**
+ * Interactor for the Signup Use Case.
+ */
 public class SignupInteractor implements SignupInputBoundary {
     private final SignupUserDataAccessInterface userDataAccess;
     private final SignupOutputBoundary presenter;
 
+    /**
+     * Constructs a SignupInteractor.
+     * 
+     * @param userDataAccess the data access interface.
+     * @param presenter      the output boundary.
+     */
     public SignupInteractor(final SignupUserDataAccessInterface userDataAccess,
-                            final SignupOutputBoundary presenter) {
+            final SignupOutputBoundary presenter) {
         this.userDataAccess = userDataAccess;
         this.presenter = presenter;
     }
@@ -18,7 +27,7 @@ public class SignupInteractor implements SignupInputBoundary {
         final String password = inputData.getPassword();
 
         if (username == null || username.isEmpty() ||
-            password == null || password.isEmpty()) {
+                password == null || password.isEmpty()) {
             presenter.prepareFailView("Username and password cannot be empty.");
             return;
         }

@@ -21,6 +21,9 @@ import javax.swing.table.DefaultTableModel;
 import stakemate.interface_adapter.view_profile.ProfileState;
 import stakemate.interface_adapter.view_profile.ProfileViewModel;
 
+/**
+ * Frame for the Profile View.
+ */
 public class ProfileFrame extends JFrame implements PropertyChangeListener {
 
     private final JButton backButton = new JButton("Back");
@@ -49,16 +52,29 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
     private stakemate.use_case.view_profile.SortCriteria currentOpenSort = stakemate.use_case.view_profile.SortCriteria.DATE;
     private stakemate.use_case.view_profile.SortCriteria currentHistoricalSort = stakemate.use_case.view_profile.SortCriteria.DATE;
 
+    /**
+     * Sets the view profile controller.
+     * 
+     * @param controller the controller.
+     */
     public void setController(final stakemate.interface_adapter.view_profile.ViewProfileController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Constructs a ProfileFrame.
+     */
     public ProfileFrame() {
         super("StakeMate - My Profile");
         initUi();
         hookEvents();
     }
 
+    /**
+     * Sets the profile view model.
+     * 
+     * @param viewModel the view model.
+     */
     public void setViewModel(final ProfileViewModel viewModel) {
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
