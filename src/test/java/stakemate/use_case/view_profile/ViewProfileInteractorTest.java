@@ -16,6 +16,9 @@ import stakemate.entity.Side;
 import stakemate.entity.User;
 import stakemate.use_case.settle_market.Bet;
 
+/**
+ * Tests for the View Profile Interactor.
+ */
 class ViewProfileInteractorTest {
 
     private StubUserDataAccess stubUserDataAccess;

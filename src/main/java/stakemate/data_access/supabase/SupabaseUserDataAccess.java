@@ -29,6 +29,11 @@ public class SupabaseUserDataAccess
 
     private final SupabaseClientFactory factory;
 
+    /**
+     * Constructs a SupabaseUserDataAccess.
+     * 
+     * @param factory the Supabase client factory.
+     */
     public SupabaseUserDataAccess(final SupabaseClientFactory factory) {
         this.factory = factory;
     }

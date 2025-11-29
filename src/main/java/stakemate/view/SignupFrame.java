@@ -17,6 +17,9 @@ import javax.swing.JTextField;
 import stakemate.interface_adapter.controllers.SignupController;
 import stakemate.interface_adapter.view_signup.SignupView;
 
+/**
+ * Frame for the Signup View.
+ */
 public class SignupFrame extends JFrame implements SignupView {
 
     private final JFrame loginFrame;
@@ -28,6 +31,11 @@ public class SignupFrame extends JFrame implements SignupView {
     private final JButton cancelButton = new JButton("Cancel");
     private SignupController controller;
 
+    /**
+     * Constructs a SignupFrame.
+     * 
+     * @param loginFrame the login frame to return to.
+     */
     public SignupFrame(final JFrame loginFrame) {
         super("StakeMate - Sign Up");
         this.loginFrame = loginFrame;
@@ -35,6 +43,11 @@ public class SignupFrame extends JFrame implements SignupView {
         hookCancel();
     }
 
+    /**
+     * Sets the signup controller.
+     * 
+     * @param controller the signup controller.
+     */
     public void setController(final SignupController controller) {
         this.controller = controller;
         hookSignup();
@@ -110,11 +123,10 @@ public class SignupFrame extends JFrame implements SignupView {
     @Override
     public void onSignupSuccess(final String username) {
         JOptionPane.showMessageDialog(
-            this,
-            "Account created for " + username + ". Please log in.",
-            "Signup Successful",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+                this,
+                "Account created for " + username + ". Please log in.",
+                "Signup Successful",
+                JOptionPane.INFORMATION_MESSAGE);
         this.setVisible(false);
         this.dispose();
 

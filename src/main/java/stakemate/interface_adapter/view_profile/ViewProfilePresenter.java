@@ -3,9 +3,17 @@ package stakemate.interface_adapter.view_profile;
 import stakemate.use_case.view_profile.ViewProfileOutputBoundary;
 import stakemate.use_case.view_profile.ViewProfileOutputData;
 
+/**
+ * Presenter for the View Profile Use Case.
+ */
 public class ViewProfilePresenter implements ViewProfileOutputBoundary {
     private final ProfileViewModel viewModel;
 
+    /**
+     * Constructs a ViewProfilePresenter.
+     * 
+     * @param viewModel the view model.
+     */
     public ViewProfilePresenter(final ProfileViewModel viewModel) {
         this.viewModel = viewModel;
     }

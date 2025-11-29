@@ -5,10 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 import stakemate.use_case.settle_market.Bet;
 
+/**
+ * Interactor for the View Profile Use Case.
+ */
 public class ViewProfileInteractor implements ViewProfileInputBoundary {
     private final ViewProfileUserDataAccessInterface userDataAccess;
     private final ViewProfileOutputBoundary outputBoundary;
 
+    /**
+     * Constructs a ViewProfileInteractor.
+     * 
+     * @param userDataAccess the data access interface.
+     * @param outputBoundary the output boundary.
+     */
     public ViewProfileInteractor(ViewProfileUserDataAccessInterface userDataAccess,
             ViewProfileOutputBoundary outputBoundary) {
         this.userDataAccess = userDataAccess;

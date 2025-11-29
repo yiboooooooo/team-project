@@ -16,6 +16,9 @@ import javax.swing.JTextField;
 import stakemate.interface_adapter.controllers.LoginController;
 import stakemate.interface_adapter.view_login.LoginView;
 
+/**
+ * Frame for the Login View.
+ */
 public class LoginFrame extends JFrame implements LoginView {
 
     private final MarketsFrame marketsFrame;
@@ -28,16 +31,31 @@ public class LoginFrame extends JFrame implements LoginView {
     private LoginController controller;
     private SignupFrame signupFrame;
 
+    /**
+     * Constructs a LoginFrame.
+     * 
+     * @param marketsFrame the markets frame to show after login.
+     */
     public LoginFrame(final MarketsFrame marketsFrame) {
         super("StakeMate - Login");
         this.marketsFrame = marketsFrame;
         initUi();
     }
 
+    /**
+     * Sets the signup frame.
+     * 
+     * @param signupFrame the signup frame.
+     */
     public void setSignupFrame(final SignupFrame signupFrame) {
         this.signupFrame = signupFrame;
     }
 
+    /**
+     * Sets the login controller.
+     * 
+     * @param controller the login controller.
+     */
     public void setController(final LoginController controller) {
         this.controller = controller;
         hookEvents();
