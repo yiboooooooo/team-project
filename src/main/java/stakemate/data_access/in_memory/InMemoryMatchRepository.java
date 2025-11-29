@@ -2,7 +2,9 @@ package stakemate.data_access.in_memory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import stakemate.entity.Game;
 import stakemate.entity.GameStatus;
@@ -57,6 +59,12 @@ public class InMemoryMatchRepository implements MatchRepository {
             MatchStatus.CLOSED, now.minusHours(DEFAULT_OFFSET_HOURS_CLOSED)));
     }
 
+    /**
+     * Retrieves all matches from the repository.
+     *
+     * @return a list of all matches
+     * @throws RepositoryException if retrieval fails
+     */
     @Override
     public List<Match> findAllMatches() throws RepositoryException {
         return new ArrayList<>(matches);
@@ -72,6 +80,7 @@ public class InMemoryMatchRepository implements MatchRepository {
         if (gameRepository == null) {
             // No game repository configured, use default matches
             initializeWithDefaultMatches();
+
         }
         else {
             try {

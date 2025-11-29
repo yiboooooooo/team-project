@@ -46,6 +46,10 @@ import stakemate.use_case.comments.view.ViewCommentsInteractor;
 import stakemate.use_case.fetch_games.FetchGamesInteractor;
 import stakemate.use_case.fetch_games.FetchGamesOutputBoundary;
 import stakemate.use_case.fetch_games.FetchGamesResponseModel;
+import stakemate.interface_adapter.view_live.LiveMatchesController;
+import stakemate.interface_adapter.view_live.SwingLiveMatchesPresenter;
+import stakemate.use_case.view_live.LiveMatchesInteractor;
+import stakemate.view.LiveMatchesFrame;
 import stakemate.use_case.login.LoginInteractor;
 import stakemate.use_case.settle_market.Bet;
 import stakemate.use_case.settle_market.SettleMarketInteractor;
@@ -133,6 +137,7 @@ public final class StakeMateApp {
         setupMarketView(marketsFrame, marketFacade);
         setupCommentSystem(marketsFrame);
         setupSettlementUseCase(marketsFrame, new InMemorySettlementRecordRepository());
+        setupLiveMatchesView(marketsFrame, fetchGamesInteractor, gameRepository);
 
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
         final SupabaseUserDataAccess userRepo = new SupabaseUserDataAccess(supabaseFactory);
@@ -143,14 +148,17 @@ public final class StakeMateApp {
 
     private static FetchGamesInteractor createFetchGamesInteractor(final SupabaseGameRepository gameRepo) {
         final String apiKey = getEnvVar("ODDS_API_KEY");
+        final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
         FetchGamesInteractor interactor = null;
 
         if (apiKey == null || apiKey.isEmpty()) {
-            System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
-        } else {
+            System.err.println("WARNING: ODDS_API_KEY not set. Creating interactor with null gateway.");
+            // Create interactor with null gateway to avoid null pointer exceptions downstream
+            interactor = new FetchGamesInteractor(null, new OddsApiResponseAdapter(), gameRepo, presenter);
+        }
+        else {
             final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
             final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
-            final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
             interactor = new FetchGamesInteractor(apiGateway, responseAdapter, gameRepo, presenter);
         }
         return interactor;
@@ -212,6 +220,20 @@ public final class StakeMateApp {
 
         final SettleMarketController settleController = new SettleMarketController(settleInteractor);
         marketsFrame.setSettleMarketController(settleController);
+    }
+
+    private static void setupLiveMatchesView(final MarketsFrame marketsFrame,
+                                            final FetchGamesInteractor fetchGamesInteractor,
+                                            final SupabaseGameRepository gameRepository) {
+        final LiveMatchesFrame liveMatchesFrame = new LiveMatchesFrame();
+        final SwingLiveMatchesPresenter livePresenter = new SwingLiveMatchesPresenter(liveMatchesFrame);
+        final LiveMatchesInteractor liveInteractor =
+            new LiveMatchesInteractor(fetchGamesInteractor, gameRepository, livePresenter);
+        final LiveMatchesController liveController = new LiveMatchesController(liveInteractor);
+
+        liveMatchesFrame.setController(liveController);
+        marketsFrame.setLiveMatchesFrame(liveMatchesFrame);
+        marketsFrame.setLiveMatchesController(liveController);
     }
 
     private static void setupProfileUseCase(final MarketsFrame marketsFrame,

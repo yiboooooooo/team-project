@@ -1,0 +1,84 @@
+package stakemate.use_case.view_live;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import stakemate.entity.Game;
+import stakemate.use_case.fetch_games.FetchGamesInputBoundary;
+import stakemate.use_case.fetch_games.GameRepository;
+import stakemate.use_case.fetch_games.RepositoryException;
+
+/**
+ * Interactor for the Live Matches use case.
+ * Orchestrates the periodic fetching and retrieval of game data.
+ *
+ * TODO: Add comprehensive unit tests for this interactor (Use Case 1):
+ *   - Test startTracking() initializes scheduler and starts polling
+ *   - Test startTracking() does not start if already running
+ *   - Test stopTracking() shuts down scheduler properly
+ *   - Test fetchAndPresent() calls fetchGamesInteractor.refreshGames()
+ *   - Test fetchAndPresent() queries repository for future games
+ *   - Test fetchAndPresent() presents games via presenter
+ *   - Test fetchAndPresent() handles RepositoryException gracefully
+ *   - Test fetchAndPresent() handles generic exceptions gracefully
+ *   - Verify presenter.presentMatches() called with correct game list
+ *   - Verify presenter.presentError() called when errors occur
+ * TODO: Fix any Checkstyle violations in this file
+ */
+public class LiveMatchesInteractor implements LiveMatchesInputBoundary {
+
+    private final FetchGamesInputBoundary fetchGamesInteractor;
+    private final GameRepository gameRepository;
+    private final LiveMatchesOutputBoundary presenter;
+
+    private ScheduledExecutorService scheduler;
+    private static final int POLLING_INTERVAL_SECONDS = 30;
+
+    public LiveMatchesInteractor(final FetchGamesInputBoundary fetchGamesInteractor,
+                                 final GameRepository gameRepository,
+                                 final LiveMatchesOutputBoundary presenter) {
+        this.fetchGamesInteractor = fetchGamesInteractor;
+        this.gameRepository = gameRepository;
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void startTracking() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            return; // Already running
+        }
+
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(this::fetchAndPresent, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void stopTracking() {
+        if (scheduler != null) {
+            scheduler.shutdown();
+            scheduler = null;
+        }
+    }
+
+    private void fetchAndPresent() {
+        try {
+            // 1. Trigger a refresh from the API
+            // Note: fetchGamesInteractor.refreshGames() usually calls its own presenter.
+            // We might want to suppress that or just accept it logs to console.
+            // For this use case, we primarily care about the side effect: DB update.
+            fetchGamesInteractor.refreshGames();
+
+            // 2. Query the DB for the latest data
+            final List<Game> games = gameRepository.findFutureGames();
+
+            // 3. Present the data
+            presenter.presentMatches(games);
+        } catch (final RepositoryException e) {
+            presenter.presentError("Failed to retrieve matches: " + e.getMessage());
+        } catch (final Exception e) {
+            presenter.presentError("Unexpected error during tracking: " + e.getMessage());
+        }
+    }
+}
