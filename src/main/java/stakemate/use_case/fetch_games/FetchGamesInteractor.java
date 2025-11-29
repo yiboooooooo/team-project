@@ -49,6 +49,12 @@ public class FetchGamesInteractor implements FetchGamesInputBoundary {
         presenter.presentFetchInProgress();
 
         try {
+            // Check if API gateway is configured
+            if (apiGateway == null) {
+                presenter.presentFetchError("API gateway not configured. Please set ODDS_API_KEY.");
+                return;
+            }
+
             // Validate sport parameter
             if (sport == null || sport.trim().isEmpty()) {
                 presenter.presentFetchError("Sport parameter is required");

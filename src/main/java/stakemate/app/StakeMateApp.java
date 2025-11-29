@@ -137,15 +137,17 @@ public final class StakeMateApp {
 
     private static FetchGamesInteractor createFetchGamesInteractor(final SupabaseGameRepository gameRepo) {
         final String apiKey = getEnvVar("ODDS_API_KEY");
+        final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
         FetchGamesInteractor interactor = null;
 
         if (apiKey == null || apiKey.isEmpty()) {
-            System.err.println("WARNING: ODDS_API_KEY not set. Using default hardcoded matches.");
+            System.err.println("WARNING: ODDS_API_KEY not set. Creating interactor with null gateway.");
+            // Create interactor with null gateway to avoid null pointer exceptions downstream
+            interactor = new FetchGamesInteractor(null, new OddsApiResponseAdapter(), gameRepo, presenter);
         }
         else {
             final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
             final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
-            final FetchGamesOutputBoundary presenter = new ConsoleFetchGamesPresenter();
             interactor = new FetchGamesInteractor(apiGateway, responseAdapter, gameRepo, presenter);
         }
         return interactor;
