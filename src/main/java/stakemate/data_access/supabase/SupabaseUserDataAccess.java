@@ -24,8 +24,8 @@ import stakemate.use_case.signup.SignupUserDataAccessInterface;
  * );
  */
 public class SupabaseUserDataAccess
-    implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-    stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface  {
+        implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
+        stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface {
 
     private final SupabaseClientFactory factory;
 
@@ -40,7 +40,7 @@ public class SupabaseUserDataAccess
         final String sql = "SELECT 1 FROM public.profiles WHERE username = ? LIMIT 1";
 
         try (final Connection conn = factory.createConnection();
-             final PreparedStatement ps = conn.prepareStatement(sql)) {
+                final PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
@@ -48,8 +48,7 @@ public class SupabaseUserDataAccess
                 return rs.next();
             }
 
-        }
-        catch (final SQLException e) {
+        } catch (final SQLException e) {
             throw new RuntimeException("Error checking if user exists", e);
         }
     }
@@ -58,10 +57,10 @@ public class SupabaseUserDataAccess
     public void save(final User user) {
         // We let Supabase/Postgres generate the UUID id and updated_at
         final String sql = "INSERT INTO public.profiles (username, password, balance) " +
-            "VALUES (?, ?, ?)";
+                "VALUES (?, ?, ?)";
 
         try (final Connection conn = factory.createConnection();
-             final PreparedStatement ps = conn.prepareStatement(sql)) {
+                final PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -69,8 +68,7 @@ public class SupabaseUserDataAccess
 
             ps.executeUpdate();
 
-        }
-        catch (final SQLException e) {
+        } catch (final SQLException e) {
             throw new RuntimeException("Error saving user to Supabase", e);
         }
     }
@@ -80,10 +78,10 @@ public class SupabaseUserDataAccess
     @Override
     public User getByUsername(final String username) {
         final String sql = "SELECT username, password, balance " +
-            "FROM public.profiles WHERE username = ?";
+                "FROM public.profiles WHERE username = ?";
 
         try (final Connection conn = factory.createConnection();
-             final PreparedStatement ps = conn.prepareStatement(sql)) {
+                final PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
@@ -98,9 +96,77 @@ public class SupabaseUserDataAccess
                 return new User(uname, pwd, balance);
             }
 
-        }
-        catch (final SQLException e) {
+        } catch (final SQLException e) {
             throw new RuntimeException("Error loading user from Supabase", e);
         }
+    }
+
+    @Override
+    public java.util.List<stakemate.use_case.settle_market.Bet> getPositionsByUsername(final String username) {
+        final String sql = "SELECT p.username, " +
+                "       pos.market_id, " +
+                "       pos.side, " +
+                "       pos.amount, " +
+                "       pos.price, " +
+                "       pos.\"won?\" AS won_flag, " +
+                "       pos.settled AS settled_flag, " +
+                "       g.team_a, " +
+                "       g.team_b, " +
+                "       pos.updated_at " +
+                "FROM public.positions pos " +
+                "JOIN public.profiles p ON pos.user_id = p.id " +
+                "LEFT JOIN public.games g ON pos.market_id = g.market_id::text " +
+                "WHERE p.username = ?";
+
+        final java.util.List<stakemate.use_case.settle_market.Bet> bets = new java.util.ArrayList<>();
+
+        try (final Connection conn = factory.createConnection();
+                final PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (final ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    final String uName = rs.getString("username");
+                    final String marketIdRaw = rs.getString("market_id");
+                    final String teamA = rs.getString("team_a");
+                    final String teamB = rs.getString("team_b");
+                    final java.sql.Timestamp ts = rs.getTimestamp("updated_at");
+                    final java.time.Instant updatedAt = (ts != null) ? ts.toInstant() : java.time.Instant.now();
+
+                    // Construct market name: "Team A vs Team B"
+                    // Fallback to market_id if game info is missing
+                    String marketName = marketIdRaw;
+                    if (teamA != null && teamB != null) {
+                        marketName = teamA + " vs " + teamB;
+                    }
+
+                    final stakemate.entity.Side side = stakemate.entity.Side
+                            .valueOf(rs.getString("side").toUpperCase());
+                    final double amount = rs.getDouble("amount");
+                    final double price = rs.getDouble("price");
+                    final Boolean won = (Boolean) rs.getObject("won_flag");
+                    final Boolean settled = (Boolean) rs.getObject("settled_flag");
+
+                    // Resolve team name based on side
+                    String teamName = side.toString();
+                    if (side == stakemate.entity.Side.BUY && teamA != null) {
+                        teamName = teamA;
+                    } else if (side == stakemate.entity.Side.SELL && teamB != null) {
+                        teamName = teamB;
+                    }
+
+                    final stakemate.use_case.settle_market.Bet bet = new stakemate.use_case.settle_market.Bet(uName,
+                            marketName, side, amount, price, won, settled, teamName, updatedAt);
+
+                    bets.add(bet);
+                }
+            }
+
+        } catch (final SQLException e) {
+            throw new RuntimeException("Error loading positions for user " + username, e);
+        }
+
+        return bets;
     }
 }

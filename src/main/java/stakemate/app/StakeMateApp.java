@@ -53,10 +53,13 @@ import stakemate.view.SignupFrame;
 
 /**
  * The Main Application Class for StakeMate.
- * Wires together the Clean Architecture layers (Entity, Use Case, Interface Adapter, View).
+ * Wires together the Clean Architecture layers (Entity, Use Case, Interface
+ * Adapter, View).
  */
-// -@cs[ClassDataAbstractionCoupling] Main class wires the entire application together.
-// -@cs[ClassFanOutComplexity] Main class depends on many components for dependency injection.
+// -@cs[ClassDataAbstractionCoupling] Main class wires the entire application
+// together.
+// -@cs[ClassFanOutComplexity] Main class depends on many components for
+// dependency injection.
 public final class StakeMateApp {
 
     private static final int INITIAL_BALANCE = 1000;
@@ -94,7 +97,8 @@ public final class StakeMateApp {
      *
      * @param args Command line arguments.
      */
-    // -@cs[UncommentedMain] Main entry point is required for the application execution.
+    // -@cs[UncommentedMain] Main entry point is required for the application
+    // execution.
     public static void main(final String[] args) {
         // Load .env file if it exists
         loadEnvFile();
@@ -194,36 +198,34 @@ public final class StakeMateApp {
     }
 
     private static void setupSettlementUseCase(final MarketsFrame marketsFrame,
-                                               final InMemorySettlementRecordRepository recordRepo) {
-        final SwingSettleMarketPresenter settlePresenter =
-            new SwingSettleMarketPresenter(marketsFrame);
+            final InMemorySettlementRecordRepository recordRepo) {
+        final SwingSettleMarketPresenter settlePresenter = new SwingSettleMarketPresenter(marketsFrame);
 
-        final SettleMarketInteractor settleInteractor =
-            new SettleMarketInteractor(betRepo, accountRepo, recordRepo, settlePresenter);
+        final SettleMarketInteractor settleInteractor = new SettleMarketInteractor(betRepo, accountRepo, recordRepo,
+                settlePresenter);
 
-        final SettleMarketController settleController =
-            new SettleMarketController(settleInteractor);
+        final SettleMarketController settleController = new SettleMarketController(settleInteractor);
         marketsFrame.setSettleMarketController(settleController);
     }
 
     private static void setupProfileUseCase(final MarketsFrame marketsFrame,
-                                            final SupabaseUserDataAccess userRepo) {
+            final SupabaseUserDataAccess userRepo) {
         final stakemate.view.ProfileFrame profileFrame = new stakemate.view.ProfileFrame();
-        final stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel =
-            new stakemate.interface_adapter.view_profile.ProfileViewModel();
+        final stakemate.interface_adapter.view_profile.ProfileViewModel profileViewModel = new stakemate.interface_adapter.view_profile.ProfileViewModel();
         profileFrame.setViewModel(profileViewModel);
 
-        final stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter =
-            new stakemate.interface_adapter.view_profile.ViewProfilePresenter(profileViewModel);
+        final stakemate.use_case.view_profile.ViewProfileOutputBoundary profilePresenter = new stakemate.interface_adapter.view_profile.ViewProfilePresenter(
+                profileViewModel);
 
-        final stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor =
-            new stakemate.use_case.view_profile.ViewProfileInteractor(userRepo, profilePresenter);
+        final stakemate.use_case.view_profile.ViewProfileInteractor profileInteractor = new stakemate.use_case.view_profile.ViewProfileInteractor(
+                userRepo, profilePresenter);
 
-        final stakemate.interface_adapter.view_profile.ViewProfileController profileController =
-            new stakemate.interface_adapter.view_profile.ViewProfileController(profileInteractor);
+        final stakemate.interface_adapter.view_profile.ViewProfileController profileController = new stakemate.interface_adapter.view_profile.ViewProfileController(
+                profileInteractor);
 
         marketsFrame.setProfileFrame(profileFrame);
         marketsFrame.setProfileController(profileController);
+        profileFrame.setController(profileController);
     }
 
     private static void setupAuth(final MarketsFrame marketsFrame, final SupabaseUserDataAccess userRepo) {
@@ -273,8 +275,7 @@ public final class StakeMateApp {
                 }
                 reader.close();
             }
-        }
-        catch (final IOException ex) {
+        } catch (final IOException ex) {
             System.err.println("Warning: Could not read .env file: " + ex.getMessage());
         }
     }
