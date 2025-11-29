@@ -1,6 +1,7 @@
 package stakemate.interface_adapter.view_live;
 
 import java.util.List;
+
 import javax.swing.SwingUtilities;
 
 import stakemate.entity.Game;

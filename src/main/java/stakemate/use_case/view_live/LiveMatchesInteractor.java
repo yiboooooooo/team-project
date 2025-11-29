@@ -14,6 +14,7 @@ import stakemate.use_case.fetch_games.RepositoryException;
  * Interactor for the Live Matches use case.
  * Orchestrates the periodic fetching and retrieval of game data.
  *
+ * <p>
  * TODO: Add comprehensive unit tests for this interactor (Use Case 1):
  *   - Test startTracking() initializes scheduler and starts polling
  *   - Test startTracking() does not start if already running
@@ -29,12 +30,13 @@ import stakemate.use_case.fetch_games.RepositoryException;
  */
 public class LiveMatchesInteractor implements LiveMatchesInputBoundary {
 
+    private static final int POLLING_INTERVAL_SECONDS = 30;
+
     private final FetchGamesInputBoundary fetchGamesInteractor;
     private final GameRepository gameRepository;
     private final LiveMatchesOutputBoundary presenter;
 
     private ScheduledExecutorService scheduler;
-    private static final int POLLING_INTERVAL_SECONDS = 30;
 
     public LiveMatchesInteractor(final FetchGamesInputBoundary fetchGamesInteractor,
                                  final GameRepository gameRepository,
@@ -46,12 +48,21 @@ public class LiveMatchesInteractor implements LiveMatchesInputBoundary {
 
     @Override
     public void startTracking() {
-        if (scheduler != null && !scheduler.isShutdown()) {
-            return; // Already running
+        if (shouldNotStartTracking()) {
+            return;
         }
 
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(this::fetchAndPresent, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Checks if tracking should not be started.
+     *
+     * @return true if scheduler is already running, false otherwise
+     */
+    private boolean shouldNotStartTracking() {
+        return scheduler != null && !scheduler.isShutdown();
     }
 
     @Override
@@ -75,10 +86,12 @@ public class LiveMatchesInteractor implements LiveMatchesInputBoundary {
 
             // 3. Present the data
             presenter.presentMatches(games);
-        } catch (final RepositoryException e) {
-            presenter.presentError("Failed to retrieve matches: " + e.getMessage());
-        } catch (final Exception e) {
-            presenter.presentError("Unexpected error during tracking: " + e.getMessage());
+        }
+        catch (final RepositoryException ex) {
+            presenter.presentError("Failed to retrieve matches: " + ex.getMessage());
+        }
+        catch (final RuntimeException ex) {
+            presenter.presentError("Unexpected error during tracking: " + ex.getMessage());
         }
     }
 }

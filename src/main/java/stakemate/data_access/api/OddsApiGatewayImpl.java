@@ -34,6 +34,9 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
     private static final String BASE_URL = "https://api.the-odds-api.com/v4/sports";
     private static final int CONNECT_TIMEOUT_SECONDS = 10;
     private static final int READ_TIMEOUT_SECONDS = 30;
+    private static final int HTTP_UNAUTHORIZED = 401;
+    private static final int HTTP_TOO_MANY_REQUESTS = 429;
+    private static final int HTTP_SERVER_ERROR = 500;
 
     private final OkHttpClient httpClient;
     private final Gson gson;
@@ -59,18 +62,18 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
                 .get()
                 .build();
 
-            try (final Response response = httpClient.newCall(request).execute()) {
+            try (Response response = httpClient.newCall(request).execute()) {
                 return handleSportsResponse(response);
             }
         }
-        catch (final IOException e) {
-            throw new ApiException("Network error while fetching sports: " + e.getMessage(), e);
+        catch (final IOException ex) {
+            throw new ApiException("Network error while fetching sports: " + ex.getMessage(), ex);
         }
     }
 
     @Override
     public List<OddsApiEvent> fetchEvents(final String sport, final String region, final LocalDate dateFrom)
-        throws ApiException {
+            throws ApiException {
         if (sport == null || sport.isEmpty()) {
             throw new IllegalArgumentException("Sport parameter is required and cannot be null or empty");
         }
@@ -82,17 +85,24 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
                 .get()
                 .build();
 
-            try (final Response response = httpClient.newCall(request).execute()) {
+            try (Response response = httpClient.newCall(request).execute()) {
                 return handleResponse(response);
             }
         }
-        catch (final IOException e) {
-            throw new ApiException("Network error while fetching events: " + e.getMessage(), e);
+        catch (final IOException ex) {
+            throw new ApiException("Network error while fetching events: " + ex.getMessage(), ex);
         }
     }
 
     /**
      * Builds the API URL with query parameters.
+     *
+     * @param sport The specific sport type to query. This is appended to the base URL path.
+     * @param region The optional region filter. If provided and not empty, it is added as a query parameter.
+     * @param dateFrom An optional date parameter. If present (not null), it indicates that events should be returned
+     *                 from today onwards and the query parameter is added.
+     * @return The fully constructed API URL, including the base URL, sport path, "/events" endpoint,
+     *         and all required and optional query parameters (including the API key).
      */
     private String buildUrl(final String sport, final String region, final LocalDate dateFrom) {
         final StringBuilder url = new StringBuilder(BASE_URL);
@@ -117,129 +127,143 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
 
     /**
      * Handles the HTTP response for sports endpoint and parses JSON.
+     *
+     * @param response The HTTP response to process
+     * @return List of sports from the API
+     * @throws ApiException if the response is unsuccessful or cannot be parsed
      */
     private List<OddsApiSport> handleSportsResponse(final Response response) throws ApiException {
         if (!response.isSuccessful()) {
-            String errorBody = "";
-            try (final ResponseBody body = response.body()) {
-                if (body != null) {
-                    errorBody = body.string();
-                }
-            }
-            catch (final IOException e) {
-                // Ignore
-            }
-
-            final int code = response.code();
-            if (code == 401) {
-                throw new ApiException("Invalid API key. Check your Odds API credentials.");
-            }
-            else if (code == 429) {
-                throw new ApiException("Rate limit exceeded. Please wait before making more requests.");
-            }
-            else if (code >= 500) {
-                throw new ApiException("Server error from Odds API. Please try again later.");
-            }
-            else {
-                throw new ApiException("API request failed with code " + code + ": " + errorBody);
-            }
+            handleErrorResponse(response);
         }
 
-        try (final ResponseBody body = response.body()) {
+        try (ResponseBody body = response.body()) {
             if (body == null) {
                 throw new ApiException("Empty response from API");
             }
 
             final String json = body.string();
-            if (json == null || json.trim().isEmpty()) {
-                return new ArrayList<>();
-            }
+            return parseSportsJson(json);
+        }
+        catch (final IOException ex) {
+            throw new ApiException("Error reading response: " + ex.getMessage(), ex);
+        }
+        catch (final JsonParseException ex) {
+            throw new ApiException("Error parsing JSON response: " + ex.getMessage(), ex);
+        }
+    }
 
+    /**
+     * Parses JSON string into list of OddsApiSport objects.
+     *
+     * @param json The JSON string to parse
+     * @return List of sports parsed from JSON
+     */
+    private List<OddsApiSport> parseSportsJson(final String json) {
+        final List<OddsApiSport> sports = new ArrayList<>();
+
+        if (json != null && !json.trim().isEmpty()) {
             final JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
-            final List<OddsApiSport> sports = new ArrayList<>();
 
             for (final JsonElement element : jsonArray) {
                 final OddsApiSport sport = gson.fromJson(element, OddsApiSport.class);
                 sports.add(sport);
             }
+        }
 
-            return sports;
-        }
-        catch (final IOException e) {
-            throw new ApiException("Error reading response: " + e.getMessage(), e);
-        }
-        catch (final JsonParseException e) {
-            throw new ApiException("Error parsing JSON response: " + e.getMessage(), e);
-        }
+        return sports;
     }
 
     /**
      * Handles the HTTP response and parses JSON.
+     *
+     * @param response The HTTP response to process
+     * @return List of events from the API
+     * @throws ApiException if the response is unsuccessful or cannot be parsed
      */
     private List<OddsApiEvent> handleResponse(final Response response) throws ApiException {
         if (!response.isSuccessful()) {
-            String errorBody = "";
-            try (final ResponseBody body = response.body()) {
-                if (body != null) {
-                    errorBody = body.string();
-                }
-            }
-            catch (final IOException e) {
-                // Ignore
-            }
-
-            final int code = response.code();
-            if (code == 401) {
-                throw new ApiException("Invalid API key. Check your Odds API credentials.");
-            }
-            else if (code == 429) {
-                throw new ApiException("Rate limit exceeded. Please wait before making more requests.");
-            }
-            else if (code >= 500) {
-                throw new ApiException("Server error from Odds API. Please try again later.");
-            }
-            else {
-                throw new ApiException("API request failed with code " + code + ": " + errorBody);
-            }
+            handleErrorResponse(response);
         }
 
-        try (final ResponseBody body = response.body()) {
+        try (ResponseBody body = response.body()) {
             if (body == null) {
                 throw new ApiException("Empty response from API");
             }
 
             final String json = body.string();
-            if (json == null || json.trim().isEmpty()) {
-                return new ArrayList<>();
-            }
+            return parseEventsJson(json);
+        }
+        catch (final IOException ex) {
+            throw new ApiException("Error reading response: " + ex.getMessage(), ex);
+        }
+        catch (final JsonParseException ex) {
+            throw new ApiException("Error parsing JSON response: " + ex.getMessage(), ex);
+        }
+    }
 
+    /**
+     * Parses JSON string into list of OddsApiEvent objects.
+     *
+     * @param json The JSON string to parse
+     * @return List of events parsed from JSON
+     */
+    private List<OddsApiEvent> parseEventsJson(final String json) {
+        final List<OddsApiEvent> events = new ArrayList<>();
+
+        if (json != null && !json.trim().isEmpty()) {
             final JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
-            final List<OddsApiEvent> events = new ArrayList<>();
 
             for (final JsonElement element : jsonArray) {
                 final OddsApiEvent event = gson.fromJson(element, OddsApiEvent.class);
                 events.add(event);
             }
+        }
 
-            return events;
+        return events;
+    }
+
+    /**
+     * Handles error responses from the API.
+     *
+     * @param response The HTTP response to process
+     * @throws ApiException with appropriate error message based on status code
+     */
+    private void handleErrorResponse(final Response response) throws ApiException {
+        String errorBody = "";
+        try (ResponseBody body = response.body()) {
+            if (body != null) {
+                errorBody = body.string();
+            }
         }
-        catch (final IOException e) {
-            throw new ApiException("Error reading response: " + e.getMessage(), e);
+        catch (final IOException ex) {
+            // Ignore - we'll use empty error body
         }
-        catch (final JsonParseException e) {
-            throw new ApiException("Error parsing JSON response: " + e.getMessage(), e);
+
+        final int code = response.code();
+        if (code == HTTP_UNAUTHORIZED) {
+            throw new ApiException("Invalid API key. Check your Odds API credentials.");
+        }
+        else if (code == HTTP_TOO_MANY_REQUESTS) {
+            throw new ApiException("Rate limit exceeded. Please wait before making more requests.");
+        }
+        else if (code >= HTTP_SERVER_ERROR) {
+            throw new ApiException("Server error from Odds API. Please try again later.");
+        }
+        else {
+            throw new ApiException("API request failed with code " + code + ": " + errorBody);
         }
     }
 
     /**
      * Custom deserializer for LocalDateTime from ISO 8601 strings.
      */
-    private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+    private static final class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
         private static final DateTimeFormatter[] FORMATTERS = {
             DateTimeFormatter.ISO_DATE_TIME,
             DateTimeFormatter.ISO_OFFSET_DATE_TIME,
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"),
         };
 
         @Override
@@ -251,7 +275,7 @@ public class OddsApiGatewayImpl implements OddsApiGateway {
                 try {
                     return LocalDateTime.parse(dateString, formatter);
                 }
-                catch (final DateTimeParseException e) {
+                catch (final DateTimeParseException ex) {
                     // Try next formatter
                 }
             }

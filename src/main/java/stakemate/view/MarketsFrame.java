@@ -30,6 +30,7 @@ import stakemate.entity.OrderBook;
 import stakemate.entity.OrderBookEntry;
 import stakemate.interface_adapter.controllers.SettleMarketController;
 import stakemate.interface_adapter.view_comments.PostCommentController;
+import stakemate.interface_adapter.view_live.LiveMatchesController;
 import stakemate.interface_adapter.view_market.MarketsView;
 import stakemate.interface_adapter.view_market.SettleMarketView;
 import stakemate.interface_adapter.view_market.ViewMarketController;
@@ -37,8 +38,6 @@ import stakemate.use_case.view_market.MarketSummary;
 import stakemate.use_case.view_market.MarketsResponseModel;
 import stakemate.use_case.view_market.MatchSummary;
 import stakemate.use_case.view_market.OrderBookResponseModel;
-import stakemate.view.LiveMatchesFrame;
-import stakemate.interface_adapter.view_live.LiveMatchesController;
 
 /**
  * The main frame for viewing markets and order books.
@@ -80,8 +79,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private final JButton sellButton = new JButton("Sell");
     private final JButton myProfileButton = new JButton("My Profile");
     private final JButton liveMatchesButton = new JButton("Live Matches");
-//    private final JButton settleButton = new JButton("Settle");
-    private ViewMarketController controller;
     private final JButton settleButton = new JButton("Settle (Demo)");
     private final CommentsPanel commentsPanel = new CommentsPanel();
 
@@ -305,14 +302,8 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
         myProfileButton.addActionListener(evt -> openProfile());
 
-        liveMatchesButton.addActionListener(e -> {
-            if (liveMatchesFrame != null && liveMatchesController != null) {
-                liveMatchesFrame.setVisible(true);
-                liveMatchesController.startTracking();
-            } else {
-                JOptionPane.showMessageDialog(this, "Live Matches view not connected.");
-            }
-        });
+        liveMatchesButton.addActionListener(evt -> openLiveMatches());
+
         matchesList.addListSelectionListener(evt -> {
             if (!evt.getValueIsAdjusting() && viewController != null) {
                 final MatchSummary selected = matchesList.getSelectedValue();
@@ -321,23 +312,34 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
             }
         });
 
-        marketsList.addListSelectionListener(evt -> {
-            if (!evt.getValueIsAdjusting()) {
-                final MarketSummary selected = marketsList.getSelectedValue();
-                currentlySelectedMarket = selected;
-
-                if (viewController != null && selected != null) {
-                    viewController.onMarketSelected(selected);
-                }
-
-                // >>> ADD THIS: automatically load comments
-                if (viewCommentsController != null && selected != null) {
-                    viewCommentsController.fetchComments(selected.getId());
-                }
-            }
-        });
+        marketsList.addListSelectionListener(evt -> handleMarketSelection(evt));
 
         hookButtons();
+    }
+
+    private void openLiveMatches() {
+        if (liveMatchesFrame != null && liveMatchesController != null) {
+            liveMatchesFrame.setVisible(true);
+            liveMatchesController.startTracking();
+        }
+        else {
+            JOptionPane.showMessageDialog(this, "Live Matches view not connected.");
+        }
+    }
+
+    private void handleMarketSelection(final javax.swing.event.ListSelectionEvent evt) {
+        if (!evt.getValueIsAdjusting()) {
+            final MarketSummary selected = marketsList.getSelectedValue();
+            currentlySelectedMarket = selected;
+
+            if (viewController != null && selected != null) {
+                viewController.onMarketSelected(selected);
+            }
+
+            if (viewCommentsController != null && selected != null) {
+                viewCommentsController.fetchComments(selected.getId());
+            }
+        }
     }
 
     private void openProfile() {
