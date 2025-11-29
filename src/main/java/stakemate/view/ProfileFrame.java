@@ -29,12 +29,12 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
     private final JLabel balanceLabel = new JLabel("Balance: -");
     private final JLabel pnlLabel = new JLabel("PnL: 0");
     private final String[] openColumns = {
-        "Market Name", "Team", "Buy Price", "Size", "Buy Amt ($)", "Profit if Won ($)"
+            "Market Name", "Team", "Buy Price", "Size", "Buy Amt ($)", "Profit if Won ($)"
     };
     private final DefaultTableModel openModel = new DefaultTableModel(openColumns, 0);
     private final JTable openTable = new JTable(openModel);
     private final String[] historyColumns = {
-        "Market Name", "Team", "Buy Price", "Size", "Profit ($)"
+            "Market Name", "Team", "Buy Price", "Size", "Profit ($)"
     };
     private final DefaultTableModel historyModel = new DefaultTableModel(historyColumns, 0);
     private final JTable historyTable = new JTable(historyModel);
@@ -44,6 +44,14 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
     private final JButton sortHistorySizeBtn = new JButton("Sort by Size");
 
     private ProfileViewModel viewModel;
+    private stakemate.interface_adapter.view_profile.ViewProfileController controller;
+
+    private stakemate.use_case.view_profile.SortCriteria currentOpenSort = stakemate.use_case.view_profile.SortCriteria.DATE;
+    private stakemate.use_case.view_profile.SortCriteria currentHistoricalSort = stakemate.use_case.view_profile.SortCriteria.DATE;
+
+    public void setController(final stakemate.interface_adapter.view_profile.ViewProfileController controller) {
+        this.controller = controller;
+    }
 
     public ProfileFrame() {
         super("StakeMate - My Profile");
@@ -114,13 +122,37 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
     private void hookEvents() {
         backButton.addActionListener(e -> setVisible(false));
         sortOpenDateBtn
-            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Date not implemented yet."));
+                .addActionListener(e -> {
+                    final String username = viewModel.getState().getUsername();
+                    if (username != null) {
+                        currentOpenSort = stakemate.use_case.view_profile.SortCriteria.DATE;
+                        controller.execute(username, currentOpenSort, currentHistoricalSort);
+                    }
+                });
         sortOpenSizeBtn
-            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Size not implemented yet."));
+                .addActionListener(e -> {
+                    final String username = viewModel.getState().getUsername();
+                    if (username != null) {
+                        currentOpenSort = stakemate.use_case.view_profile.SortCriteria.SIZE;
+                        controller.execute(username, currentOpenSort, currentHistoricalSort);
+                    }
+                });
         sortHistoryDateBtn
-            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Date not implemented yet."));
+                .addActionListener(e -> {
+                    final String username = viewModel.getState().getUsername();
+                    if (username != null) {
+                        currentHistoricalSort = stakemate.use_case.view_profile.SortCriteria.DATE;
+                        controller.execute(username, currentOpenSort, currentHistoricalSort);
+                    }
+                });
         sortHistorySizeBtn
-            .addActionListener(e -> JOptionPane.showMessageDialog(this, "Sort by Size not implemented yet."));
+                .addActionListener(e -> {
+                    final String username = viewModel.getState().getUsername();
+                    if (username != null) {
+                        currentHistoricalSort = stakemate.use_case.view_profile.SortCriteria.SIZE;
+                        controller.execute(username, currentOpenSort, currentHistoricalSort);
+                    }
+                });
     }
 
     @Override

@@ -22,15 +22,22 @@ public class PostCommentInteractor implements PostCommentInputBoundary {
         String id = java.util.UUID.randomUUID().toString();
 
         Comment comment = new Comment(
-                id,
-                inputData.getMarketId(),
-                inputData.getUsername(),
-                inputData.getCommentText(),
-                LocalDateTime.now()
+            id,
+            inputData.getMarketId(),
+            inputData.getUsername(),
+            inputData.getCommentText(),
+            LocalDateTime.now()
         );
 
         repository.saveComment(comment);
 
-        presenter.present(new PostCommentOutputData(true, "Comment posted."));
+        // IMPORTANT FIX: return the marketId so the presenter can refresh
+        presenter.present(
+            new PostCommentOutputData(
+                true,
+                "Comment posted.",
+                inputData.getMarketId()
+            )
+        );
     }
 }
