@@ -229,7 +229,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         marketsEmptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
         orderBookEmptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-<<<<<<< HEAD
         final JPanel leftPanel = new JPanel(new BorderLayout(4, 4));
         final JLabel matchesLabel = new JLabel("Matches");
         leftPanel.add(matchesLabel, BorderLayout.NORTH);
@@ -255,7 +254,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         orderBookPanel.add(new JScrollPane(orderBookTable), BorderLayout.CENTER);
         orderBookPanel.add(orderBookEmptyLabel, BorderLayout.SOUTH);
 
-
         final JPanel buySellPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         buyButton.setEnabled(false);
@@ -272,9 +270,9 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         rightPanel.add(buySellPanel, BorderLayout.SOUTH);
 
         final JSplitPane splitPane = new JSplitPane(
-            JSplitPane.HORIZONTAL_SPLIT,
-            leftPanel,
-            rightPanel);
+                JSplitPane.HORIZONTAL_SPLIT,
+                leftPanel,
+                rightPanel);
         splitPane.setDividerLocation(DIVIDER_LOC);
         return splitPane;
     }
