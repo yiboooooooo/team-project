@@ -88,7 +88,11 @@ public class PlaceOrderUseCase {
 
         String msg;
         if (incoming.isMarket() && trades.isEmpty()) {
-            msg = "Market order cancelled (insufficient liquidity or funds)";
+            if (incoming.getRemainingQty() > 0) {
+                msg = "Market order placed (resting)";
+            } else {
+                msg = "Market order cancelled (insufficient funds)";
+            }
         } else {
             msg = trades.isEmpty() ? "Order placed (no immediate trades)"
                     : String.format("Executed %d trades", trades.size());
