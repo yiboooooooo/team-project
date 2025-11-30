@@ -90,7 +90,10 @@ public class MatchingEngine {
                     continue; // Market orders only match Limit orders
 
                 double matchSize = Math.min(tempRemaining, resting.getRemainingQty());
-                double matchPrice = resting.getPrice(); // Resting limit order has price
+                Double p = resting.getPrice();
+                if (p == null)
+                    continue; // Should be covered by isMarket(), but safety first
+                double matchPrice = p;
 
                 simulatedFilled += matchSize;
                 simulatedCost += matchSize * matchPrice;
