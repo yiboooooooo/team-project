@@ -75,12 +75,57 @@ public class MatchingEngine {
         // All opposite-side resting orders for this market, best first
         List<BookOrder> opposite = orderRepo.findOppositeSideOrders(incoming.getMarketId(), incoming.getSide());
 
+        // --- Market Order Pre-Check (All-Or-None) ---
+        if (incoming.isMarket()) {
+            double simulatedFilled = 0;
+            double simulatedCost = 0;
+            double tempRemaining = incoming.getOriginalQty();
+
+            for (BookOrder resting : opposite) {
+                if (tempRemaining <= 0)
+                    break;
+                if (resting.getRemainingQty() <= 0)
+                    continue;
+                if (resting.isMarket())
+                    continue; // Market orders only match Limit orders
+
+                double matchSize = Math.min(tempRemaining, resting.getRemainingQty());
+                double matchPrice = resting.getPrice(); // Resting limit order has price
+
+                simulatedFilled += matchSize;
+                simulatedCost += matchSize * matchPrice;
+                tempRemaining -= matchSize;
+            }
+
+            // Check 1: Full Fill Required
+            if (tempRemaining > 1e-9) {
+                // Cancel order (insufficient liquidity)
+                orderRepo.updateRemainingQty(incoming.getId(), 0.0);
+                incoming.reduce(incoming.getRemainingQty());
+                return executedTrades;
+            }
+
+            // Check 2: Sufficient Funds
+            double balance = accountService.getBalance(incoming.getUserId());
+            if (balance < simulatedCost) {
+                // Cancel order (insufficient funds)
+                orderRepo.updateRemainingQty(incoming.getId(), 0.0);
+                incoming.reduce(incoming.getRemainingQty());
+                return executedTrades;
+            }
+        }
+
         for (BookOrder resting : opposite) {
 
             if (incomingRemaining <= 0)
                 break;
             if (resting.getRemainingQty() <= 0)
                 continue;
+
+            // Market orders only match Limit orders
+            if (incoming.isMarket() && resting.isMarket())
+                continue;
+
             if (!crosses(incoming, resting))
                 continue;
 
@@ -133,10 +178,7 @@ public class MatchingEngine {
             executedTrades.add(trade);
             trades.add(trade); // Keep in-memory log
 
-            // ********** IMPORTANT **********
-            // Only a single pair should be created per incoming order,
-            // so we stop after the FIRST successful match.
-            break;
+            // Removed break to allow partial fills / multiple matches
         }
         return executedTrades;
     }
