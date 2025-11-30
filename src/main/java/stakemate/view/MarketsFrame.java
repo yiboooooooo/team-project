@@ -414,13 +414,16 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private void performSettlement() {
         if (settleMarketController != null && currentlySelectedMarket != null) {
             final int choice = JOptionPane.showConfirmDialog(
-                    MarketsFrame.this,
-                    "Demo Tool: Did the HOME team win this market?",
-                    "Simulate Settlement",
-                    JOptionPane.YES_NO_OPTION);
+                MarketsFrame.this,
+                "Demo Tool: Did the HOME team win this market?",
+                "Simulate Settlement",
+                JOptionPane.YES_NO_OPTION);
 
-            if (choice == JOptionPane.YES_OPTION || choice == JOptionPane.NO_OPTION) {
-                settleMarketController.settleMarket(currentlySelectedMarket.getId());
+            // YES = Home Won, NO = Home Lost (Away Won)
+            if (choice == JOptionPane.YES_OPTION) {
+                settleMarketController.settleMarket(currentlySelectedMarket.getId(), true);
+            } else if (choice == JOptionPane.NO_OPTION) {
+                settleMarketController.settleMarket(currentlySelectedMarket.getId(), false);
             }
         }
     }
