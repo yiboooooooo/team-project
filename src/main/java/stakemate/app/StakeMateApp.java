@@ -162,9 +162,14 @@ public final class StakeMateApp {
         // Initialize our real order-book trading system
         initTradingSystem();
 
-        betRepo = new InMemoryBetRepository();
-        accountRepo = new InMemoryAccountRepository();
-        setupDemoData();
+        final SupabaseClientFactory dbFactory = new SupabaseClientFactory();
+
+        // 2. Use the Supabase repositories so Settle can see the DB bets
+        stakemate.use_case.settle_market.BetRepository realBetRepo =
+            new stakemate.data_access.supabase.SupabaseBetRepository(dbFactory);
+
+        stakemate.use_case.settle_market.AccountRepository realAccountRepo =
+            new stakemate.data_access.supabase.SupabaseAccountRepository(dbFactory);
 
         final MarketsFrame marketsFrame = new MarketsFrame();
         setupMarketView(marketsFrame, marketFacade);
@@ -173,7 +178,12 @@ public final class StakeMateApp {
         marketsFrame.enableOrderBookPopup();
 
         setupCommentSystem(marketsFrame);
-        setupSettlementUseCase(marketsFrame, new InMemorySettlementRecordRepository());
+
+        // 3. Pass the REAL repositories to the settlement setup
+        setupSettlementUseCase(marketsFrame, realBetRepo, realAccountRepo, new InMemorySettlementRecordRepository());
+
+        // --- FIX ENDS HERE ---
+
         setupLiveMatchesView(marketsFrame, fetchGamesInteractor, gameRepository);
 
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
@@ -249,11 +259,18 @@ public final class StakeMateApp {
     }
 
     private static void setupSettlementUseCase(final MarketsFrame marketsFrame,
-            final InMemorySettlementRecordRepository recordRepo) {
+                                               final stakemate.use_case.settle_market.BetRepository settlementBetRepo,
+                                               final stakemate.use_case.settle_market.AccountRepository settlementAccountRepo,
+                                               final InMemorySettlementRecordRepository recordRepo) {
+
         final SwingSettleMarketPresenter settlePresenter = new SwingSettleMarketPresenter(marketsFrame);
 
-        final SettleMarketInteractor settleInteractor = new SettleMarketInteractor(betRepo, accountRepo, recordRepo,
-                settlePresenter);
+        // Use the passed-in repositories (which are now the Supabase ones)
+        final SettleMarketInteractor settleInteractor = new SettleMarketInteractor(
+            settlementBetRepo,
+            settlementAccountRepo,
+            recordRepo,
+            settlePresenter);
 
         final SettleMarketController settleController = new SettleMarketController(settleInteractor);
         marketsFrame.setSettleMarketController(settleController);

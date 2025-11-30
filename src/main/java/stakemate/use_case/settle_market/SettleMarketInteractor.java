@@ -35,51 +35,78 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
         this.presenter = presenter;
     }
 
+
     @Override
     public void execute(final SettleMarketRequestModel requestModel) {
-
         final String marketId = requestModel.getMarketId();
-        System.out.println("DEBUG - Settling market: " + marketId);
+        final boolean homeWon = requestModel.isHomeTeamWon(); // Get the outcome
 
         final List<Bet> bets = betRepository.findByMarketId(marketId);
         if (bets == null || bets.isEmpty()) {
             presenter.presentFailure("No bets found for market " + marketId);
-        }
-        else {
-            settleBets(marketId, bets);
+        } else {
+            settleBets(marketId, bets, homeWon);
         }
     }
 
-    private void settleBets(String marketId, List<Bet> bets) {
+    private void settleBets(String marketId, List<Bet> bets, boolean homeWon) {
         int settledCount = 0;
         double totalPayout = 0.0;
+        StringBuilder summary = new StringBuilder("Settlement Results:\n");
 
         for (final Bet bet : bets) {
             final User user = accountRepository.findByUsername(bet.getUsername());
-            if (user == null) {
-                System.out.println("WARN - No user found for bet: " + bet.getUsername());
-                continue;
+            if (user == null) continue;
+
+            // --- LOGIC: Determine if this specific bet won ---
+            // Assumption: BUY = Backing Home, SELL = Backing Away (Laying Home)
+            boolean isWinner = false;
+            if (bet.getSide() == stakemate.entity.Side.BUY && homeWon) {
+                isWinner = true;
+            } else if (bet.getSide() == stakemate.entity.Side.SELL && !homeWon) {
+                isWinner = true;
             }
 
-            final boolean won = Boolean.TRUE.equals(bet.isWon());
-            final double payout = calculatePayout(bet, won);
+            // Calculate Payout
+            final double payout = calculatePayout(bet, isWinner);
 
+            // Update User Balance
             final int newBalance = (int) Math.round(user.getBalance() + payout);
             user.setBalance(newBalance);
             accountRepository.save(user);
 
-            if (won) {
+            if (isWinner) {
                 totalPayout += payout;
             }
 
-            saveSettlementRecord(marketId, bet, payout, won);
-            betRepository.save(bet);
+            // --- Create NEW Bet object with updated status (Since Bet is immutable) ---
+            Bet settledBet = new Bet(
+                bet.getUsername(),
+                bet.getMarketId(),
+                bet.getSide(),
+                bet.getStake(),
+                bet.getPrice(),
+                isWinner, // Set the won flag
+                true,     // Set settled flag
+                bet.getTeamName(),
+                java.time.Instant.now()
+            );
+
+            // Save to DB
+            saveSettlementRecord(marketId, settledBet, payout, isWinner);
+            betRepository.save(settledBet);
+
+            // Add to summary string
+            summary.append(String.format("- %s: %s ($%.2f)\n",
+                bet.getUsername(),
+                isWinner ? "WON" : "LOST",
+                isWinner ? payout : -bet.getStake() * bet.getPrice())); // Show profit or loss
 
             settledCount++;
         }
 
         final SettleMarketResponseModel response =
-            new SettleMarketResponseModel(marketId, settledCount, totalPayout);
+            new SettleMarketResponseModel(marketId, settledCount, totalPayout, summary.toString());
 
         presenter.presentSuccess(response);
     }
