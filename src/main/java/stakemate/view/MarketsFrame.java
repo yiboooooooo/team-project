@@ -297,22 +297,6 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         });
     }
 
-        marketsList.addListSelectionListener(evt -> handleMarketSelection(evt));
-
-        hookButtons();
-    }
-
-    private void openLiveMatches() {
-        if (liveMatchesFrame != null && liveMatchesController != null) {
-            liveMatchesFrame.setVisible(true);
-            liveMatchesController.startTracking();
-        }
-        else {
-            JOptionPane.showMessageDialog(this, "Live Matches view not connected.");
-        }
-    }
-
-    private void handleMarketSelection(final javax.swing.event.ListSelectionEvent evt) {
     private void handleMatchSelection(final ListSelectionEvent evt) {
         if (!evt.getValueIsAdjusting() && controller != null) {
             final MatchSummary selected = matchesList.getSelectedValue();
