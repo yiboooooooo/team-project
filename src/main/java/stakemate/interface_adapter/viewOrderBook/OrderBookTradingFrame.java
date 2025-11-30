@@ -66,6 +66,7 @@ public class OrderBookTradingFrame extends JFrame {
         JPanel topRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 5));
         topRight.add(new JLabel("Market:"));
         marketField.setText(currentMarketId);
+        marketField.setEditable(false); // Enforce valid ID from games repo
         topRight.add(marketField);
         JButton changeMarketBtn = new JButton("Load");
         topRight.add(changeMarketBtn);
