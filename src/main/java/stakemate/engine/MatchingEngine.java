@@ -100,18 +100,22 @@ public class MatchingEngine {
                 tempRemaining -= matchSize;
             }
 
-            // Check 1: Full Fill Required
-            if (tempRemaining > 1e-9) {
-                // Cancel order (insufficient liquidity)
-                orderRepo.updateRemainingQty(incoming.getId(), 0.0);
-                incoming.reduce(incoming.getRemainingQty());
-                return executedTrades;
-            }
+            // Check 1: Full Fill Required - REMOVED to allow resting market orders
+            // if (tempRemaining > 1e-9) {
+            // // Cancel order (insufficient liquidity)
+            // orderRepo.updateRemainingQty(incoming.getId(), 0.0);
+            // incoming.reduce(incoming.getRemainingQty());
+            // return executedTrades;
+            // }
 
-            // Check 2: Sufficient Funds
+            // Check 2: Sufficient Funds for IMMEDIATE matches
+            // We only check funds for what can be matched RIGHT NOW.
+            // If simulatedCost > balance, we cancel.
+            // Note: If simulatedCost is 0 (no matches), we allow it to rest (cost is
+            // unknown).
             double balance = accountService.getBalance(incoming.getUserId());
-            if (balance < simulatedCost) {
-                // Cancel order (insufficient funds)
+            if (simulatedCost > 0 && balance < simulatedCost) {
+                // Cancel order (insufficient funds for immediate match)
                 orderRepo.updateRemainingQty(incoming.getId(), 0.0);
                 incoming.reduce(incoming.getRemainingQty());
                 return executedTrades;
@@ -131,6 +135,31 @@ public class MatchingEngine {
 
             if (!crosses(incoming, resting))
                 continue;
+
+            // --- Dynamic Funds Check for Resting Market Order ---
+            if (resting.isMarket()) {
+                // We are about to match 'resting' (Market) with 'incoming' (Limit).
+                // Price is determined by 'incoming' (Limit) because resting is Market?
+                // Wait, if resting is Market, it takes the price of the Limit order it matches
+                // with.
+                // If incoming is Limit, matchPrice is incoming.getPrice().
+
+                Double matchPrice = incoming.getPrice(); // Must be limit if resting is market
+                if (matchPrice == null)
+                    continue; // Should not happen if incoming is limit
+
+                double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
+                double cost = potentialMatchSize * matchPrice;
+
+                double restingBalance = accountService.getBalance(resting.getUserId());
+                if (restingBalance < cost) {
+                    // Insufficient funds for this match -> Cancel resting order
+                    orderRepo.updateRemainingQty(resting.getId(), 0.0);
+                    resting.reduce(resting.getRemainingQty());
+                    continue; // Skip this resting order
+                }
+            }
+            // ---------------------------------------------------
 
             double restingRemaining = resting.getRemainingQty();
             double executedSize = Math.min(incomingRemaining, restingRemaining);
