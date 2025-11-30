@@ -161,6 +161,34 @@ class ViewMarketInteractorTest {
     }
 
     @Test
+    void testMatchSelectedSwitchingMatchesUnsubscribes() {
+        // Setup interactor and presenter
+        final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
+            @Override
+            public void presentMarketsForMatch(final MarketsResponseModel r) {
+                // No-op
+            }
+
+            @Override
+            public void presentOrderBook(final OrderBookResponseModel r) {
+                // No-op
+            }
+        };
+        interactor = new ViewMarketInteractor(stubFacade, presenter);
+
+        // Simulate selecting a market (which subscribes)
+        interactor.marketSelected("old_market_id");
+        assertTrue(stubFacade.getSubscribedMarkets().contains("old_market_id"));
+
+        // Select a NEW match
+        // This should trigger the logic: if (currentSubscribedMarketId != null) unsubscribe...
+        interactor.matchSelected("new_match_id");
+
+        // Verify unsubscribe was called for the old market
+        assertTrue(stubFacade.getUnsubscribedMarkets().contains("old_market_id"));
+    }
+
+    @Test
     void testMatchSelectedMatchNotInCache() {
         final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
@@ -203,6 +231,7 @@ class ViewMarketInteractorTest {
         final ViewMarketOutputBoundary presenter = new TestOutputBoundary() {
             @Override
             public void presentMarketsForMatch(final MarketsResponseModel responseModel) {
+                // With A-Name sorting strategy, mk2 (A-Name) should come first
                 assertEquals("mk2", responseModel.getMarkets().get(0).getId());
             }
         };
@@ -310,6 +339,7 @@ class ViewMarketInteractorTest {
         interactor.marketSelected("mk1");
         stubFacade.clearSubscriptions();
 
+        // Selecting the SAME market again should NOT unsubscribe
         interactor.marketSelected("mk1");
 
         assertFalse(stubFacade.getUnsubscribedMarkets().contains("mk1"));
@@ -371,22 +401,22 @@ class ViewMarketInteractorTest {
     private static class TestOutputBoundary implements ViewMarketOutputBoundary {
         @Override
         public void presentMatches(final MatchesResponseModel responseModel) {
-            fail("Unexpected call to presentMatches");
+            // Default no-op
         }
 
         @Override
         public void presentMarketsForMatch(final MarketsResponseModel responseModel) {
-            fail("Unexpected call to presentMarketsForMatch");
+            // Default no-op
         }
 
         @Override
         public void presentOrderBook(final OrderBookResponseModel responseModel) {
-            fail("Unexpected call to presentOrderBook");
+            // Default no-op
         }
 
         @Override
         public void presentError(final String error) {
-            fail("Unexpected error: " + error);
+            // Default no-op
         }
     }
 

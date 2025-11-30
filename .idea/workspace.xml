@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="fixed the settle frame and logic also updated from a bad merge">
+    <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="Rebase Use-Case-2 onto main">
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/PostgresOrderBookGateway.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/OrderBookTableModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/stakemate/use_case/settle_market/SettleMarketInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/stakemate/use_case/settle_market/SettleMarketInteractorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,36 +54,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.StakeMateApp.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SettleMarketInteractorTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ViewMarketInteractorTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.settle_market in TeamProject.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.stakemate.use_case in TeamProject.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;FixNewIssuesFromLastMerge&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.StakeMateApp.executor": "Run",
+    "JUnit.SettleMarketInteractorTest.executor": "Run",
+    "JUnit.ViewMarketInteractorTest.executor": "Run",
+    "JUnit.settle_market in TeamProject.executor": "Coverage",
+    "JUnit.stakemate.use_case in TeamProject.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "Use-Case-2",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.StakeMateApp">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -139,10 +145,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.StakeMateApp" />
+        <item itemvalue="JUnit.ViewMarketInteractorTest" />
         <item itemvalue="JUnit.settle_market in TeamProject" />
         <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.stakemate.use_case in TeamProject" />
-        <item itemvalue="JUnit.ViewMarketInteractorTest" />
       </list>
     </recent_temporary>
   </component>
@@ -186,7 +192,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764465595034</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Rebase Use-Case-2 onto main">
+      <option name="closed" value="true" />
+      <created>1764469115585</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1764469115585</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,7 +220,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.)." />
     <MESSAGE value="fixed the settle frame and logic also updated from a bad merge" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed the settle frame and logic also updated from a bad merge" />
+    <MESSAGE value="Rebase Use-Case-2 onto main" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rebase Use-Case-2 onto main" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -234,6 +249,9 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764116533823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.use_case.view_market.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/StakeMate$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764475012218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.view_market.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/FakeOrderBookGateway_java$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764175871652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
