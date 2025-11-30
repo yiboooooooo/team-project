@@ -415,7 +415,7 @@ public class FetchGamesInteractorTest {
     /**
      * Stub implementation of OddsApiGateway for testing.
      */
-    private static class StubOddsApiGateway implements OddsApiGateway {
+    private static final class StubOddsApiGateway implements OddsApiGateway {
         private List<OddsApiEvent> eventsToReturn = new ArrayList<>();
         private boolean shouldThrowException = false;
 
@@ -434,7 +434,7 @@ public class FetchGamesInteractorTest {
 
         @Override
         public List<OddsApiEvent> fetchEvents(final String sport, final String region, final LocalDate dateFrom)
-            throws ApiException {
+                throws ApiException {
             if (shouldThrowException) {
                 throw new ApiException("API failure");
             }
@@ -445,7 +445,7 @@ public class FetchGamesInteractorTest {
     /**
      * Stub implementation of GameRepository for testing.
      */
-    private static class StubGameRepository implements GameRepository {
+    private static final class StubGameRepository implements GameRepository {
         private List<Game> gamesToReturn = new ArrayList<>();
         private boolean shouldThrowException = false;
 

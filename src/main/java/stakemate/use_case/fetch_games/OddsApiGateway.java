@@ -27,6 +27,6 @@ public interface OddsApiGateway {
      * @throws IllegalArgumentException if sport is null or empty
      */
     List<OddsApiEvent> fetchEvents(String sport, String region, LocalDate dateFrom)
-        throws ApiException;
+            throws ApiException;
 }
 

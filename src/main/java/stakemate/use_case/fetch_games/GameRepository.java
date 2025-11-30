@@ -7,7 +7,7 @@ import stakemate.entity.Game;
 
 public interface GameRepository {
     /**
-     * Updates existing games (matched by externalId) or inserts new ones
+     * Updates existing games (matched by externalId) or inserts new ones.
      *
      * @param games List of games to upsert
      * @throws RepositoryException if database operation fails
@@ -15,7 +15,7 @@ public interface GameRepository {
     void upsertGames(List<Game> games) throws RepositoryException;
 
     /**
-     * Find game by external API ID
+     * Find game by external API ID.
      *
      * @param externalId The external API's event ID
      * @return Optional containing the game if found
@@ -24,7 +24,7 @@ public interface GameRepository {
     Optional<Game> findByExternalId(String externalId) throws RepositoryException;
 
     /**
-     * Find all games with game_time >= today
+     * Find all games with game_time >= today.
      *
      * @return List of future/upcoming games
      * @throws RepositoryException if database operation fails
@@ -32,7 +32,7 @@ public interface GameRepository {
     List<Game> findFutureGames() throws RepositoryException;
 
     /**
-     * Search games by team names or sport
+     * Search games by team names or sport.
      *
      * @param query Search query string
      * @return List of matching games

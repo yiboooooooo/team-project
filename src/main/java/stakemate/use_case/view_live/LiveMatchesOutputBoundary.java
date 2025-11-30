@@ -1,6 +1,7 @@
 package stakemate.use_case.view_live;
 
 import java.util.List;
+
 import stakemate.entity.Game;
 
 /**

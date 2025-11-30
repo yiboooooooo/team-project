@@ -1,13 +1,11 @@
 package stakemate.view;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.swing.JButton;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -21,13 +19,16 @@ import stakemate.interface_adapter.view_live.LiveMatchesController;
  */
 public class LiveMatchesFrame extends JFrame {
 
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIGHT = 600;
+
     private final JTable matchesTable;
     private final DefaultTableModel tableModel;
     private LiveMatchesController controller;
 
     public LiveMatchesFrame() {
         setTitle("StakeMate - Live Matches");
-        setSize(800, 600);
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -58,7 +59,8 @@ public class LiveMatchesFrame extends JFrame {
      * @param matches The list of games to display.
      */
     public void updateMatches(final List<Game> matches) {
-        tableModel.setRowCount(0); // Clear existing rows
+        tableModel.setRowCount(0);
+        // above line clears existing rows
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         for (final Game game : matches) {
@@ -67,7 +69,7 @@ public class LiveMatchesFrame extends JFrame {
                 game.getSport(),
                 game.getTeamA(),
                 game.getTeamB(),
-                game.getStatus()
+                game.getStatus(),
             };
             tableModel.addRow(row);
         }
