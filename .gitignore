@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 hidden/
+usecase4/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
