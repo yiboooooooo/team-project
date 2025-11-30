@@ -73,6 +73,60 @@ class MatchingEngineTest {
     }
 
     @Test
+    void testMarketOrderResting_NoLiquidity() {
+        // Incoming Market Buy: 5
+        BookOrder buy = createOrder("user3", Side.BUY, null, 5.0);
+
+        List<Trade> trades = engine.placeOrder(buy);
+
+        // Should be 0 trades, but order should NOT be cancelled (remaining > 0)
+        assertEquals(0, trades.size());
+        assertEquals(5.0, buy.getRemainingQty());
+    }
+
+    @Test
+    void testRestingMarketOrder_MatchesLimit() {
+        // 1. Place Market Buy (rests)
+        BookOrder buy = createOrder("user3", Side.BUY, null, 10.0);
+        engine.placeOrder(buy);
+        orderRepo.addOrder(buy); // Simulate saving to DB/Repo
+
+        // User has funds: 10 * 2.0 = 20.0
+        accountService.setBalance("user3", 100.0);
+
+        // 2. Place Limit Sell: 10 @ 2.0
+        BookOrder sell = createOrder("user1", Side.SELL, 2.0, 10.0);
+
+        List<Trade> trades = engine.placeOrder(sell);
+
+        assertEquals(1, trades.size());
+        assertEquals(10.0, trades.get(0).getSize());
+        assertEquals(2.0, trades.get(0).getPrice());
+        assertEquals(0.0, buy.getRemainingQty());
+    }
+
+    @Test
+    void testRestingMarketOrder_InsufficientFunds() {
+        // 1. Place Market Buy (rests)
+        BookOrder buy = createOrder("user3", Side.BUY, null, 10.0);
+        engine.placeOrder(buy);
+        orderRepo.addOrder(buy);
+
+        // User has low funds: 5.0
+        accountService.setBalance("user3", 5.0);
+
+        // 2. Place Limit Sell: 10 @ 2.0 (Cost 20.0)
+        BookOrder sell = createOrder("user1", Side.SELL, 2.0, 10.0);
+
+        List<Trade> trades = engine.placeOrder(sell);
+
+        // Should be 0 trades because resting market order is cancelled due to
+        // insufficient funds
+        assertEquals(0, trades.size());
+        assertEquals(0.0, buy.getRemainingQty()); // Cancelled
+    }
+
+    @Test
     void testMarketOrderAllOrNone_InsufficientLiquidity() {
         // Resting Sell: 2 @ 2.0
         BookOrder sell1 = createOrder("user1", Side.SELL, 2.0, 2.0);
