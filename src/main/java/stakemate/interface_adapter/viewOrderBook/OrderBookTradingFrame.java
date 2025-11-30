@@ -35,13 +35,13 @@ public class OrderBookTradingFrame extends JFrame {
 
     private final JTextField marketField = new JTextField(10);
     private final JComboBox<Side> sideCombo = new JComboBox<>(Side.values());
-    private final JComboBox<String> orderTypeCombo = new JComboBox<>(new String[]{"Limit", "Market"});
+    private final JComboBox<String> orderTypeCombo = new JComboBox<>(new String[] { "Limit", "Market" });
     private final JTextField priceField = new JTextField(6);
     private final JTextField qtyField = new JTextField(6);
 
     public OrderBookTradingFrame(PlaceOrderUseCase placeOrderUseCase,
-                                 String currentUserId,
-                                 String initialMarketId) {
+            String currentUserId,
+            String initialMarketId) {
         super("StakeMate – Order Book");
 
         this.placeOrderUseCase = placeOrderUseCase;
@@ -75,7 +75,7 @@ public class OrderBookTradingFrame extends JFrame {
         root.add(topBar, BorderLayout.NORTH);
 
         // ================== CENTER: ORDER BOOK ==================
-        String[] obColumns = {"Price", "Size"};
+        String[] obColumns = { "Price", "Size" };
         bidsModel = new DefaultTableModel(obColumns, 0) {
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -127,8 +127,8 @@ public class OrderBookTradingFrame extends JFrame {
         orderBookPanel.add(obTitle, BorderLayout.NORTH);
 
         JSplitPane obSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-            asksContainer,
-            bidsContainer);
+                asksContainer,
+                bidsContainer);
         obSplit.setResizeWeight(0.5);
         orderBookPanel.add(obSplit, BorderLayout.CENTER);
 
@@ -176,7 +176,7 @@ public class OrderBookTradingFrame extends JFrame {
         orderEntry.add(row4);
 
         // ================== BOTTOM: OPEN ORDERS ==================
-        String[] ooColumns = {"Side", "Market", "Price", "Remaining", "Original"};
+        String[] ooColumns = { "Side", "Market", "Price", "Remaining", "Original" };
         openOrdersModel = new DefaultTableModel(ooColumns, 0) {
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -191,8 +191,8 @@ public class OrderBookTradingFrame extends JFrame {
 
         // ================== LAYOUT CENTER + RIGHT + BOTTOM ==================
         JSplitPane centerSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            orderBookPanel,
-            orderEntry);
+                orderBookPanel,
+                orderEntry);
         centerSplit.setResizeWeight(0.72);
 
         root.add(centerSplit, BorderLayout.CENTER);
@@ -252,14 +252,12 @@ public class OrderBookTradingFrame extends JFrame {
                     return;
                 }
                 price = Double.parseDouble(priceText);
-            }
-            else {
+            } else {
                 // Market order -> price left null; matching engine treats null as market
                 price = null;
             }
 
-            PlaceOrderRequest req =
-                new PlaceOrderRequest(currentUserId, marketId, side, qty, price);
+            PlaceOrderRequest req = new PlaceOrderRequest(currentUserId, marketId, side, price, qty);
 
             // This will save the order via OrderRepository and match it via MatchingEngine.
             PlaceOrderResponse resp = placeOrderUseCase.place(req);
@@ -270,17 +268,14 @@ public class OrderBookTradingFrame extends JFrame {
             if (!trades.isEmpty()) {
                 Trade last = trades.get(trades.size() - 1);
                 lastTradeLabel.setText(
-                    String.format("Last: %.2f   Size: %.2f", last.getPrice(), last.getSize())
-                );
+                        String.format("Last: %.2f   Size: %.2f", last.getPrice(), last.getSize()));
             }
 
             // refresh to show open orders + new book state
             refreshAll();
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             setStatus("Invalid number in price or quantity.");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             setStatus("Error placing order: " + ex.getMessage());
         }
@@ -302,11 +297,11 @@ public class OrderBookTradingFrame extends JFrame {
 
         for (OrderBookEntry e : ob.getAsks()) {
             Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
-            asksModel.addRow(new Object[]{ priceDisplay, e.getQuantity() });
+            asksModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
         }
         for (OrderBookEntry e : ob.getBids()) {
             Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
-            bidsModel.addRow(new Object[]{ priceDisplay, e.getQuantity() });
+            bidsModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
         }
     }
 
@@ -314,12 +309,12 @@ public class OrderBookTradingFrame extends JFrame {
         openOrdersModel.setRowCount(0);
         List<BookOrder> orders = placeOrderUseCase.openOrdersForUser(currentUserId);
         for (BookOrder o : orders) {
-            openOrdersModel.addRow(new Object[]{
-                o.getSide().name(),
-                o.getMarketId(),
-                o.getPrice(),
-                o.getRemainingQty(),
-                o.getOriginalQty()
+            openOrdersModel.addRow(new Object[] {
+                    o.getSide().name(),
+                    o.getMarketId(),
+                    o.getPrice(),
+                    o.getRemainingQty(),
+                    o.getOriginalQty()
             });
         }
     }
@@ -328,42 +323,44 @@ public class OrderBookTradingFrame extends JFrame {
         statusLabel.setText(msg);
     }
 }
-//    // ================== RUNNABLE MAIN (for demo/testing) ==================
-//    public static void main(String[] args) {
+// // ================== RUNNABLE MAIN (for demo/testing) ==================
+// public static void main(String[] args) {
 //
-//        // 1. DataSource (Supabase)
-//        javax.sql.DataSource ds = stakemate.use_case.PlaceOrderUseCase.DataSourceFactory.create();
+// // 1. DataSource (Supabase)
+// javax.sql.DataSource ds =
+// stakemate.use_case.PlaceOrderUseCase.DataSourceFactory.create();
 //
-//        // 2. Repositories
-//        stakemate.data_access.supabase.PostgresOrderRepository orderRepo =
-//            new stakemate.data_access.supabase.PostgresOrderRepository(ds);
-//        stakemate.data_access.supabase.PostgresPositionRepository positionRepo =
-//            new stakemate.data_access.supabase.PostgresPositionRepository(ds);
+// // 2. Repositories
+// stakemate.data_access.supabase.PostgresOrderRepository orderRepo =
+// new stakemate.data_access.supabase.PostgresOrderRepository(ds);
+// stakemate.data_access.supabase.PostgresPositionRepository positionRepo =
+// new stakemate.data_access.supabase.PostgresPositionRepository(ds);
 //
-//        // 3. Engine + account service
-//        stakemate.engine.MatchingEngine engine = new stakemate.engine.MatchingEngine();
-//        stakemate.service.InMemoryAccountService accountService =
-//            new stakemate.service.InMemoryAccountService();
+// // 3. Engine + account service
+// stakemate.engine.MatchingEngine engine = new
+// stakemate.engine.MatchingEngine();
+// stakemate.service.InMemoryAccountService accountService =
+// new stakemate.service.InMemoryAccountService();
 //
-//        // Fake UUID users (because DB expects UUID for user_id)
-//        String user1 = "11111111-1111-1111-1111-111111111111";
-//        String user2 = "22222222-2222-2222-2222-222222222222";
-//        accountService.deposit(user1, 1000.0);
-//        accountService.deposit(user2, 1000.0);
+// // Fake UUID users (because DB expects UUID for user_id)
+// String user1 = "11111111-1111-1111-1111-111111111111";
+// String user2 = "22222222-2222-2222-2222-222222222222";
+// accountService.deposit(user1, 1000.0);
+// accountService.deposit(user2, 1000.0);
 //
-//        // 4. Use case
-//        PlaceOrderUseCase uc = new PlaceOrderUseCase(
-//            engine,
-//            accountService,
-//            orderRepo,
-//            positionRepo
-//        );
+// // 4. Use case
+// PlaceOrderUseCase uc = new PlaceOrderUseCase(
+// engine,
+// accountService,
+// orderRepo,
+// positionRepo
+// );
 //
-//        // 5. Launch UI for user1
-//        SwingUtilities.invokeLater(() -> {
-//            OrderBookTradingFrame frame =
-//                new OrderBookTradingFrame(uc, user1, "MARKET-1");
-//            frame.setVisible(true);
-//        });
-//    }
-//}
+// // 5. Launch UI for user1
+// SwingUtilities.invokeLater(() -> {
+// OrderBookTradingFrame frame =
+// new OrderBookTradingFrame(uc, user1, "MARKET-1");
+// frame.setVisible(true);
+// });
+// }
+// }
