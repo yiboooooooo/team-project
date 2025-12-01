@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>stakemate.entity.Game</OriginalElement>
+  <nodes>
+    <node x="-587.2410958904106" y="1230.184931506849">stakemate.use_case.fetch_games.RepositoryException</node>
+    <node x="-639.2410958904106" y="1584.9369863013696">stakemate.data_access.in_memory</node>
+    <node x="258.5" y="1403.8342465753421">stakemate.use_case.fetch_games.OddsApiEvent</node>
+    <node x="-191.0" y="1643.5">stakemate.data_access.adapter</node>
+    <node x="-222.5" y="1090.9369863013696">stakemate.entity.Game</node>
+    <node x="20.5" y="2022.5">stakemate.use_case.fetch_games.OddsApiGateway</node>
+    <node x="-638.5095890410956" y="1835.1520547945204">stakemate.use_case.fetch_games.OddsApiSport</node>
+    <node x="-423.5" y="2011.5">stakemate.use_case.fetch_games.FetchGamesInputBoundary</node>
+    <node x="-456.0" y="2231.0">stakemate.interface_adapter.fetch_games.FetchGamesController</node>
+    <node x="-611.2410958904107" y="1419.098630136986">stakemate.data_access.csv</node>
+    <node x="449.5" y="2255.0">stakemate.interface_adapter.fetch_games.SwingFetchGamesPresenter</node>
+    <node x="261.24109589041075" y="1110.4356164383557">stakemate.entity.GameStatus</node>
+    <node x="489.5" y="1999.5">stakemate.use_case.fetch_games.FetchGamesOutputBoundary</node>
+    <node x="-538.5" y="1090.9369863013699">stakemate.use_case.fetch_games.ApiException</node>
+    <node x="-194.0" y="1718.5">stakemate.use_case.fetch_games.FetchGamesResponseModel</node>
+    <node x="-634.7410958904107" y="1688.123287671233">stakemate.data_access.supabase</node>
+    <node x="742.5" y="1779.5">stakemate.interface_adapter.fetch_games.FetchGamesView</node>
+    <node x="-638.5095890410956" y="1783.153424657534">stakemate.data_access.api</node>
+    <node x="-59.0" y="2231.0">stakemate.use_case.fetch_games.FetchGamesInteractor</node>
+    <node x="314.0" y="1779.5">stakemate.use_case.fetch_games.GameRepository</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="stakemate.interface_adapter.fetch_games.FetchGamesController" target="stakemate.use_case.fetch_games.FetchGamesInputBoundary" relationship="TO_ONE">
+      <point x="0.0" y="-80.0" />
+      <point x="-273.0" y="2467.0" />
+      <point x="-328.25" y="2467.0" />
+      <point x="-95.25" y="55.5" />
+    </edge>
+    <edge source="stakemate.interface_adapter.fetch_games.SwingFetchGamesPresenter" target="stakemate.interface_adapter.fetch_games.FetchGamesView" relationship="TO_ONE">
+      <point x="98.75" y="-92.0" />
+      <point x="745.75" y="2227.0" />
+      <point x="907.0" y="2227.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="stakemate.use_case.fetch_games.FetchGamesInteractor" target="stakemate.use_case.fetch_games.GameRepository" relationship="TO_ONE">
+      <point x="150.66666666666669" y="-116.0" />
+      <point x="317.66666666666674" y="2207.0" />
+      <point x="327.0" y="2207.0" />
+      <point x="327.0" y="2167.0" />
+      <point x="467.0" y="2167.0" />
+      <point x="0.0" y="67.5" />
+    </edge>
+    <edge source="stakemate.entity.Game" target="stakemate.entity.GameStatus" relationship="TO_ONE">
+      <point x="0.0" y="-261.0" />
+      <point x="-13.0" y="1063.7140410958905" />
+      <point x="371.24109589041075" y="1063.7140410958905" />
+      <point x="0.0" y="56.0" />
+    </edge>
+    <edge source="stakemate.interface_adapter.fetch_games.SwingFetchGamesPresenter" target="stakemate.use_case.fetch_games.FetchGamesOutputBoundary" relationship="REALIZATION">
+      <point x="-98.75" y="-92.0" />
+      <point x="548.25" y="2187.0" />
+      <point x="785.75" y="2187.0" />
+      <point x="98.75" y="67.5" />
+    </edge>
+    <edge source="stakemate.use_case.fetch_games.FetchGamesInteractor" target="stakemate.use_case.fetch_games.FetchGamesResponseModel" relationship="CREATE">
+      <point x="0.0" y="-116.0" />
+      <point x="167.0" y="2187.0" />
+      <point x="-13.0" y="2187.0" />
+      <point x="0.0" y="128.5" />
+    </edge>
+    <edge source="stakemate.use_case.fetch_games.FetchGamesInteractor" target="stakemate.use_case.fetch_games.OddsApiGateway" relationship="TO_ONE">
+      <point x="150.66666666666669" y="-116.0" />
+      <point x="317.66666666666674" y="2207.0" />
+      <point x="327.0" y="2207.0" />
+      <point x="327.0" y="2167.0" />
+      <point x="227.0" y="2167.0" />
+      <point x="0.0" y="44.5" />
+    </edge>
+    <edge source="stakemate.use_case.fetch_games.FetchGamesInteractor" target="stakemate.use_case.fetch_games.FetchGamesInputBoundary" relationship="REALIZATION">
+      <point x="-150.66666666666669" y="-116.0" />
+      <point x="16.333333333333314" y="2207.0" />
+      <point x="-137.75" y="2207.0" />
+      <point x="95.25" y="55.5" />
+    </edge>
+    <edge source="stakemate.use_case.fetch_games.FetchGamesInteractor" target="stakemate.use_case.fetch_games.FetchGamesOutputBoundary" relationship="TO_ONE">
+      <point x="150.66666666666669" y="-116.0" />
+      <point x="317.66666666666674" y="2207.0" />
+      <point x="327.0" y="2207.0" />
+      <point x="327.0" y="2167.0" />
+      <point x="588.25" y="2167.0" />
+      <point x="-98.75" y="67.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.4072524407252441" showDependencies="true" x="216.0" y="1760.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

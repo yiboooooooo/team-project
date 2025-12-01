@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>stakemate.interface_adapter.view_live.SwingLiveMatchesPresenter</OriginalElement>
+  <nodes>
+    <node x="-134.0" y="145.0">stakemate.use_case.view_live.LiveMatchesInputBoundary</node>
+    <node x="-141.5" y="-15.0">stakemate.view.LiveMatchesFrame</node>
+    <node x="-136.0" y="65.0">stakemate.interface_adapter.view_live.LiveMatchesController</node>
+    <node x="-138.0" y="465.0">stakemate.interface_adapter.view_live.SwingLiveMatchesPresenter</node>
+    <node x="-115.0" y="265.0">stakemate.use_case.view_live.LiveMatchesInteractor</node>
+    <node x="-141.0" y="345.0">stakemate.use_case.view_live.LiveMatchesOutputBoundary</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="stakemate.interface_adapter.view_live.SwingLiveMatchesPresenter" target="stakemate.use_case.view_live.LiveMatchesOutputBoundary" relationship="REALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="stakemate.use_case.view_live.LiveMatchesInteractor" target="stakemate.use_case.view_live.LiveMatchesInputBoundary" relationship="REALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.5663030303030303" showDependencies="false" x="-105.52482876712338" y="173.16780821917814" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
