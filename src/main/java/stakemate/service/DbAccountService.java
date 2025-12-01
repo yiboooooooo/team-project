@@ -47,7 +47,7 @@ public class DbAccountService implements AccountService {
         final String sql = "SELECT balance FROM public.profiles WHERE id = ?";
 
         try (Connection conn = factory.createConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setObject(1, java.util.UUID.fromString(userId));
             try (ResultSet rs = ps.executeQuery()) {
@@ -65,7 +65,7 @@ public class DbAccountService implements AccountService {
         final String sql = "UPDATE public.profiles SET balance = balance + ?, updated_at = now() WHERE id = ?";
 
         try (Connection conn = factory.createConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setDouble(1, delta);
             ps.setObject(2, java.util.UUID.fromString(userId));
@@ -76,11 +76,21 @@ public class DbAccountService implements AccountService {
     }
 
     /**
-     * Apply a trade: buyer pays price*size, seller receives price*size.
+     * Apply a trade in a prediction market: both sides pay to enter their
+     * positions.
+     * Buyer pays price*size (betting YES on the outcome).
+     * Seller pays (1-price)*size (betting NO on the outcome).
      */
     public void applyTrade(BookOrder buy, BookOrder sell, Trade trade) {
-        final double notional = trade.getPrice() * trade.getSize();
-        adjustBalance(buy.getUserId(), -notional);
-        adjustBalance(sell.getUserId(), +notional);
+        final double price = trade.getPrice();
+        final double size = trade.getSize();
+
+        // Buyer pays the full execution price
+        final double buyerCost = price * size;
+        adjustBalance(buy.getUserId(), -buyerCost);
+
+        // Seller pays the complementary amount (1 - price)
+        final double sellerCost = (1.0 - price) * size;
+        adjustBalance(sell.getUserId(), -sellerCost);
     }
 }

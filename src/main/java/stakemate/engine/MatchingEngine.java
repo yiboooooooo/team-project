@@ -96,7 +96,10 @@ public class MatchingEngine {
                 double matchPrice = p;
 
                 simulatedFilled += matchSize;
-                simulatedCost += matchSize * matchPrice;
+                // In prediction market: BUY pays price, SELL pays (1-price)
+                double matchCost = incoming.getSide() == Side.BUY ? matchSize * matchPrice
+                        : matchSize * (1.0 - matchPrice);
+                simulatedCost += matchCost;
                 tempRemaining -= matchSize;
             }
 
@@ -122,10 +125,11 @@ public class MatchingEngine {
             }
         }
 
-        // --- Limit Order Pre-Check (for BUY side) ---
-        // Simulate upfront cost for incoming limit BUY orders to avoid balance issues
+        // --- Limit Order Pre-Check (for both BUY and SELL) ---
+        // Simulate upfront cost for incoming limit orders to avoid balance issues
         // during matching
-        if (!incoming.isMarket() && incoming.getSide() == Side.BUY) {
+        // In prediction market: BUY pays price*size, SELL pays (1-price)*size
+        if (!incoming.isMarket()) {
             double simulatedCost = 0;
             double tempRemaining = incomingRemaining;
 
@@ -147,11 +151,13 @@ public class MatchingEngine {
                     break; // No more matches possible
 
                 double matchSize = Math.min(tempRemaining, resting.getRemainingQty());
-                simulatedCost += matchSize * execPrice;
+                // Calculate cost based on side: BUY pays price, SELL pays (1-price)
+                double cost = incoming.getSide() == Side.BUY ? matchSize * execPrice : matchSize * (1.0 - execPrice);
+                simulatedCost += cost;
                 tempRemaining -= matchSize;
             }
 
-            // Check if buyer has enough balance for all potential matches
+            // Check if user has enough balance for all potential matches
             if (simulatedCost > 0) {
                 double balance = accountService.getBalance(incoming.getUserId());
                 if (balance < simulatedCost) {
@@ -184,16 +190,18 @@ public class MatchingEngine {
             double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
             double matchCost = potentialMatchSize * executionPrice;
 
-            // --- Dynamic Funds Check for Resting BUY Order Only ---
-            // (Incoming order was already checked upfront if it's a BUY)
-            if (resting.getSide() == Side.BUY) {
-                double restingBalance = accountService.getBalance(resting.getUserId());
-                if (restingBalance < matchCost) {
-                    // Insufficient funds for this match -> Cancel resting order
-                    orderRepo.updateRemainingQty(resting.getId(), 0.0);
-                    resting.reduce(resting.getRemainingQty());
-                    continue; // Skip this resting order
-                }
+            // --- Dynamic Funds Check for Resting Order ---
+            // (Incoming order was already checked upfront)
+            // In prediction market, both BUY and SELL need funds
+            double restingCost = resting.getSide() == Side.BUY ? matchCost
+                    : potentialMatchSize * (1.0 - executionPrice);
+
+            double restingBalance = accountService.getBalance(resting.getUserId());
+            if (restingBalance < restingCost) {
+                // Insufficient funds for this match -> Cancel resting order
+                orderRepo.updateRemainingQty(resting.getId(), 0.0);
+                resting.reduce(resting.getRemainingQty());
+                continue; // Skip this resting order
             }
             // ---------------------------------------------------
 
