@@ -12,18 +12,6 @@ import stakemate.entity.Game;
  * Orchestrates the flow: API -> Adapter -> Repository -> Presenter
  *
  * <p>
- * TODO: Add comprehensive unit tests for this interactor (Use Case 1):
- *   - Test fetchAndUpdateGames() with valid sport/region/date parameters
- *   - Test fetchAndUpdateGames() with null/empty sport (should fail)
- *   - Test fetchAndUpdateGames() when API returns empty list
- *   - Test fetchAndUpdateGames() when API throws ApiException
- *   - Test fetchAndUpdateGames() when repository throws RepositoryException
- *   - Test refreshGames() delegates to fetchAndUpdateGames with defaults
- *   - Test searchGames() with valid query
- *   - Test searchGames() when repository throws exception
- *   - Test normalizeAndValidateGames() filters out invalid games
- *   - Verify presenter methods are called with correct data
- * TODO: Fix any Checkstyle violations in this file
  */
 public class FetchGamesInteractor implements FetchGamesInputBoundary {
 
