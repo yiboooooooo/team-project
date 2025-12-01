@@ -145,7 +145,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     }
 
     public void setProfileController(
-        final stakemate.interface_adapter.view_profile.ViewProfileController profileController) {
+            final stakemate.interface_adapter.view_profile.ViewProfileController profileController) {
         this.profileController = profileController;
     }
 
@@ -168,7 +168,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
 
         final JPanel root = new JPanel(new BorderLayout(BORDER_PADDING, BORDER_PADDING));
         root.setBorder(BorderFactory.createEmptyBorder(
-            BORDER_PADDING, BORDER_PADDING, BORDER_PADDING, BORDER_PADDING));
+                BORDER_PADDING, BORDER_PADDING, BORDER_PADDING, BORDER_PADDING));
 
         // Create Top Panel (inlined)
         final JPanel topBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -276,8 +276,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
             if (liveMatchesFrame != null && liveMatchesController != null) {
                 liveMatchesFrame.setVisible(true);
                 liveMatchesController.startTracking();
-            }
-            else {
+            } else {
                 JOptionPane.showMessageDialog(this, "Live Matches view not connected.");
             }
         });
@@ -336,23 +335,21 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
                 profileController.execute(currentUser);
             }
             profileFrame.setVisible(true);
-        }
-        else {
+        } else {
             JOptionPane.showMessageDialog(this, "Profile frame not connected.");
         }
     }
 
     private void performSettlement() {
         final int choice = JOptionPane.showConfirmDialog(
-            MarketsFrame.this,
-            "Demo Tool: Did the HOME team win this market?",
-            "Simulate Settlement",
-            JOptionPane.YES_NO_OPTION);
+                MarketsFrame.this,
+                "Demo Tool: Did the HOME team win this market?",
+                "Simulate Settlement",
+                JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
             settleMarketController.settleMarket(currentlySelectedMarket.getId(), true);
-        }
-        else if (choice == JOptionPane.NO_OPTION) {
+        } else if (choice == JOptionPane.NO_OPTION) {
             settleMarketController.settleMarket(currentlySelectedMarket.getId(), false);
         }
     }
@@ -373,12 +370,10 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         if (matches == null || matches.isEmpty()) {
             if (emptyStateMessage != null) {
                 matchesEmptyLabel.setText(emptyStateMessage);
-            }
-            else {
+            } else {
                 matchesEmptyLabel.setText("No matches.");
             }
-        }
-        else {
+        } else {
             for (final MatchSummary m : matches) {
                 matchesListModel.addElement(m);
             }
@@ -407,12 +402,10 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
             currentlySelectedMarket = null;
             if (responseModel.getEmptyStateMessage() != null) {
                 marketsEmptyLabel.setText(responseModel.getEmptyStateMessage());
-            }
-            else {
+            } else {
                 marketsEmptyLabel.setText("No markets for this match.");
             }
-        }
-        else {
+        } else {
             for (final MarketSummary m : responseModel.getMarkets()) {
                 marketsListModel.addElement(m);
             }
@@ -424,8 +417,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         // Update current selection based on list state
         if (marketsList.getSelectedIndex() != -1) {
             currentlySelectedMarket = marketsList.getSelectedValue();
-        }
-        else {
+        } else {
             currentlySelectedMarket = null;
         }
 
@@ -433,8 +425,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
             orderBookTableModel.clear();
             orderBookEmptyLabel.setText(SELECT_MARKET_MSG);
             updateButtonStates(false);
-        }
-        else {
+        } else {
             updateButtonStates(currentlySelectedMarket.isBuySellEnabled());
         }
 
@@ -449,8 +440,7 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
                 String itemId = null;
                 if (item instanceof MatchSummary) {
                     itemId = ((MatchSummary) item).getId();
-                }
-                else if (item instanceof MarketSummary) {
+                } else if (item instanceof MarketSummary) {
                     itemId = ((MarketSummary) item).getId();
                 }
 
@@ -473,18 +463,16 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         if (responseModel.isEmpty()) {
             if (responseModel.getMessage() != null) {
                 orderBookEmptyLabel.setText(responseModel.getMessage());
-            }
-            else {
+            } else {
                 orderBookEmptyLabel.setText("No orders yet");
             }
-        }
-        else if (!responseModel.isReconnecting()) {
+        } else if (!responseModel.isReconnecting()) {
             orderBookEmptyLabel.setText(EMPTY_TEXT);
         }
 
         final boolean enableBuySell = currentlySelectedMarket != null
-            && currentlySelectedMarket.isBuySellEnabled()
-            && !responseModel.isReconnecting();
+                && currentlySelectedMarket.isBuySellEnabled()
+                && !responseModel.isReconnecting();
 
         updateButtonStates(enableBuySell);
     }
@@ -493,17 +481,14 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
         if (responseModel.isReconnecting()) {
             if (responseModel.getMessage() != null) {
                 statusLabel.setText(responseModel.getMessage());
-            }
-            else {
+            } else {
                 statusLabel.setText("Reconnecting...");
             }
             statusLabel.setForeground(Color.RED);
-        }
-        else if (responseModel.getMessage() != null) {
+        } else if (responseModel.getMessage() != null) {
             statusLabel.setText(responseModel.getMessage());
             statusLabel.setForeground(Color.BLACK);
-        }
-        else {
+        } else {
             statusLabel.setText("System: Live");
             statusLabel.setForeground(new Color(0, DARK_GREEN_G, 0));
         }
@@ -555,19 +540,40 @@ public class MarketsFrame extends JFrame implements MarketsView, SettleMarketVie
     private void openOrderBookPopup() {
         if (currentlySelectedMarket == null) {
             JOptionPane.showMessageDialog(this, "Select a market first.");
-        }
-        else if (currentUser == null) {
+        } else if (currentUser == null) {
             JOptionPane.showMessageDialog(this, "No logged-in user.");
-        }
-        else {
+        } else {
             final String userId = StakeMateApp.userRepo.getUserIdByUsername(currentUser);
             if (userId == null) {
                 JOptionPane.showMessageDialog(this, "Cannot find profile for: " + currentUser);
-            }
-            else {
+            } else {
+                // Try to get team names from the game associated with this market
+                String teamAName = "Team A";
+                String teamBName = "Team B";
+
+                try {
+                    // Parse the market ID as UUID to find the game
+                    java.util.UUID marketUuid = java.util.UUID.fromString(currentlySelectedMarket.getId());
+
+                    if (StakeMateApp.gameRepo != null) {
+                        // Find game by market ID
+                        java.util.List<stakemate.entity.Game> allGames = StakeMateApp.gameRepo.findFutureGames();
+                        for (stakemate.entity.Game game : allGames) {
+                            if (game.getMarketId() != null && game.getMarketId().equals(marketUuid)) {
+                                teamAName = game.getTeamA();
+                                teamBName = game.getTeamB();
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    // If anything goes wrong, just use default team names
+                    System.err.println("Could not fetch team names: " + e.getMessage());
+                }
+
                 final var uc = StakeMateApp.getPlaceOrderUseCase();
                 final var f = new stakemate.interface_adapter.viewOrderBook.OrderBookTradingFrame(
-                    uc, userId, currentlySelectedMarket.getId());
+                        uc, userId, currentUser, currentlySelectedMarket.getId(), teamAName, teamBName);
                 f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 f.setVisible(true);
             }

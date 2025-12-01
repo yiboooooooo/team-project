@@ -79,6 +79,7 @@ public final class StakeMateApp {
     // -@cs[VisibilityModifier] Public field used by UI components directly for
     // simplicity in this iteration.
     public static SupabaseUserDataAccess userRepo;
+    public static SupabaseGameRepository gameRepo;
 
     private static InMemoryAccountRepository accountRepo;
     private static InMemoryBetRepository betRepo;
@@ -159,10 +160,10 @@ public final class StakeMateApp {
         initTradingSystem();
 
         final SupabaseClientFactory gamesSupabaseFactory = new SupabaseClientFactory();
-        final SupabaseGameRepository gameRepository = new SupabaseGameRepository(gamesSupabaseFactory);
-        final FetchGamesInteractor fetchGamesInteractor = createFetchGamesInteractor(gameRepository);
+        gameRepo = new SupabaseGameRepository(gamesSupabaseFactory);
+        final FetchGamesInteractor fetchGamesInteractor = createFetchGamesInteractor(gameRepo);
 
-        final InMemoryMatchRepository matchRepository = new InMemoryMatchRepository(gameRepository,
+        final InMemoryMatchRepository matchRepository = new InMemoryMatchRepository(gameRepo,
                 fetchGamesInteractor);
 
         // Use the REAL Database Gateway for Order Book data
@@ -171,7 +172,7 @@ public final class StakeMateApp {
         // Wired to Postgres
         final MarketDataFacade marketFacade = new MarketDataFacade(
                 matchRepository,
-                new InMemoryMarketRepository(gameRepository),
+                new InMemoryMarketRepository(gameRepo),
                 dbOrderBookGateway);
 
         final SupabaseClientFactory dbFactory = new SupabaseClientFactory();
@@ -194,7 +195,7 @@ public final class StakeMateApp {
                 realAccountRepo,
                 new InMemorySettlementRecordRepository());
 
-        setupLiveMatchesView(marketsFrame, fetchGamesInteractor, gameRepository);
+        setupLiveMatchesView(marketsFrame, fetchGamesInteractor, gameRepo);
 
         final SupabaseClientFactory supabaseFactory = new SupabaseClientFactory();
         userRepo = new SupabaseUserDataAccess(supabaseFactory);
