@@ -16,7 +16,6 @@ public class InMemoryMarketRepository implements MarketRepository {
     private static final String TOTAL = "Total";
     private static final String UNDERSCORE = "_";
 
-    private final List<Market> markets = new ArrayList<>();
     private final stakemate.use_case.fetch_games.GameRepository gameRepository;
 
     public InMemoryMarketRepository() {
