@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 
 public class Comment {
 
-    private final String id;          // unique comment id (e.g. UUID)
-    private final String marketId;    // ties to Market.getId()
-    private final String username;    // ties to User.getUsername()
-    private final String message;     // comment text
+    private final String id;
+    private final String marketId;
+    private final String username;
+    private final String message;
     private final LocalDateTime timestamp;
 
     public Comment(
@@ -25,13 +25,23 @@ public class Comment {
     }
 
     // --- Getters ---
-    public String getId() { return id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getMarketId() { return marketId; }
+    public String getMarketId() {
+        return marketId;
+    }
 
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
 
-    public String getMessage() { return message; }
+    public String getMessage() {
+        return message;
+    }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 }

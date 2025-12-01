@@ -1,8 +1,8 @@
 package stakemate.use_case.comments.view;
 
-import stakemate.entity.Comment;
-
 import java.util.List;
+
+import stakemate.entity.Comment;
 
 public class ViewCommentsOutputData {
 

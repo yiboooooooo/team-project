@@ -1,13 +1,21 @@
 package stakemate.view;
 
-import stakemate.entity.Comment;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+
+import stakemate.entity.Comment;
 import stakemate.interface_adapter.view_comments.PostCommentController;
 import stakemate.interface_adapter.view_comments.ViewCommentsController;
 
@@ -15,6 +23,8 @@ import stakemate.interface_adapter.view_comments.ViewCommentsController;
  * Swing panel for viewing and posting comments.
  */
 public class CommentsPanel extends JPanel {
+
+    private static final int MESSAGE_CLEAR_DELAY_MS = 3000;
 
     private final DefaultListModel<String> commentListModel;
     private final JList<String> commentList;
@@ -42,11 +52,11 @@ public class CommentsPanel extends JPanel {
         // Center: scrollable list of comments
         commentListModel = new DefaultListModel<>();
         commentList = new JList<>(commentListModel);
-        JScrollPane scrollPane = new JScrollPane(commentList);
+        final JScrollPane scrollPane = new JScrollPane(commentList);
         this.add(scrollPane, BorderLayout.CENTER);
 
         // Bottom: input field + post button
-        JPanel inputPanel = new JPanel(new BorderLayout());
+        final JPanel inputPanel = new JPanel(new BorderLayout());
         inputField = new JTextField();
         postButton = new JButton("Post");
         inputPanel.add(inputField, BorderLayout.CENTER);
@@ -56,7 +66,9 @@ public class CommentsPanel extends JPanel {
     }
 
     /**
-     * Adds a comment to the list and updates the display
+     * Adds a comment to the list and updates the display.
+     *
+     * @param comment the Comment object to add to the list
      */
     public void addComment(Comment comment) {
         comments.add(comment);
@@ -64,7 +76,10 @@ public class CommentsPanel extends JPanel {
     }
 
     /**
-     * Sets the entire comment list (e.g., when loading from DB)
+     * Sets the entire comment list and updates the display.
+     * Typically used when loading comments from the database.
+     *
+     * @param comments the list of Comment objects to display
      */
     public void setComments(List<Comment> comments) {
         this.comments.clear();
@@ -76,76 +91,100 @@ public class CommentsPanel extends JPanel {
     }
 
     /**
-     * Clears the input field
+     * Clears the input field.
      */
     public void clearInput() {
         inputField.setText("");
     }
 
     /**
-     * Displays a temporary message (success/failure)
+     * Displays a temporary message in the message label.
+     * The message will be cleared automatically after 3 seconds.
+     *
+     * @param message the message to display
      */
     public void showMessage(String message) {
         messageLabel.setText(message);
         // Optionally, reset after 3 seconds
-        new Timer(3000, e -> messageLabel.setText(" ")).start();
+        new Timer(MESSAGE_CLEAR_DELAY_MS, event -> messageLabel.setText(" ")).start();
     }
 
     /**
-     * Returns the text currently in the input field
+     * Returns the current text in the input field.
+     *
+     * @return the text currently entered by the user
      */
     public String getInputText() {
         return inputField.getText();
     }
 
     /**
-     * Adds an ActionListener to the post button
+     * Adds an {@link ActionListener} to the post button.
+     *
+     * @param listener the ActionListener to attach to the post button
      */
     public void addPostButtonListener(ActionListener listener) {
         postButton.addActionListener(listener);
     }
 
-    /** Formats comment for display */
-    private String formatComment(Comment c) {
+    /**
+     * Formats a Comment object for display in the JList.
+     *
+     * @param comment the Comment object to format
+     * @return a formatted string representing the comment
+     */
+    private String formatComment(Comment comment) {
         return String.format("[%s] %s: %s",
-                c.getTimestamp().toLocalTime().withNano(0),
-                c.getUsername(),
-                c.getMessage());
+            comment.getTimestamp().toLocalTime().withNano(0),
+            comment.getUsername(),
+            comment.getMessage());
     }
 
+    /**
+     * Sets the controllers for handling posting and viewing comments,
+     * and hooks the post button to send comments through the PostCommentController.
+     *
+     * @param postCtrl the controller responsible for posting comments
+     * @param viewCtrl the controller responsible for viewing comments
+     */
     public void setControllers(PostCommentController postCtrl,
                                ViewCommentsController viewCtrl) {
         this.postController = postCtrl;
         this.viewController = viewCtrl;
 
         // Hook Post button
-        addPostButtonListener(e -> {
-            String text = getInputText();
-            if (text == null || text.isBlank()) {
-                showMessage("Comment cannot be empty.");
-                return;
-            }
+        addPostButtonListener(this::handlePostButtonClick);
+    }
 
-            if (marketsFrame == null) {
-                showMessage("MarketsFrame not set.");
-                return;
-            }
-
+    /**
+     * Handles the Post button click.
+     *
+     * @param event the action event
+     */
+    private void handlePostButtonClick(java.awt.event.ActionEvent event) {
+        final String text = getInputText();
+        if (text == null || text.isBlank()) {
+            showMessage("Comment cannot be empty.");
+        }
+        else if (marketsFrame == null) {
+            showMessage("MarketsFrame not set.");
+        }
+        else {
             String marketId = null;
             if (marketsFrame.getCurrentlySelectedMarket() != null) {
                 marketId = marketsFrame.getCurrentlySelectedMarket().getId();
             }
 
-            String username = marketsFrame.getCurrentUser();
+            final String username = marketsFrame.getCurrentUser();
 
             if (marketId == null || username == null) {
                 showMessage("Select a market and log in first.");
-                return;
             }
-
-            postController.postComment(marketId, username, text);
-            clearInput();
-        });
+            else {
+                postController.postComment(marketId, username, text);
+                clearInput();
+            }
+        }
     }
 
     public void setMarketsFrame(MarketsFrame frame) {

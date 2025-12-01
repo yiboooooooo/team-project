@@ -12,7 +12,15 @@ public class PostCommentInputData {
         this.commentText = commentText;
     }
 
-    public String getMarketId() { return marketId; }
-    public String getUsername() { return username; }
-    public String getCommentText() { return commentText; }
+    public String getMarketId() {
+        return marketId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getCommentText() {
+        return commentText;
+    }
 }

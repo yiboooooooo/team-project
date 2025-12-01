@@ -3,6 +3,7 @@
   <component name="CheckStyle-IDEA" serialisationVersion="2">
     <checkstyleVersion>11.0.1</checkstyleVersion>
     <scanScope>Everything</scanScope>
+    <scrollToSource>true</scrollToSource>
     <option name="thirdPartyClasspath" />
     <option name="activeLocationIds">
       <option value="1125a0b8-8eb7-4c1a-b53a-f6c3b99d6406" />

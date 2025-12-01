@@ -4,29 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="Rebase Use-Case-2 onto main">
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/PostgresOrderBookGateway.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/OrderBookTableModel.java" afterDir="false" />
+    <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="tests done">
+      <change beforePath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiGatewayImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiGatewayImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiResponseAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiResponseAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/api/OddsApiTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/SwingFetchGamesPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/fetch_games/SwingFetchGamesPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_live/SwingLiveMatchesPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/interface_adapter/view_live/SwingLiveMatchesPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesResponseModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/FetchGamesResponseModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/GameRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/GameRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/OddsApiGateway.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/fetch_games/OddsApiGateway.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_live/LiveMatchesInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_live/LiveMatchesInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_live/LiveMatchesOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_live/LiveMatchesOutputBoundary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/LiveMatchesFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/LiveMatchesFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/stakemate/use_case/fetch_games/FetchGamesInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/stakemate/use_case/fetch_games/FetchGamesInteractorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/entity/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/entity/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/CommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/CommentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentInteractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/post/PostCommentOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsInputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsOutputBoundary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/comments/view/ViewCommentsOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/CommentsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/CommentsPanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +27,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="package-info" />
         <option value="Class" />
         <option value="JUnit5 Test Class" />
       </list>
@@ -58,7 +50,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/yiboooooooo/team-project.git&quot;,
-    &quot;accountId&quot;: &quot;88fca039-d08c-4aee-8793-b8da3470e018&quot;
+    &quot;accountId&quot;: &quot;693604f8-e9ee-471f-8ca0-0cb522e2584f&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -69,52 +61,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.StakeMateApp.executor": "Run",
-    "JUnit.FetchGamesInteractorTest.executor": "Coverage",
-    "JUnit.SettleMarketInteractorTest.executor": "Run",
-    "JUnit.ViewMarketInteractorTest.executor": "Run",
-    "JUnit.settle_market in TeamProject.executor": "Coverage",
-    "JUnit.stakemate.use_case in TeamProject.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "usecase1",
-    "git-widget-placeholder": "Use-Case-2",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_directory_selection": "C:/Users/rcroo/Desktop/team-project/src/test/java",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "org.infernus.idea.checkstyle.CheckStyleConfigurable",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.StakeMateApp.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PostCommentInteractorTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.ViewCommentsInteractorTest.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.ViewMarketInteractorTest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;working-comments&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
-    <key name="CreateTestDialog.RecentsKey">
-      <recent name="stakemate.use_case.fetch_games" />
-    </key>
-  </component>
-  <component name="RunManager">
+}</component>
   <component name="RunManager" selected="Application.StakeMateApp">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -231,21 +205,21 @@
       <option name="project" value="LOCAL" />
       <updated>1764190838339</updated>
     </task>
-    <task id="LOCAL-00002" summary="fixed the settle frame and logic also updated from a bad merge">
+    <task id="LOCAL-00002" summary="comments work as designed">
       <option name="closed" value="true" />
-      <created>1764465595034</created>
+      <created>1764292246589</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1764465595034</updated>
+      <updated>1764292246589</updated>
     </task>
-    <task id="LOCAL-00003" summary="Rebase Use-Case-2 onto main">
+    <task id="LOCAL-00003" summary="tests done">
       <option name="closed" value="true" />
-      <created>1764469115585</created>
+      <created>1764556144322</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1764469115585</updated>
+      <updated>1764556144322</updated>
     </task>
     <option name="localTasksCounter" value="4" />
     <servers />
@@ -266,47 +240,25 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.)." />
-    <MESSAGE value="fixed the settle frame and logic also updated from a bad merge" />
-    <MESSAGE value="Rebase Use-Case-2 onto main" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rebase Use-Case-2 onto main" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/main/java/Main.java</url>
-          <line>14</line>
-          <properties class="Main" method="main">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/stakemate/use_case/settle_market/SettleMarketInteractorTest.java</url>
-          <line>128</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
+    <MESSAGE value="comments work as designed" />
+    <MESSAGE value="tests done" />
+    <option name="LAST_COMMIT_MESSAGE" value="tests done" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764116533823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>stakemate.use_case.view_market.*</FILTER>
+    <SUITE FILE_PATH="coverage/StakeMate$PostCommentInteractorTest.ic" NAME="PostCommentInteractorTest Coverage Results" MODIFIED="1764556226916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.use_case.comments.post.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/StakeMate$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764475012218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.view_market.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/FakeOrderBookGateway_java$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764175871652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.view_market.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/team_project$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764116533823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.use_case.view_market.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/StakeMate$ViewCommentsInteractorTest.ic" NAME="ViewCommentsInteractorTest Coverage Results" MODIFIED="1764556214787" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.use_case.comments.view.*</FILTER>
     </SUITE>
   </component>
 </project>
