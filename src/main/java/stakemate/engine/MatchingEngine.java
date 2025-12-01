@@ -201,7 +201,7 @@ public class MatchingEngine {
                     incoming.getMarketId(),
                     buyOrder.getId(),
                     sellOrder.getId(),
-                    executedPrice,
+                    executionPrice,
                     executedSize);
             accountService.applyTrade(buyOrder, sellOrder, trade);
             executedTrades.add(trade);
