@@ -65,10 +65,10 @@ public class SupabaseGameRepository implements GameRepository {
     @Override
     public void upsertGames(final List<Game> games) throws RepositoryException {
         /*
-        if (games == null || games.isEmpty()) {
-            return;
-        }
-        */
+         * if (games == null || games.isEmpty()) {
+         * return;
+         * }
+         */
 
         try (Connection conn = connectionFactory.createConnection()) {
             conn.setAutoCommit(false);
@@ -79,15 +79,15 @@ public class SupabaseGameRepository implements GameRepository {
 
                 // Step 2: Upsert new/updated games from API
                 final String upsertSql = "INSERT INTO public.games (id, "
-                    + "market_id, game_time, team_a, team_b, sport, status) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?::game_status) "
-                    + "ON CONFLICT (id) DO UPDATE SET "
-                    + "market_id = EXCLUDED.market_id, "
-                    + "game_time = EXCLUDED.game_time, "
-                    + "team_a = EXCLUDED.team_a, "
-                    + "team_b = EXCLUDED.team_b, "
-                    + "sport = EXCLUDED.sport, "
-                    + "status = EXCLUDED.status";
+                        + "market_id, game_time, team_a, team_b, sport, status) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?::game_status) "
+                        + "ON CONFLICT (id) DO UPDATE SET "
+                        + "market_id = EXCLUDED.market_id, "
+                        + "game_time = EXCLUDED.game_time, "
+                        + "team_a = EXCLUDED.team_a, "
+                        + "team_b = EXCLUDED.team_b, "
+                        + "sport = EXCLUDED.sport, "
+                        + "status = EXCLUDED.status";
 
                 // TODO: fix this checkstyle error (nested try)
                 try (PreparedStatement stmt = conn.prepareStatement(upsertSql)) {
@@ -109,13 +109,11 @@ public class SupabaseGameRepository implements GameRepository {
                 }
 
                 conn.commit();
-            }
-            catch (final SQLException ex) {
+            } catch (final SQLException ex) {
                 conn.rollback();
                 throw new RepositoryException("Failed to upsert games: " + ex.getMessage(), ex);
             }
-        }
-        catch (final SQLException ex) {
+        } catch (final SQLException ex) {
             throw new RepositoryException("Database connection error: " + ex.getMessage(), ex);
         }
     }
@@ -130,9 +128,9 @@ public class SupabaseGameRepository implements GameRepository {
      */
     private void updateOldGameStatuses(Connection conn) throws SQLException {
         final String updateSql = "UPDATE public.games "
-            + "SET status = 'finished' "
-            + "WHERE game_time < (CURRENT_TIMESTAMP - INTERVAL '1 day') "
-            + "AND status != 'finished'";
+                + "SET status = 'finished' "
+                + "WHERE game_time < (CURRENT_TIMESTAMP - INTERVAL '1 day') "
+                + "AND status != 'finished'";
 
         try (PreparedStatement stmt = conn.prepareStatement(updateSql)) {
             final int rowsUpdated = stmt.executeUpdate();
@@ -144,34 +142,33 @@ public class SupabaseGameRepository implements GameRepository {
 
     @Override
     public Optional<Game> findByExternalId(final String externalId) throws RepositoryException {
-        // Note: This assumes external_id is stored somewhere (e.g., in a separate column or table)
+        // Note: This assumes external_id is stored somewhere (e.g., in a separate
+        // column or table)
         // For now, we'll search by a combination of fields that should be unique
         // In a production system, you'd want an external_id column in the games table
 
         final String sql = SELECT_GAME_COLUMNS
-            + FROM_GAMES_TABLE
-            + "WHERE id::text = ? OR (team_a = ? AND team_b = ? AND game_time = ?) "
-            + "LIMIT 1";
+                + FROM_GAMES_TABLE
+                + "WHERE id::text = ? OR (team_a = ? AND team_b = ? AND game_time = ?) "
+                + "LIMIT 1";
 
         try (Connection conn = connectionFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             // Try to parse externalId as UUID first, otherwise use as search term
             UUID gameId = null;
             try {
                 gameId = UUID.fromString(externalId);
-            }
-            catch (final IllegalArgumentException ex) {
+            } catch (final IllegalArgumentException ex) {
                 // Not a UUID, will search by other fields
             }
 
             if (gameId != null) {
-                stmt.setObject(EXTERNAL_ID_PARAM, gameId);
+                stmt.setString(EXTERNAL_ID_PARAM, gameId.toString());
                 stmt.setString(EXTERNAL_TEAM_A_PARAM, "");
                 stmt.setString(EXTERNAL_TEAM_B_PARAM, "");
                 stmt.setTimestamp(EXTERNAL_GAME_TIME_PARAM, null);
-            }
-            else {
+            } else {
                 stmt.setString(EXTERNAL_ID_PARAM, "");
                 stmt.setString(EXTERNAL_TEAM_A_PARAM, externalId);
                 stmt.setString(EXTERNAL_TEAM_B_PARAM, externalId);
@@ -179,8 +176,7 @@ public class SupabaseGameRepository implements GameRepository {
             }
 
             return executeAndMapFirstResult(stmt, externalId);
-        }
-        catch (final SQLException ex) {
+        } catch (final SQLException ex) {
             throw new RepositoryException("Failed to find game by external ID: " + ex.getMessage(), ex);
         }
     }
@@ -188,19 +184,18 @@ public class SupabaseGameRepository implements GameRepository {
     /**
      * Executes a prepared statement and maps the first result to a Game entity.
      *
-     * @param stmt the prepared statement to execute
+     * @param stmt       the prepared statement to execute
      * @param externalId the external ID to associate with the game
      * @return Optional containing the Game if found, empty otherwise
      * @throws SQLException if database access error occurs
      */
     private Optional<Game> executeAndMapFirstResult(PreparedStatement stmt,
-                                                     String externalId) throws SQLException {
+            String externalId) throws SQLException {
         final ResultSet rs = stmt.executeQuery();
         final Optional<Game> result;
         if (rs.next()) {
             result = Optional.of(mapResultSetToGame(rs, externalId));
-        }
-        else {
+        } else {
             result = Optional.empty();
         }
         rs.close();
@@ -215,9 +210,9 @@ public class SupabaseGameRepository implements GameRepository {
         // Then, return ALL games from today onwards (including finished ones)
         // The view should display the actual status from the database
         final String sql = SELECT_GAME_COLUMNS
-            + FROM_GAMES_TABLE
-            + "WHERE game_time >= CURRENT_DATE "
-            + "ORDER BY game_time ASC";
+                + FROM_GAMES_TABLE
+                + "WHERE game_time >= CURRENT_DATE "
+                + "ORDER BY game_time ASC";
 
         return executeQuery(sql, null);
     }
@@ -231,13 +226,12 @@ public class SupabaseGameRepository implements GameRepository {
         final boolean emptyQuery = query == null || query.trim().isEmpty();
         if (emptyQuery) {
             res = findFutureGames();
-        }
-        else {
+        } else {
             final String sql = SELECT_GAME_COLUMNS
-                + FROM_GAMES_TABLE
-                + "WHERE (team_a ILIKE ? OR team_b ILIKE ? OR sport ILIKE ?) "
-                + "AND game_time >= CURRENT_DATE "
-                + "ORDER BY game_time ASC";
+                    + FROM_GAMES_TABLE
+                    + "WHERE (team_a ILIKE ? OR team_b ILIKE ? OR sport ILIKE ?) "
+                    + "AND game_time >= CURRENT_DATE "
+                    + "ORDER BY game_time ASC";
             final String searchTerm = "%" + query.trim() + "%";
             res = executeQuery(sql, searchTerm);
         }
@@ -252,19 +246,18 @@ public class SupabaseGameRepository implements GameRepository {
      */
     private void markOldGamesAsFinished() throws RepositoryException {
         final String updateSql = "UPDATE public.games "
-            + "SET status = 'finished' "
-            + "WHERE game_time < (CURRENT_TIMESTAMP - INTERVAL '1 day') "
-            + "AND status != 'finished'";
+                + "SET status = 'finished' "
+                + "WHERE game_time < (CURRENT_TIMESTAMP - INTERVAL '1 day') "
+                + "AND status != 'finished'";
 
         try (Connection conn = connectionFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+                PreparedStatement stmt = conn.prepareStatement(updateSql)) {
 
             final int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("Marked " + rowsUpdated + " old game(s) as finished.");
             }
-        }
-        catch (final SQLException ex) {
+        } catch (final SQLException ex) {
             throw new RepositoryException("Failed to mark old games as finished: " + ex.getMessage(), ex);
         }
     }
@@ -272,7 +265,7 @@ public class SupabaseGameRepository implements GameRepository {
     /**
      * Executes a query and maps results to Game entities.
      *
-     * @param sql the SQL query to execute
+     * @param sql        the SQL query to execute
      * @param searchTerm the search term to use in query parameters, or null if none
      * @return list of Game entities matching the query
      * @throws RepositoryException if database operation fails
@@ -281,7 +274,7 @@ public class SupabaseGameRepository implements GameRepository {
         final List<Game> games = new ArrayList<>();
 
         try (Connection conn = connectionFactory.createConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             if (searchTerm != null) {
                 stmt.setString(SEARCH_TEAM_A_PARAM, searchTerm);
@@ -296,8 +289,7 @@ public class SupabaseGameRepository implements GameRepository {
             }
 
             return games;
-        }
-        catch (final SQLException ex) {
+        } catch (final SQLException ex) {
             throw new RepositoryException("Failed to execute query: " + ex.getMessage(), ex);
         }
     }
@@ -305,7 +297,7 @@ public class SupabaseGameRepository implements GameRepository {
     /**
      * Maps a ResultSet row to a Game entity.
      *
-     * @param resultSet the ResultSet positioned at a row to map
+     * @param resultSet  the ResultSet positioned at a row to map
      * @param externalId the external ID to associate with the game, or null
      * @return Game entity created from the ResultSet row
      * @throws SQLException if database access error occurs
@@ -323,8 +315,7 @@ public class SupabaseGameRepository implements GameRepository {
         final LocalDateTime gameTimeLocal;
         if (gameTime != null) {
             gameTimeLocal = gameTime.toLocalDateTime();
-        }
-        else {
+        } else {
             gameTimeLocal = null;
         }
 
@@ -334,7 +325,7 @@ public class SupabaseGameRepository implements GameRepository {
     /**
      * Ensures a market exists in the database, creating it if necessary.
      *
-     * @param conn active database connection
+     * @param conn     active database connection
      * @param marketId the UUID of the market to check/create
      * @throws SQLException if database operation fails
      */
@@ -356,13 +347,13 @@ public class SupabaseGameRepository implements GameRepository {
     /**
      * Inserts a default market into the database.
      *
-     * @param conn active database connection
+     * @param conn     active database connection
      * @param marketId the UUID of the market to create
      * @throws SQLException if database operation fails
      */
     private void insertDefaultMarket(Connection conn, UUID marketId) throws SQLException {
         final String insertSql = "INSERT INTO public.markets (id, name, category, created_at) "
-            + "VALUES (?, ?, ?, NOW())";
+                + "VALUES (?, ?, ?, NOW())";
 
         try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
             insertStmt.setObject(MARKET_INSERT_ID_PARAM, marketId);
@@ -389,8 +380,7 @@ public class SupabaseGameRepository implements GameRepository {
         }
         if (status == GameStatus.FINISHED) {
             res = "finished";
-        }
-        else {
+        } else {
             res = PENDING_STATUS;
         }
         return res;
@@ -414,12 +404,10 @@ public class SupabaseGameRepository implements GameRepository {
         }
         if ("finished".equals(lowerStatus) || "cancelled".equals(lowerStatus)) {
             res = GameStatus.FINISHED;
-        }
-        else {
+        } else {
             res = GameStatus.UPCOMING;
         }
         return res;
 
     }
 }
-
