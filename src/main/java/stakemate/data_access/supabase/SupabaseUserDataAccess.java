@@ -12,8 +12,10 @@ import stakemate.use_case.signup.SignupUserDataAccessInterface;
 /**
  * Data access implementation that stores users in the Supabase "profiles"
  * table.
+ *
  * <p>
  * Expected table:
+ *
  * <p>
  * create table public.profiles (
  * id uuid primary key default gen_random_uuid(),
@@ -24,11 +26,15 @@ import stakemate.use_case.signup.SignupUserDataAccessInterface;
  * );
  */
 public class SupabaseUserDataAccess
-    implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
-    stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface  {
-
+        implements SignupUserDataAccessInterface, LoginUserDataAccessInterface,
+        stakemate.use_case.view_profile.ViewProfileUserDataAccessInterface {
     private final SupabaseClientFactory factory;
 
+    /**
+     * Constructs a SupabaseUserDataAccess.
+     * 
+     * @param factory the Supabase client factory.
+     */
     public SupabaseUserDataAccess(final SupabaseClientFactory factory) {
         this.factory = factory;
     }
@@ -39,29 +45,28 @@ public class SupabaseUserDataAccess
     public boolean existsByUsername(final String username) {
         final String sql = "SELECT 1 FROM public.profiles WHERE username = ? LIMIT 1";
 
-        try (final Connection conn = factory.createConnection();
-             final PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = factory.createConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
-            try (final ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
 
-        }
-        catch (final SQLException e) {
-            throw new RuntimeException("Error checking if user exists", e);
+        } catch (final SQLException ex) {
+            throw new RuntimeException("Error checking if user exists", ex);
         }
     }
 
     @Override
     public void save(final User user) {
         // We let Supabase/Postgres generate the UUID id and updated_at
-        final String sql = "INSERT INTO public.profiles (username, password, balance) " +
-            "VALUES (?, ?, ?)";
+        final String sql = "INSERT INTO public.profiles (username, password, balance) "
+                + "VALUES (?, ?, ?)";
 
-        try (final Connection conn = factory.createConnection();
-             final PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = factory.createConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -69,9 +74,8 @@ public class SupabaseUserDataAccess
 
             ps.executeUpdate();
 
-        }
-        catch (final SQLException e) {
-            throw new RuntimeException("Error saving user to Supabase", e);
+        } catch (final SQLException ex) {
+            throw new RuntimeException("Error saving user to Supabase", ex);
         }
     }
 
@@ -79,11 +83,107 @@ public class SupabaseUserDataAccess
 
     @Override
     public User getByUsername(final String username) {
-        final String sql = "SELECT username, password, balance " +
-            "FROM public.profiles WHERE username = ?";
+        final String sql = "SELECT username, password, balance "
+                + "FROM public.profiles WHERE username = ?";
+
+        User res;
+
+        try (Connection conn = factory.createConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    res = null;
+                }
+
+                final String uname = rs.getString("username");
+                final String pwd = rs.getString("password");
+                final int balance = rs.getInt("balance");
+                res = new User(uname, pwd, balance);
+            }
+            return res;
+
+        } catch (final SQLException ex) {
+            throw new RuntimeException("Error loading user from Supabase", ex);
+        }
+    }
+
+    @Override
+    public java.util.List<stakemate.use_case.settle_market.Bet> getPositionsByUsername(final String username) {
+        final String sql = "SELECT p.username, " +
+                "       pos.market_id, " +
+                "       pos.side, " +
+                "       pos.amount, " +
+                "       pos.price, " +
+                "       pos.\"won?\" AS won_flag, " +
+                "       pos.settled AS settled_flag, " +
+                "       g.team_a, " +
+                "       g.team_b, " +
+                "       pos.updated_at " +
+                "FROM public.positions pos " +
+                "JOIN public.profiles p ON pos.user_id = p.id " +
+                "LEFT JOIN public.games g ON pos.market_id = g.market_id::text " +
+                "WHERE p.username = ?";
+
+        final java.util.List<stakemate.use_case.settle_market.Bet> bets = new java.util.ArrayList<>();
 
         try (final Connection conn = factory.createConnection();
-             final PreparedStatement ps = conn.prepareStatement(sql)) {
+                final PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (final ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    final String uName = rs.getString("username");
+                    final String marketIdRaw = rs.getString("market_id");
+                    final String teamA = rs.getString("team_a");
+                    final String teamB = rs.getString("team_b");
+                    final java.sql.Timestamp ts = rs.getTimestamp("updated_at");
+                    final java.time.Instant updatedAt = (ts != null) ? ts.toInstant() : java.time.Instant.now();
+
+                    // Construct market name: "Team A vs Team B"
+                    // Fallback to market_id if game info is missing
+                    String marketName = marketIdRaw;
+                    if (teamA != null && teamB != null) {
+                        marketName = teamA + " vs " + teamB;
+                    }
+
+                    final stakemate.entity.Side side = stakemate.entity.Side
+                            .valueOf(rs.getString("side").toUpperCase());
+                    final double amount = rs.getDouble("amount");
+                    final double price = rs.getDouble("price");
+                    final Boolean won = (Boolean) rs.getObject("won_flag");
+                    final Boolean settled = (Boolean) rs.getObject("settled_flag");
+
+                    // Resolve team name based on side
+                    String teamName = side.toString();
+                    if (side == stakemate.entity.Side.BUY && teamA != null) {
+                        teamName = teamA;
+                    } else if (side == stakemate.entity.Side.SELL && teamB != null) {
+                        teamName = teamB;
+                    }
+
+                    final stakemate.use_case.settle_market.Bet bet = new stakemate.use_case.settle_market.Bet(uName,
+                            marketName, side, amount, price, won, settled, teamName, updatedAt);
+
+                    bets.add(bet);
+                }
+            }
+
+        } catch (final SQLException e) {
+            throw new RuntimeException("Error loading positions for user " + username, e);
+        }
+
+        return bets;
+    }
+
+    public String getUserIdByUsername(final String username) {
+        final String sql = "SELECT id FROM public.profiles WHERE username = ?";
+
+        try (final Connection conn = factory.createConnection();
+                final PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, username);
 
@@ -91,16 +191,11 @@ public class SupabaseUserDataAccess
                 if (!rs.next()) {
                     return null;
                 }
-
-                final String uname = rs.getString("username");
-                final String pwd = rs.getString("password");
-                final int balance = rs.getInt("balance");
-                return new User(uname, pwd, balance);
+                return rs.getString("id"); // UUID as String
             }
 
-        }
-        catch (final SQLException e) {
-            throw new RuntimeException("Error loading user from Supabase", e);
+        } catch (final SQLException e) {
+            throw new RuntimeException("Error loading user id from Supabase", e);
         }
     }
 }

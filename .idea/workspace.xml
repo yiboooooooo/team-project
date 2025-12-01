@@ -29,6 +29,7 @@
       <list>
         <option value="package-info" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -89,6 +90,13 @@
   }
 }</component>
   <component name="RunManager" selected="Application.StakeMateApp">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="TeamProject" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StakeMateApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="stakemate.app.StakeMateApp" />
       <module name="TeamProject" />
@@ -98,6 +106,21 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FetchGamesInteractorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TeamProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="stakemate.use_case.fetch_games.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="stakemate.use_case.fetch_games" />
+      <option name="MAIN_CLASS_NAME" value="stakemate.use_case.fetch_games.FetchGamesInteractorTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -117,17 +140,44 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="settle_market in TeamProject" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TeamProject" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java/stakemate/use_case/settle_market" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="stakemate.use_case in TeamProject" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="TeamProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="stakemate.use_case.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="stakemate.use_case" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.FetchGamesInteractorTest" />
         <item itemvalue="Application.StakeMateApp" />
         <item itemvalue="JUnit.ViewMarketInteractorTest" />
+        <item itemvalue="JUnit.settle_market in TeamProject" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="JUnit.stakemate.use_case in TeamProject" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -145,6 +195,7 @@
       <workItem from="1764176821078" duration="4921000" />
       <workItem from="1764191040328" duration="18000" />
       <workItem from="1764191066820" duration="1953000" />
+      <workItem from="1764460462189" duration="6043000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.).">
       <option name="closed" value="true" />
@@ -196,6 +247,9 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/StakeMate$PostCommentInteractorTest.ic" NAME="PostCommentInteractorTest Coverage Results" MODIFIED="1764556226916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.comments.post.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/StakeMate$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764475012218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>stakemate.use_case.view_market.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/FakeOrderBookGateway_java$ViewMarketInteractorTest.ic" NAME="ViewMarketInteractorTest Coverage Results" MODIFIED="1764175871652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>stakemate.use_case.view_market.*</FILTER>

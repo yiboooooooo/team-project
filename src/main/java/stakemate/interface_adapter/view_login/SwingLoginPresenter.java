@@ -3,22 +3,34 @@ package stakemate.interface_adapter.view_login;
 import stakemate.use_case.login.LoginOutputBoundary;
 import stakemate.use_case.login.LoginOutputData;
 
+/**
+ * Presenter for the Login Use Case (Swing implementation).
+ */
 public class SwingLoginPresenter implements LoginOutputBoundary {
 
-    private final LoginView view;
+    private final LoginViewModel viewModel;
 
-    public SwingLoginPresenter(final LoginView view) {
-        this.view = view;
+    /**
+     * Constructs a SwingLoginPresenter.
+     * 
+     * @param viewModel the login view model.
+     */
+    public SwingLoginPresenter(final LoginViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @Override
     public void prepareSuccessView(final LoginOutputData data) {
-        // Just tell the view it succeeded; the view will handle opening MarketsFrame.
-        view.onLoginSuccess(data.getUsername());
+        final LoginState state = viewModel.getState();
+        state.setUsername(data.getUsername());
+        state.setError(null);
+        viewModel.setState(state);
     }
 
     @Override
     public void prepareFailView(final String error) {
-        view.showError(error);
+        final LoginState state = viewModel.getState();
+        state.setError(error);
+        viewModel.setState(state);
     }
 }

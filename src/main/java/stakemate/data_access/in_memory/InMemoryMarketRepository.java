@@ -17,8 +17,15 @@ public class InMemoryMarketRepository implements MarketRepository {
     private static final String UNDERSCORE = "_";
 
     private final List<Market> markets = new ArrayList<>();
+    private final stakemate.use_case.fetch_games.GameRepository gameRepository;
 
     public InMemoryMarketRepository() {
+        this(null);
+    }
+
+    public InMemoryMarketRepository(final stakemate.use_case.fetch_games.GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
+
         // Default hardcoded markets for testing with M1/M2
         markets.add(new Market("M1-ML", "M1", MONEYLINE, MarketStatus.OPEN));
         markets.add(new Market("M1-TOTAL", "M1", "Total Points O/U", MarketStatus.OPEN));
@@ -42,14 +49,32 @@ public class InMemoryMarketRepository implements MarketRepository {
 
         // If no markets found (e.g. it's a fresh game from the API), generate defaults
         if (result.isEmpty()) {
-            // Generate deterministic UUIDs based on the matchId so they stay consistent
-            // We use UUIDs to be compatible if you switch to a real DB later
-            final String mlId = UUID.nameUUIDFromBytes(
-                (matchId + UNDERSCORE + MONEYLINE).getBytes()).toString();
+            String mlId = null;
+
+            // Try to find the real market ID from the Game entity
+            if (gameRepository != null) {
+                try {
+                    // matchId is often the externalId or UUID string
+                    java.util.Optional<stakemate.entity.Game> gameOpt = gameRepository.findByExternalId(matchId);
+                    if (gameOpt.isPresent() && gameOpt.get().getMarketId() != null) {
+                        mlId = gameOpt.get().getMarketId().toString();
+                    }
+                } catch (Exception e) {
+                    // Ignore and fall back to generated ID
+                    System.err.println("Error fetching game for market ID: " + e.getMessage());
+                }
+            }
+
+            // Fallback if not found
+            if (mlId == null) {
+                mlId = UUID.nameUUIDFromBytes(
+                        (matchId + UNDERSCORE + MONEYLINE).getBytes()).toString();
+            }
+
             final String spreadId = UUID.nameUUIDFromBytes(
-                (matchId + UNDERSCORE + SPREAD).getBytes()).toString();
+                    (matchId + UNDERSCORE + SPREAD).getBytes()).toString();
             final String totalId = UUID.nameUUIDFromBytes(
-                (matchId + UNDERSCORE + TOTAL).getBytes()).toString();
+                    (matchId + UNDERSCORE + TOTAL).getBytes()).toString();
 
             final Market moneyline = new Market(mlId, matchId, MONEYLINE, MarketStatus.OPEN);
             final Market spread = new Market(spreadId, matchId, SPREAD, MarketStatus.OPEN);

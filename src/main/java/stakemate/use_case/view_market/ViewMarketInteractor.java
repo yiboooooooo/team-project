@@ -83,6 +83,12 @@ public class ViewMarketInteractor implements
 
     @Override
     public void matchSelected(final String matchId) {
+        // Unsubscribe from the old market to stop ghost updates
+        if (currentSubscribedMarketId != null) {
+            dataFacade.unsubscribeFromOrderBook(currentSubscribedMarketId, this);
+            currentSubscribedMarketId = null;
+        }
+
         final Match match = matchesById.get(matchId);
         final String title;
         if (match != null) {

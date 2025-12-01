@@ -15,6 +15,8 @@ import stakemate.use_case.fetch_games.OddsApiEvent;
  */
 public class OddsApiResponseAdapter {
 
+    private static final int MINUTES_BUFFER = 30;
+
     /**
      * Converts a list of API events to Game entities.
      *
@@ -36,90 +38,106 @@ public class OddsApiResponseAdapter {
 
     /**
      * Converts a single API event to a Game entity.
+     *
+     * @param event The API event to convert
+     * @return A Game entity, or null if conversion fails
      */
     private Game convertToGame(final OddsApiEvent event) {
-        if (event == null || event.getId() == null) {
-            return null;
+        Game result = null;
+
+        if (event != null && event.getId() != null) {
+            // Generate deterministic UUID based on external API ID
+            final UUID gameId = UUID.nameUUIDFromBytes(event.getId().getBytes());
+            final UUID marketId = UUID.nameUUIDFromBytes((event.getId() + "_market").getBytes());
+            final String teamA = normalizeTeamName(event.getHomeTeam());
+            final String teamB = normalizeTeamName(event.getAwayTeam());
+
+            if (!"Unknown".equals(teamA) && !"Unknown".equals(teamB)) {
+                final LocalDateTime gameTime = event.getCommenceTime();
+                if (gameTime != null) {
+                    // Map API status to GameStatus enum
+                    final GameStatus status = mapStatus(event);
+                    final String sport = normalizeSport(event.getSportKey());
+
+                    result = new Game(
+                        gameId,
+                        marketId,
+                        gameTime,
+                        teamA,
+                        teamB,
+                        sport,
+                        status,
+                        event.getId()
+                    );
+                }
+            }
         }
 
-        // Generate deterministic UUID based on external API ID
-        final UUID gameId = UUID.nameUUIDFromBytes(event.getId().getBytes());
-        // want to create markets based on the event data)
-        final UUID marketId = UUID.nameUUIDFromBytes((event.getId() + "_market").getBytes());
-        final String teamA = normalizeTeamName(event.getHomeTeam());
-        final String teamB = normalizeTeamName(event.getAwayTeam());
-
-        if ("Unknown".equals(teamA) || "Unknown".equals(teamB)) {
-            return null;
-        }
-
-        // Map API status to GameStatus enum
-        final GameStatus status = mapStatus(event);
-        final String sport = normalizeSport(event.getSportKey());
-        final LocalDateTime gameTime = event.getCommenceTime();
-        if (gameTime == null) {
-            return null;
-        }
-
-        return new Game(
-            gameId,
-            marketId,
-            gameTime,
-            teamA,
-            teamB,
-            sport,
-            status,
-            event.getId()  // Store external ID for deduplication
-        );
+        return result;
     }
 
     /**
      * Normalizes team names by trimming and handling nulls.
+     *
+     * @param teamName The team name to normalize
+     * @return Normalized team name, or "Unknown" if null
      */
     private String normalizeTeamName(final String teamName) {
+        String res;
         if (teamName == null) {
-            return "Unknown";
+            res = "Unknown";
         }
-        return teamName.trim();
+        res = teamName.trim();
+        return res;
     }
 
     /**
      * Normalizes sport key.
+     *
+     * @param sportKey The sport key to normalize
+     * @return Normalized sport key in lowercase
      */
     private String normalizeSport(final String sportKey) {
+        String res;
         if (sportKey == null || sportKey.isEmpty()) {
-            return "unknown";
+            res = "unknown";
         }
-        return sportKey.toLowerCase().trim();
+        res = sportKey.toLowerCase().trim();
+        return res;
     }
 
     /**
      * Maps API event status to GameStatus enum.
-     * The Odds API events endpoint typically returns upcoming events,
-     * so we default to UPCOMING. In a real implementation, you might
-     * check additional fields or make separate API calls for live events.
+     * The Odds API events endpoint only returns upcoming events,
+     * so we always set them as UPCOMING. The status should be updated
+     * by a separate mechanism when games actually start or finish.
+     *
+     * @param event The API event to map status for
+     * @return The appropriate GameStatus based on the event's commence time
      */
     private GameStatus mapStatus(final OddsApiEvent event) {
-        // The events endpoint typically returns upcoming events
-        // For now, we'll check the commence time to determine status
         final LocalDateTime commenceTime = event.getCommenceTime();
-        if (commenceTime == null) {
-            return GameStatus.UPCOMING;
-        }
+        final GameStatus result;
 
-        final LocalDateTime now = LocalDateTime.now();
-        if (commenceTime.isBefore(now.minusHours(3))) {
-            // Game started more than 3 hours ago, likely finished
-            return GameStatus.FINISHED;
-        }
-        else if (commenceTime.isBefore(now)) {
-            // Game has started but less than 3 hours ago, likely live
-            return GameStatus.LIVE;
+        if (commenceTime == null) {
+            result = GameStatus.UPCOMING;
         }
         else {
-            // Game hasn't started yet
-            return GameStatus.UPCOMING;
+            final LocalDateTime now = LocalDateTime.now();
+
+            if (commenceTime.isBefore(now.plusMinutes(MINUTES_BUFFER))
+                    && commenceTime.isAfter(now.minusMinutes(MINUTES_BUFFER))) {
+                result = GameStatus.LIVE;
+            }
+            else if (commenceTime.isBefore(now)) {
+                result = GameStatus.LIVE;
+            }
+            else {
+                result = GameStatus.UPCOMING;
+            }
         }
+
+        return result;
     }
 }
 
