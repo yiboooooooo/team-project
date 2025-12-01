@@ -263,7 +263,11 @@ public class OrderBookTradingFrame extends JFrame {
                     setStatus("Price is required for limit orders.");
                     return;
                 }
-                price = Double.parseDouble(priceText);
+                double uiPrice = Double.parseDouble(priceText);
+
+                // Convert Team B price to Team A price using 1 - price
+                boolean isTeamB = "Team B".equals(team);
+                price = isTeamB ? (1.0 - uiPrice) : uiPrice;
             } else {
                 // Market order -> price left null; matching engine treats null as market
                 price = null;
@@ -310,17 +314,31 @@ public class OrderBookTradingFrame extends JFrame {
         String team = (String) teamCombo.getSelectedItem();
         boolean isTeamB = "Team B".equals(team);
 
-        // For Team B, swap the display: show asks as bids and bids as asks
+        // For Team B, swap the display and transform prices using 1 - price
         if (isTeamB) {
-            // Team B perspective: actual asks appear as their bids
-            for (OrderBookEntry e : ob.getAsks()) {
-                Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
-                bidsModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
-            }
-            // Team B perspective: actual bids appear as their asks
+            // Team B perspective: Team A's bids become Team B's asks with transformed price
+            // Best bid for Team B = 1 - best ask for Team A
             for (OrderBookEntry e : ob.getBids()) {
-                Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
+                Object priceDisplay;
+                if (e.getPrice() < 0) {
+                    priceDisplay = "MARKET";
+                } else {
+                    // Transform price: 1 - Team A price
+                    priceDisplay = 1.0 - e.getPrice();
+                }
                 asksModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
+            }
+            // Team B perspective: Team A's asks become Team B's bids with transformed price
+            // Best ask for Team B = 1 - best bid for Team A
+            for (OrderBookEntry e : ob.getAsks()) {
+                Object priceDisplay;
+                if (e.getPrice() < 0) {
+                    priceDisplay = "MARKET";
+                } else {
+                    // Transform price: 1 - Team A price
+                    priceDisplay = 1.0 - e.getPrice();
+                }
+                bidsModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
             }
         } else {
             // Team A perspective: normal view
