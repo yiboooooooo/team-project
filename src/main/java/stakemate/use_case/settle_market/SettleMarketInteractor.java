@@ -114,10 +114,10 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
     private double calculatePayout(Bet bet, boolean won) {
         final double payout;
         if (won) {
-            payout = bet.getStake() * (1 - bet.getPrice());
+            payout = bet.getStake() * (1 - bet.getPrice()) + bet.getPrice()*bet.getStake();
         }
         else {
-            payout = -bet.getStake() * bet.getPrice();
+            payout = 0;
         }
         return payout;
     }
