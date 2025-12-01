@@ -1,9 +1,9 @@
 package stakemate.use_case.comments.post;
 
+import java.time.LocalDateTime;
+
 import stakemate.entity.Comment;
 import stakemate.use_case.comments.CommentRepository;
-
-import java.time.LocalDateTime;
 
 public class PostCommentInteractor implements PostCommentInputBoundary {
 
@@ -19,9 +19,9 @@ public class PostCommentInteractor implements PostCommentInputBoundary {
     @Override
     public void execute(PostCommentInputData inputData) {
 
-        String id = java.util.UUID.randomUUID().toString();
+        final String id = java.util.UUID.randomUUID().toString();
 
-        Comment comment = new Comment(
+        final Comment comment = new Comment(
             id,
             inputData.getMarketId(),
             inputData.getUsername(),
@@ -31,7 +31,6 @@ public class PostCommentInteractor implements PostCommentInputBoundary {
 
         repository.saveComment(comment);
 
-        // IMPORTANT FIX: return the marketId so the presenter can refresh
         presenter.present(
             new PostCommentOutputData(
                 true,
