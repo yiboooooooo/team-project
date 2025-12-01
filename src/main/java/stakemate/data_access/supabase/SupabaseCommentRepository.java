@@ -1,17 +1,27 @@
 package stakemate.data_access.supabase;
 
-import stakemate.entity.Comment;
-import stakemate.use_case.comments.CommentRepository;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import stakemate.entity.Comment;
+import stakemate.use_case.comments.CommentRepository;
 
 /**
  * Implementation of CommentRepository using Supabase (PostgreSQL) via JDBC.
  */
 public class SupabaseCommentRepository implements CommentRepository {
+
+    private static final int PARAM_ID = 1;
+    private static final int PARAM_MARKET_ID = 2;
+    private static final int PARAM_USER_ID = 3;
+    private static final int PARAM_CONTENT = 4;
+    private static final int PARAM_CREATED_AT = 5;
 
     private final SupabaseClientFactory clientFactory;
 
@@ -25,35 +35,49 @@ public class SupabaseCommentRepository implements CommentRepository {
 
     @Override
     public void saveComment(Comment comment) {
-        String sql = "INSERT INTO comments (id, market_id, user_id, content, created_at) VALUES (?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO comments (id, market_id, user_id, content, created_at) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = clientFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, comment.getId() != null ? comment.getId() : UUID.randomUUID().toString());
-            stmt.setString(2, comment.getMarketId());
-            stmt.setString(3, comment.getUsername());
-            stmt.setString(4, comment.getMessage());
-            stmt.setTimestamp(5, Timestamp.valueOf(comment.getTimestamp()));
+            final String commentId;
+
+            if (comment.getId() != null) {
+                commentId = comment.getId();
+            }
+            else {
+                commentId = UUID.randomUUID().toString();
+            }
+
+            stmt.setString(PARAM_ID, commentId);
+            stmt.setString(PARAM_MARKET_ID, comment.getMarketId());
+            stmt.setString(PARAM_USER_ID, comment.getUsername());
+            stmt.setString(PARAM_CONTENT, comment.getMessage());
+            stmt.setTimestamp(PARAM_CREATED_AT, Timestamp.valueOf(comment.getTimestamp()));
 
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace(); // replace with proper logging
+        }
+        catch (SQLException event) {
+            event.printStackTrace();
         }
     }
 
     @Override
     public List<Comment> getCommentsForMarket(String marketId) {
-        String sql = "SELECT id, market_id, user_id, content, created_at FROM comments WHERE market_id = ? ORDER BY created_at ASC";
-        List<Comment> comments = new ArrayList<>();
+        final String sql =
+            "SELECT id, market_id, user_id, content, created_at "
+                + "FROM comments "
+                + "WHERE market_id = ? "
+                + "ORDER BY created_at ASC";
+        final List<Comment> comments = new ArrayList<>();
 
         try (Connection conn = clientFactory.createConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, marketId);
-            ResultSet rs = stmt.executeQuery();
+            final ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Comment comment = new Comment(
+                final Comment comment = new Comment(
                     rs.getString("id"),
                     rs.getString("market_id"),
                     rs.getString("user_id"),
@@ -62,8 +86,9 @@ public class SupabaseCommentRepository implements CommentRepository {
                 );
                 comments.add(comment);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }
+        catch (SQLException event) {
+            event.printStackTrace();
         }
 
         return comments;
