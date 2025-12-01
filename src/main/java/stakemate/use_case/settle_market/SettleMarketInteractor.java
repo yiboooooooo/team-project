@@ -35,16 +35,16 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
         this.presenter = presenter;
     }
 
-
     @Override
     public void execute(final SettleMarketRequestModel requestModel) {
         final String marketId = requestModel.getMarketId();
-        final boolean homeWon = requestModel.isHomeTeamWon(); // Get the outcome
+        final boolean homeWon = requestModel.isHomeTeamWon();
 
         final List<Bet> bets = betRepository.findByMarketId(marketId);
         if (bets == null || bets.isEmpty()) {
             presenter.presentFailure("No bets found for this market ");
-        } else {
+        }
+        else {
             settleBets(marketId, bets, homeWon);
         }
     }
@@ -52,16 +52,19 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
     private void settleBets(String marketId, List<Bet> bets, boolean homeWon) {
         int settledCount = 0;
         double totalPayout = 0.0;
-        StringBuilder summary = new StringBuilder("Settlement Results:\n");
+        final StringBuilder summary = new StringBuilder("Settlement Results:\n");
 
         for (final Bet bet : bets) {
             final User user = accountRepository.findByUsername(bet.getUsername());
-            if (user == null) continue;
+            if (user == null) {
+                continue;
+            }
 
             boolean isWinner = false;
             if (bet.getSide() == stakemate.entity.Side.BUY && homeWon) {
                 isWinner = true;
-            } else if (bet.getSide() == stakemate.entity.Side.SELL && !homeWon) {
+            }
+            else if (bet.getSide() == stakemate.entity.Side.SELL && !homeWon) {
                 isWinner = true;
             }
 
@@ -74,7 +77,7 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
                 totalPayout += payout;
             }
 
-            Bet settledBet = new Bet(
+            final Bet settledBet = new Bet(
                 bet.getUsername(),
                 bet.getMarketId(),
                 bet.getSide(),
@@ -89,18 +92,26 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
             saveSettlementRecord(marketId, settledBet, payout, isWinner);
             betRepository.save(settledBet);
 
+            final double cost = bet.getStake() * bet.getPrice();
+            final double netResult;
+            final String status;
 
-            double cost = bet.getStake() * bet.getPrice();
-            double netResult = isWinner ? (payout - cost) : -cost;
+            if (isWinner) {
+                netResult = payout - cost;
+                status = "WON";
+            }
+            else {
+                netResult = -cost;
+                status = "LOST";
+            }
 
             summary.append(String.format("- %s: %s ($%.2f)\n",
                 bet.getUsername(),
-                isWinner ? "WON" : "LOST",
+                status,
                 netResult));
 
             settledCount++;
         }
-
 
         final SettleMarketResponseModel response =
             new SettleMarketResponseModel(marketId, settledCount, totalPayout, summary.toString());
@@ -111,7 +122,7 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
     private double calculatePayout(Bet bet, boolean won) {
         final double payout;
         if (won) {
-            payout = bet.getStake() * (1 - bet.getPrice()) + bet.getPrice()*bet.getStake();
+            payout = bet.getStake() * (1 - bet.getPrice()) + bet.getPrice() * bet.getStake();
         }
         else {
             payout = 0;
