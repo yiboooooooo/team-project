@@ -95,7 +95,7 @@ public final class StakeMateApp {
 
     /**
      * Gets the Account Repository.
-     * 
+     *
      * @return The in-memory account repository.
      */
     public static InMemoryAccountRepository getAccountRepo() {
@@ -104,7 +104,7 @@ public final class StakeMateApp {
 
     /**
      * Gets the Bet Repository.
-     * 
+     *
      * @return The in-memory bet repository.
      */
     public static InMemoryBetRepository getBetRepo() {
@@ -143,7 +143,7 @@ public final class StakeMateApp {
 
     /**
      * The main entry point of the application.
-     * 
+     *
      * @param args Command line arguments.
      */
     // -@cs[UncommentedMain] Main entry point is required for the application
@@ -212,7 +212,8 @@ public final class StakeMateApp {
         if (apiKey == null || apiKey.isEmpty()) {
             System.err.println("WARNING: ODDS_API_KEY not set. Creating interactor with null gateway.");
             interactor = new FetchGamesInteractor(null, new OddsApiResponseAdapter(), gameRepo, presenter);
-        } else {
+        }
+        else {
             final OddsApiGatewayImpl apiGateway = new OddsApiGatewayImpl(apiKey);
             final OddsApiResponseAdapter responseAdapter = new OddsApiResponseAdapter();
             interactor = new FetchGamesInteractor(apiGateway, responseAdapter, gameRepo, presenter);
@@ -344,7 +345,8 @@ public final class StakeMateApp {
                 }
                 reader.close();
             }
-        } catch (final IOException ex) {
+        }
+        catch (final IOException ex) {
             System.err.println("Warning: Could not read .env file: " + ex.getMessage());
         }
     }

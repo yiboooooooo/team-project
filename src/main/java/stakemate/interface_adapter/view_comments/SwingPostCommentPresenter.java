@@ -1,11 +1,10 @@
 package stakemate.interface_adapter.view_comments;
 
+import javax.swing.SwingUtilities;
+
 import stakemate.use_case.comments.post.PostCommentOutputBoundary;
 import stakemate.use_case.comments.post.PostCommentOutputData;
 import stakemate.view.CommentsPanel;
-import stakemate.interface_adapter.view_comments.ViewCommentsController;
-
-import javax.swing.*;
 
 public class SwingPostCommentPresenter implements PostCommentOutputBoundary {
 
@@ -21,17 +20,19 @@ public class SwingPostCommentPresenter implements PostCommentOutputBoundary {
 
     @Override
     public void present(PostCommentOutputData outputData) {
-        SwingUtilities.invokeLater(() -> {
-            if (outputData.isSuccess()) {
-                commentsPanel.clearInput();
-                commentsPanel.showMessage(outputData.getMessage());
+        SwingUtilities.invokeLater(() -> handlePresentation(outputData));
+    }
 
-                // >>> AUTO REFRESH COMMENTS
-                viewCommentsController.fetchComments(outputData.getMarketId());
+    private void handlePresentation(PostCommentOutputData outputData) {
+        if (outputData.isSuccess()) {
+            commentsPanel.clearInput();
+            commentsPanel.showMessage(outputData.getMessage());
 
-            } else {
-                commentsPanel.showMessage("Failed: " + outputData.getMessage());
-            }
-        });
+            // AUTO REFRESH COMMENTS
+            viewCommentsController.fetchComments(outputData.getMarketId());
+        }
+        else {
+            commentsPanel.showMessage("Failed: " + outputData.getMessage());
+        }
     }
 }

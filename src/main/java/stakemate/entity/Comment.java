@@ -21,7 +21,12 @@ public class Comment {
         this.marketId = marketId;
         this.username = username;
         this.message = message;
-        this.timestamp = timestamp != null ? timestamp : LocalDateTime.now();
+        if (timestamp != null) {
+            this.timestamp = timestamp;
+        }
+        else {
+            this.timestamp = LocalDateTime.now();
+        }
     }
 
     // --- Getters ---

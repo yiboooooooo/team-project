@@ -1,12 +1,13 @@
 package stakemate.interface_adapter.view_comments;
 
+import java.util.List;
+
+import javax.swing.SwingUtilities;
+
 import stakemate.entity.Comment;
 import stakemate.use_case.comments.view.ViewCommentsOutputBoundary;
 import stakemate.use_case.comments.view.ViewCommentsOutputData;
 import stakemate.view.CommentsPanel;
-
-import javax.swing.*;
-import java.util.List;
 
 public class SwingViewCommentsPresenter implements ViewCommentsOutputBoundary {
 
@@ -19,7 +20,7 @@ public class SwingViewCommentsPresenter implements ViewCommentsOutputBoundary {
     @Override
     public void present(ViewCommentsOutputData outputData) {
         SwingUtilities.invokeLater(() -> {
-            List<Comment> comments = outputData.getComments();
+            final List<Comment> comments = outputData.getComments();
             commentsPanel.setComments(comments);
         });
     }
