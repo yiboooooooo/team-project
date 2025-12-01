@@ -32,12 +32,12 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
     private final JLabel balanceLabel = new JLabel("Balance: -");
     private final JLabel pnlLabel = new JLabel("PnL: 0");
     private final String[] openColumns = {
-            "Market Name", "Team", "Buy Price", "Size", "Buy Amt ($)", "Profit if Won ($)"
+            "Market Name", "Team", "Buy Price", "Size", "Buy Amt", "Profit if Won"
     };
     private final DefaultTableModel openModel = new DefaultTableModel(openColumns, 0);
     private final JTable openTable = new JTable(openModel);
     private final String[] historyColumns = {
-            "Market Name", "Team", "Buy Price", "Size", "Profit ($)"
+            "Market Name", "Team", "Buy Price", "Size", "Profit"
     };
     private final DefaultTableModel historyModel = new DefaultTableModel(historyColumns, 0);
     private final JTable historyTable = new JTable(historyModel);
@@ -111,6 +111,14 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
         openSortPanel.add(sortOpenDateBtn);
         openSortPanel.add(sortOpenSizeBtn);
 
+        // Center align columns for Open Table
+        final javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        openTable.setDefaultRenderer(Object.class, centerRenderer);
+        // Also center headers
+        ((javax.swing.table.DefaultTableCellRenderer) openTable.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(JLabel.CENTER);
+
         openPanel.add(openSortPanel, BorderLayout.NORTH);
         openPanel.add(new JScrollPane(openTable), BorderLayout.CENTER);
         final JPanel historyPanel = new JPanel(new BorderLayout());
@@ -120,6 +128,12 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
         historySortPanel.add(new JLabel("Sort by: "));
         historySortPanel.add(sortHistoryDateBtn);
         historySortPanel.add(sortHistorySizeBtn);
+
+        // Center align columns for History Table
+        historyTable.setDefaultRenderer(Object.class, centerRenderer);
+        // Also center headers
+        ((javax.swing.table.DefaultTableCellRenderer) historyTable.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(JLabel.CENTER);
 
         historyPanel.add(historySortPanel, BorderLayout.NORTH);
         historyPanel.add(new JScrollPane(historyTable), BorderLayout.CENTER);
@@ -171,17 +185,48 @@ public class ProfileFrame extends JFrame implements PropertyChangeListener {
                 });
     }
 
+    private javax.swing.Timer autoRefreshTimer;
+
+    private void initAutoRefresh() {
+        // Refresh every 3 seconds
+        autoRefreshTimer = new javax.swing.Timer(3000, e -> {
+            if (isVisible() && viewModel != null && controller != null) {
+                final String username = viewModel.getState().getUsername();
+                if (username != null && !username.isEmpty()) {
+                    controller.execute(username, currentOpenSort, currentHistoricalSort);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void setVisible(final boolean b) {
+        super.setVisible(b);
+        if (b) {
+            if (autoRefreshTimer == null) {
+                initAutoRefresh();
+            }
+            autoRefreshTimer.start();
+        } else {
+            if (autoRefreshTimer != null) {
+                autoRefreshTimer.stop();
+            }
+        }
+    }
+
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         final ProfileState state = (ProfileState) evt.getNewValue();
         if (state.getError() != null) {
-            JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
+            // Don't show error dialog on auto-refresh to avoid spamming user
+            // JOptionPane.showMessageDialog(this, state.getError(), "Error",
+            // JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         usernameLabel.setText("Username: " + state.getUsername());
-        balanceLabel.setText("Balance: " + state.getBalance());
-        pnlLabel.setText("PnL: " + state.getPnl());
+        balanceLabel.setText(String.format("Balance: $%.2f", state.getBalance()));
+        pnlLabel.setText(String.format("PnL: $%.2f", state.getPnl()));
 
         updateTable(openModel, state.getOpenPositions());
         updateTable(historyModel, state.getHistoricalPositions());

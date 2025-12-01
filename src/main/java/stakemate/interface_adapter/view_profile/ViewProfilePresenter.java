@@ -34,14 +34,14 @@ public class ViewProfilePresenter implements ViewProfileOutputBoundary {
         for (final Bet bet : outputData.getOpenPositions()) {
             final String marketName = bet.getMarketId();
             final String team = bet.getTeamName();
-            final String buyPrice = String.format("%.2f", bet.getPrice());
-            final String size = String.format("%.0f", bet.getStake());
+            final String buyPrice = String.format("$%.2f", bet.getPrice());
+            final String size = String.format("%.2f", bet.getStake());
 
             final double buyAmtVal = bet.getPrice() * bet.getStake();
-            final String buyAmt = String.format("%.2f", buyAmtVal);
+            final String buyAmt = String.format("$%.2f", buyAmtVal);
 
             final double potentialProfitVal = (1.0 - bet.getPrice()) * bet.getStake();
-            final String potentialProfit = String.format("%.2f", potentialProfitVal);
+            final String potentialProfit = String.format("$%.2f", potentialProfitVal);
 
             openPositions.add(new String[] {
                     marketName, team, buyPrice, size, buyAmt, potentialProfit
@@ -54,8 +54,8 @@ public class ViewProfilePresenter implements ViewProfileOutputBoundary {
         for (final Bet bet : outputData.getHistoricalPositions()) {
             final String marketName = bet.getMarketId();
             final String team = bet.getTeamName();
-            final String buyPrice = String.format("%.2f", bet.getPrice());
-            final String size = String.format("%.0f", bet.getStake());
+            final String buyPrice = String.format("$%.2f", bet.getPrice());
+            final String size = String.format("%.2f", bet.getStake());
 
             double profitVal = 0.0;
             if (Boolean.TRUE.equals(bet.isWon())) {
@@ -63,7 +63,7 @@ public class ViewProfilePresenter implements ViewProfileOutputBoundary {
             } else {
                 profitVal = -1.0 * bet.getPrice() * bet.getStake();
             }
-            final String profit = String.format("%.2f", profitVal);
+            final String profit = String.format("$%.2f", profitVal);
 
             historicalPositions.add(new String[] {
                     marketName, team, buyPrice, size, profit

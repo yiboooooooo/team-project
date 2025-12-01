@@ -1,0 +1,210 @@
+@startuml stakemate_view_profile_design
+
+' Layout adjustments
+skinparam packageStyle rectangle
+skinparam nodesep 50
+skinparam ranksep 50
+
+package stakemate.entity {
+    class User {
+        - String username
+        - String password
+        - int balance
+        + User(String, String, int)
+        + getUsername(): String
+        + getPassword(): String
+        + getBalance(): int
+        + setBalance(int): void
+    }
+}
+
+package stakemate.use_case.settle_market {
+    class Bet {
+        - String username
+        - String marketId
+        - Side side
+        - double stake
+        - double price
+        - Boolean won
+        - Boolean settled
+        - String teamName
+        - Instant updatedAt
+        + Bet(...)
+        + getUsername(): String
+        + getMarketId(): String
+        + getSide(): Side
+        + getStake(): double
+        + getPrice(): double
+        + isWon(): Boolean
+        + isSettled(): Boolean
+        + getTeamName(): String
+        + getUpdatedAt(): Instant
+    }
+}
+
+package stakemate.use_case.view_profile {
+    enum SortCriteria {
+        DATE
+        SIZE
+    }
+
+    interface ViewProfileInputBoundary {
+        + execute(ViewProfileInputData): void
+    }
+
+    class ViewProfileInputData {
+        - String username
+        - BetComparator openSortStrategy
+        - BetComparator historicalSortStrategy
+        + ViewProfileInputData(String, BetComparator, BetComparator)
+        + getUsername(): String
+        + getOpenSortStrategy(): BetComparator
+        + getHistoricalSortStrategy(): BetComparator
+    }
+
+    interface ViewProfileOutputBoundary {
+        + presentProfile(ViewProfileOutputData): void
+        + presentError(String): void
+    }
+
+    class ViewProfileOutputData {
+        - String username
+        - double balance
+        - double pnl
+        - List<Bet> openPositions
+        - List<Bet> historicalPositions
+        + ViewProfileOutputData(...)
+        + getUsername(): String
+        + getBalance(): double
+        + getPnl(): double
+        + getOpenPositions(): List<Bet>
+        + getHistoricalPositions(): List<Bet>
+    }
+
+    interface ViewProfileUserDataAccessInterface {
+        + getByUsername(String): User
+        + getPositionsByUsername(String): List<Bet>
+    }
+
+    class ViewProfileInteractor {
+        - ViewProfileUserDataAccessInterface userDataAccess
+        - ViewProfileOutputBoundary outputBoundary
+        + ViewProfileInteractor(ViewProfileUserDataAccessInterface, ViewProfileOutputBoundary)
+        + execute(ViewProfileInputData): void
+    }
+
+    package strategy {
+        interface BetComparator {
+        }
+        class DateBetComparator {
+            + compare(Bet, Bet): int
+        }
+        class SizeBetComparator {
+            + compare(Bet, Bet): int
+        }
+    }
+
+    ViewProfileInteractor ..|> ViewProfileInputBoundary
+    ViewProfileInteractor --> ViewProfileUserDataAccessInterface
+    ViewProfileInteractor --> ViewProfileOutputBoundary
+    DateBetComparator ..|> BetComparator
+    SizeBetComparator ..|> BetComparator
+
+    ' Internal Layout: Horizontal Flow
+    ViewProfileInputBoundary -[hidden]right-> ViewProfileInteractor
+    ViewProfileInteractor -[hidden]right-> ViewProfileOutputBoundary
+    
+    ' Place Data Access below Interactor
+    ViewProfileInteractor -[hidden]down-> ViewProfileUserDataAccessInterface
+
+    ' Data objects below their respective interfaces/classes
+    ViewProfileInputBoundary -[hidden]down-> ViewProfileInputData
+    ViewProfileOutputBoundary -[hidden]down-> ViewProfileOutputData
+}
+
+package stakemate.interface_adapter.view_profile {
+    class ViewProfileController {
+        - ViewProfileInputBoundary interactor
+        + ViewProfileController(ViewProfileInputBoundary)
+        + execute(String, SortCriteria, SortCriteria): void
+        + execute(String): void
+    }
+
+    class ProfileState {
+        - String username
+        - double balance
+        - double pnl
+        - List<String[]> openPositions
+        - List<String[]> historicalPositions
+        - String error
+        + getUsername(): String
+        + getBalance(): double
+        + getPnl(): double
+        + getOpenPositions(): List<String[]>
+        + getHistoricalPositions(): List<String[]>
+        + getError(): String
+    }
+
+    class ProfileViewModel {
+        - PropertyChangeSupport support
+        - ProfileState state
+        + getState(): ProfileState
+        + setState(ProfileState): void
+        + addPropertyChangeListener(PropertyChangeListener): void
+    }
+
+    class ViewProfilePresenter {
+        - ProfileViewModel viewModel
+        + ViewProfilePresenter(ProfileViewModel)
+        + presentProfile(ViewProfileOutputData): void
+        + presentError(String): void
+    }
+
+    ViewProfilePresenter ..|> ViewProfileOutputBoundary
+    ViewProfilePresenter --> ProfileViewModel
+    ViewProfileController --> ViewProfileInputBoundary
+
+    ' Dependencies for Data structures
+    ViewProfileController ..> ViewProfileInputData : creates
+    ViewProfileController ..> SortCriteria : uses
+    ViewProfileInputBoundary ..> ViewProfileInputData : uses
+    ViewProfileInteractor ..> ViewProfileInputData : uses
+    
+    ViewProfileInteractor ..> ViewProfileOutputData : creates
+    ViewProfileOutputBoundary ..> ViewProfileOutputData : uses
+    ViewProfilePresenter ..> ViewProfileOutputData : uses
+
+    ' Dependencies for Entities
+    ViewProfileUserDataAccessInterface ..> User : returns
+    ViewProfileUserDataAccessInterface ..> Bet : returns
+    ViewProfileInteractor ..> User : uses
+    ViewProfileInteractor ..> Bet : uses
+    ViewProfileOutputData --> Bet : contains
+
+    ' Internal layout for Interface Adapter: Horizontal Flow
+    ViewProfileController -[hidden]right-> ViewProfilePresenter
+    ViewProfilePresenter -[hidden]right-> ProfileViewModel
+    ProfileState -[hidden]up-> ProfileViewModel
+}
+
+package stakemate.view {
+    class ProfileFrame {
+        - ViewProfileController controller
+        - ProfileViewModel viewModel
+        + setController(ViewProfileController): void
+        + setViewModel(ProfileViewModel): void
+    }
+
+    ProfileFrame --> ViewProfileController
+    ProfileFrame --> ProfileViewModel
+}
+
+' Enforce Horizontal / Widescreen Layout (16:9)
+' Main Flow: View -> Interface Adapter -> Use Case (Left to Right)
+ProfileFrame -[hidden]right-> ViewProfileController
+ViewProfilePresenter -[hidden]right-> ViewProfileInputBoundary
+
+' Entity below Use Case
+ViewProfileInteractor -[hidden]down-> User
+
+@enduml
