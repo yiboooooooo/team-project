@@ -2,6 +2,7 @@ package stakemate.interface_adapter.view_comments;
 
 import stakemate.use_case.comments.post.PostCommentOutputBoundary;
 import stakemate.use_case.comments.post.PostCommentOutputData;
+import stakemate.view.CommentInputPanel;
 import stakemate.view.CommentsPanel;
 import stakemate.interface_adapter.view_comments.ViewCommentsController;
 
@@ -29,7 +30,8 @@ public class SwingPostCommentPresenter implements PostCommentOutputBoundary {
                 // >>> AUTO REFRESH COMMENTS
                 viewCommentsController.fetchComments(outputData.getMarketId());
 
-            } else {
+            }
+            else {
                 commentsPanel.showMessage("Failed: " + outputData.getMessage());
             }
         });
