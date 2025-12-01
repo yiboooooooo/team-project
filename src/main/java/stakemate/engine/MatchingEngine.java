@@ -136,23 +136,28 @@ public class MatchingEngine {
             if (!crosses(incoming, resting))
                 continue;
 
-            // --- Dynamic Funds Check for Resting Market Order ---
-            if (resting.isMarket()) {
-                // We are about to match 'resting' (Market) with 'incoming' (Limit).
-                // Price is determined by 'incoming' (Limit) because resting is Market?
-                // Wait, if resting is Market, it takes the price of the Limit order it matches
-                // with.
-                // If incoming is Limit, matchPrice is incoming.getPrice().
+            // --- Calculate execution price for funds check ---
+            Double restPriceObj = resting.getPrice();
+            Double inPriceObj = incoming.getPrice();
+            double executionPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0;
+            double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
+            double matchCost = potentialMatchSize * executionPrice;
 
-                Double matchPrice = incoming.getPrice(); // Must be limit if resting is market
-                if (matchPrice == null)
-                    continue; // Should not happen if incoming is limit
+            // --- Dynamic Funds Check for Incoming Order (BUY side only) ---
+            if (incoming.getSide() == Side.BUY) {
+                double incomingBalance = accountService.getBalance(incoming.getUserId());
+                if (incomingBalance < matchCost) {
+                    // Insufficient funds for this match -> Cancel incoming order
+                    orderRepo.updateRemainingQty(incoming.getId(), 0.0);
+                    incoming.reduce(incoming.getRemainingQty());
+                    break; // Exit matching loop
+                }
+            }
 
-                double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
-                double cost = potentialMatchSize * matchPrice;
-
+            // --- Dynamic Funds Check for Resting Order (BUY side only) ---
+            if (resting.getSide() == Side.BUY) {
                 double restingBalance = accountService.getBalance(resting.getUserId());
-                if (restingBalance < cost) {
+                if (restingBalance < matchCost) {
                     // Insufficient funds for this match -> Cancel resting order
                     orderRepo.updateRemainingQty(resting.getId(), 0.0);
                     resting.reduce(resting.getRemainingQty());
@@ -181,14 +186,6 @@ public class MatchingEngine {
             // Save positions with the ratio stored in the price column
             positionRepo.savePosition(buyOrder, executedSize, buyRatio);
             positionRepo.savePosition(sellOrder, executedSize, sellRatio);
-
-            // --------- Compute execution price for balances / trades ---------
-            Double restPriceObj = resting.getPrice();
-            Double inPriceObj = incoming.getPrice();
-            double executedPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0; // fallback
-                                                                                                                    // for
-                                                                                                                    // true
-                                                                                                                    // market/market
 
             // --------- Update remaining_qty in DB ---------
             orderRepo.reduceRemainingQty(incoming.getId(), executedSize);
