@@ -43,7 +43,7 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
 
         final List<Bet> bets = betRepository.findByMarketId(marketId);
         if (bets == null || bets.isEmpty()) {
-            presenter.presentFailure("No bets found for market " + marketId);
+            presenter.presentFailure("No bets found for this market ");
         } else {
             settleBets(marketId, bets, homeWon);
         }
