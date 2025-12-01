@@ -96,7 +96,10 @@ public class MatchingEngine {
                 double matchPrice = p;
 
                 simulatedFilled += matchSize;
-                simulatedCost += matchSize * matchPrice;
+                // In prediction market: BUY pays price, SELL pays (1-price)
+                double matchCost = incoming.getSide() == Side.BUY ? matchSize * matchPrice
+                        : matchSize * (1.0 - matchPrice);
+                simulatedCost += matchCost;
                 tempRemaining -= matchSize;
             }
 
@@ -122,6 +125,50 @@ public class MatchingEngine {
             }
         }
 
+        // --- Limit Order Pre-Check (for both BUY and SELL) ---
+        // Simulate upfront cost for incoming limit orders to avoid balance issues
+        // during matching
+        // In prediction market: BUY pays price*size, SELL pays (1-price)*size
+        if (!incoming.isMarket()) {
+            double simulatedCost = 0;
+            double tempRemaining = incomingRemaining;
+
+            for (BookOrder resting : opposite) {
+                if (tempRemaining <= 0)
+                    break;
+                if (resting.getRemainingQty() <= 0)
+                    continue;
+                if (incoming.isMarket() && resting.isMarket())
+                    continue;
+
+                // Calculate execution price
+                Double restPrice = resting.getPrice();
+                Double inPrice = incoming.getPrice();
+                double execPrice = (restPrice != null) ? restPrice : (inPrice != null) ? inPrice : 1.0;
+
+                // Check if it crosses
+                if (inPrice != null && restPrice != null && inPrice < restPrice)
+                    break; // No more matches possible
+
+                double matchSize = Math.min(tempRemaining, resting.getRemainingQty());
+                // Calculate cost based on side: BUY pays price, SELL pays (1-price)
+                double cost = incoming.getSide() == Side.BUY ? matchSize * execPrice : matchSize * (1.0 - execPrice);
+                simulatedCost += cost;
+                tempRemaining -= matchSize;
+            }
+
+            // Check if user has enough balance for all potential matches
+            if (simulatedCost > 0) {
+                double balance = accountService.getBalance(incoming.getUserId());
+                if (balance < simulatedCost) {
+                    // Cancel order (insufficient funds for immediate matches)
+                    orderRepo.updateRemainingQty(incoming.getId(), 0.0);
+                    incoming.reduce(incoming.getRemainingQty());
+                    return executedTrades;
+                }
+            }
+        }
+
         for (BookOrder resting : opposite) {
 
             if (incomingRemaining <= 0)
@@ -136,28 +183,25 @@ public class MatchingEngine {
             if (!crosses(incoming, resting))
                 continue;
 
-            // --- Dynamic Funds Check for Resting Market Order ---
-            if (resting.isMarket()) {
-                // We are about to match 'resting' (Market) with 'incoming' (Limit).
-                // Price is determined by 'incoming' (Limit) because resting is Market?
-                // Wait, if resting is Market, it takes the price of the Limit order it matches
-                // with.
-                // If incoming is Limit, matchPrice is incoming.getPrice().
+            // --- Calculate execution price for trade ---
+            Double restPriceObj = resting.getPrice();
+            Double inPriceObj = incoming.getPrice();
+            double executionPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0;
+            double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
+            double matchCost = potentialMatchSize * executionPrice;
 
-                Double matchPrice = incoming.getPrice(); // Must be limit if resting is market
-                if (matchPrice == null)
-                    continue; // Should not happen if incoming is limit
+            // --- Dynamic Funds Check for Resting Order ---
+            // (Incoming order was already checked upfront)
+            // In prediction market, both BUY and SELL need funds
+            double restingCost = resting.getSide() == Side.BUY ? matchCost
+                    : potentialMatchSize * (1.0 - executionPrice);
 
-                double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
-                double cost = potentialMatchSize * matchPrice;
-
-                double restingBalance = accountService.getBalance(resting.getUserId());
-                if (restingBalance < cost) {
-                    // Insufficient funds for this match -> Cancel resting order
-                    orderRepo.updateRemainingQty(resting.getId(), 0.0);
-                    resting.reduce(resting.getRemainingQty());
-                    continue; // Skip this resting order
-                }
+            double restingBalance = accountService.getBalance(resting.getUserId());
+            if (restingBalance < restingCost) {
+                // Insufficient funds for this match -> Cancel resting order
+                orderRepo.updateRemainingQty(resting.getId(), 0.0);
+                resting.reduce(resting.getRemainingQty());
+                continue; // Skip this resting order
             }
             // ---------------------------------------------------
 
@@ -168,27 +212,11 @@ public class MatchingEngine {
             BookOrder buyOrder = (incoming.getSide() == Side.BUY) ? incoming : resting;
             BookOrder sellOrder = (incoming.getSide() == Side.SELL) ? incoming : resting;
 
-            // --------- Compute position "price" as quantity ratios ---------
-            double buyQty = buyOrder.getOriginalQty();
-            double sellQty = sellOrder.getOriginalQty();
-            double totalQty = buyQty + sellQty;
-            if (totalQty <= 0) {
-                totalQty = 1.0; // safety
-            }
-            double buyRatio = buyQty / totalQty;
-            double sellRatio = sellQty / totalQty;
-
-            // Save positions with the ratio stored in the price column
-            positionRepo.savePosition(buyOrder, executedSize, buyRatio);
-            positionRepo.savePosition(sellOrder, executedSize, sellRatio);
-
-            // --------- Compute execution price for balances / trades ---------
-            Double restPriceObj = resting.getPrice();
-            Double inPriceObj = incoming.getPrice();
-            double executedPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0; // fallback
-                                                                                                                    // for
-                                                                                                                    // true
-                                                                                                                    // market/market
+            // --------- Save positions with execution prices ---------
+            // Buy order: save at execution price
+            // Sell order: save at (1 - execution price)
+            positionRepo.savePosition(buyOrder, executedSize, executionPrice);
+            positionRepo.savePosition(sellOrder, executedSize, 1.0 - executionPrice);
 
             // --------- Update remaining_qty in DB ---------
             orderRepo.reduceRemainingQty(incoming.getId(), executedSize);
@@ -204,7 +232,7 @@ public class MatchingEngine {
                     incoming.getMarketId(),
                     buyOrder.getId(),
                     sellOrder.getId(),
-                    executedPrice,
+                    executionPrice,
                     executedSize);
             accountService.applyTrade(buyOrder, sellOrder, trade);
             executedTrades.add(trade);

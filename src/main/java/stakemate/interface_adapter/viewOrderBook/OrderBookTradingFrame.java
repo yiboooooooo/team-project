@@ -24,7 +24,10 @@ public class OrderBookTradingFrame extends JFrame {
 
     private final PlaceOrderUseCase placeOrderUseCase;
     private final String currentUserId;
+    private final String currentUsername;
     private String currentMarketId;
+    private final String teamAName;
+    private final String teamBName;
 
     private final JLabel statusLabel = new JLabel(" ");
     private final JLabel lastTradeLabel = new JLabel("Last: -   Spread: -");
@@ -34,6 +37,7 @@ public class OrderBookTradingFrame extends JFrame {
     private final DefaultTableModel openOrdersModel;
 
     private final JTextField marketField = new JTextField(10);
+    private final JComboBox<String> teamCombo;
     private final JComboBox<Side> sideCombo = new JComboBox<>(Side.values());
     private final JComboBox<String> orderTypeCombo = new JComboBox<>(new String[] { "Limit", "Market" });
     private final JTextField priceField = new JTextField(6);
@@ -41,12 +45,21 @@ public class OrderBookTradingFrame extends JFrame {
 
     public OrderBookTradingFrame(PlaceOrderUseCase placeOrderUseCase,
             String currentUserId,
-            String initialMarketId) {
+            String currentUsername,
+            String initialMarketId,
+            String teamAName,
+            String teamBName) {
         super("StakeMate – Order Book");
 
         this.placeOrderUseCase = placeOrderUseCase;
         this.currentUserId = currentUserId;
+        this.currentUsername = currentUsername;
         this.currentMarketId = initialMarketId;
+        this.teamAName = teamAName != null ? teamAName : "Team A";
+        this.teamBName = teamBName != null ? teamBName : "Team B";
+
+        // Initialize team combo with actual team names
+        this.teamCombo = new JComboBox<>(new String[] { this.teamAName, this.teamBName });
 
         // ---- window basics ----
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -60,7 +73,7 @@ public class OrderBookTradingFrame extends JFrame {
 
         // ================== TOP BAR ==================
         JPanel topBar = new JPanel(new BorderLayout());
-        JLabel userLabel = new JLabel(" User: " + currentUserId);
+        JLabel userLabel = new JLabel(" User: " + currentUsername);
         userLabel.setFont(userLabel.getFont().deriveFont(Font.BOLD, 14f));
 
         JPanel topRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 5));
@@ -141,11 +154,15 @@ public class OrderBookTradingFrame extends JFrame {
         orderEntry.setLayout(new BoxLayout(orderEntry, BoxLayout.Y_AXIS));
         orderEntry.setBorder(BorderFactory.createTitledBorder("Place Order"));
 
-        // Row 1: order type + side
+        // Row 1: order type + team + side
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 3));
         row1.add(new JLabel("Type:"));
         orderTypeCombo.setPreferredSize(new Dimension(90, 24));
         row1.add(orderTypeCombo);
+        row1.add(Box.createHorizontalStrut(10));
+        row1.add(new JLabel("Team:"));
+        teamCombo.setPreferredSize(new Dimension(90, 24));
+        row1.add(teamCombo);
         row1.add(Box.createHorizontalStrut(10));
         row1.add(new JLabel("Side:"));
         sideCombo.setPreferredSize(new Dimension(90, 24));
@@ -222,6 +239,9 @@ public class OrderBookTradingFrame extends JFrame {
 
         placeBtn.addActionListener(e -> placeOrder());
 
+        // Team selector change - refresh order book to swap perspective
+        teamCombo.addActionListener(e -> refreshOrderBook());
+
         // initial load
         refreshAll();
     }
@@ -234,7 +254,10 @@ public class OrderBookTradingFrame extends JFrame {
                 return;
             }
 
-            Side side = (Side) sideCombo.getSelectedItem();
+            // Determine actual side based on team selection and UI side selector
+            Side uiSide = (Side) sideCombo.getSelectedItem();
+            String team = (String) teamCombo.getSelectedItem();
+            Side side = getActualSide(uiSide, team);
 
             String qtyText = qtyField.getText().trim();
             if (qtyText.isEmpty()) {
@@ -252,7 +275,11 @@ public class OrderBookTradingFrame extends JFrame {
                     setStatus("Price is required for limit orders.");
                     return;
                 }
-                price = Double.parseDouble(priceText);
+                double uiPrice = Double.parseDouble(priceText);
+
+                // Convert Team B price to Team A price using 1 - price
+                boolean isTeamB = teamBName.equals(team);
+                price = isTeamB ? (1.0 - uiPrice) : uiPrice;
             } else {
                 // Market order -> price left null; matching engine treats null as market
                 price = null;
@@ -296,13 +323,61 @@ public class OrderBookTradingFrame extends JFrame {
         bidsModel.setRowCount(0);
         asksModel.setRowCount(0);
 
-        for (OrderBookEntry e : ob.getAsks()) {
-            Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
-            asksModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
+        String team = (String) teamCombo.getSelectedItem();
+        boolean isTeamB = teamBName.equals(team);
+
+        // For Team B, swap the display and transform prices using 1 - price
+        if (isTeamB) {
+            // Team B perspective: Team A's bids become Team B's asks with transformed price
+            // Best bid for Team B = 1 - best ask for Team A
+            for (OrderBookEntry e : ob.getBids()) {
+                Object priceDisplay;
+                if (e.getPrice() < 0) {
+                    priceDisplay = "MARKET";
+                } else {
+                    // Transform price: 1 - Team A price
+                    priceDisplay = 1.0 - e.getPrice();
+                }
+                asksModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
+            }
+            // Team B perspective: Team A's asks become Team B's bids with transformed price
+            // Best ask for Team B = 1 - best bid for Team A
+            for (OrderBookEntry e : ob.getAsks()) {
+                Object priceDisplay;
+                if (e.getPrice() < 0) {
+                    priceDisplay = "MARKET";
+                } else {
+                    // Transform price: 1 - Team A price
+                    priceDisplay = 1.0 - e.getPrice();
+                }
+                bidsModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
+            }
+        } else {
+            // Team A perspective: normal view
+            for (OrderBookEntry e : ob.getAsks()) {
+                Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
+                asksModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
+            }
+            for (OrderBookEntry e : ob.getBids()) {
+                Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
+                bidsModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
+            }
         }
-        for (OrderBookEntry e : ob.getBids()) {
-            Object priceDisplay = (e.getPrice() < 0) ? "MARKET" : e.getPrice();
-            bidsModel.addRow(new Object[] { priceDisplay, e.getQuantity() });
+    }
+
+    /**
+     * Maps the team selection and UI side selector to the actual order side.
+     * Team A: UI side matches actual side (BUY -> BUY, SELL -> SELL)
+     * Team B: UI side is opposite of actual side (BUY -> SELL, SELL -> BUY)
+     */
+    private Side getActualSide(Side uiSide, String team) {
+        boolean isTeamB = teamBName.equals(team);
+        if (isTeamB) {
+            // Swap for Team B
+            return uiSide == Side.BUY ? Side.SELL : Side.BUY;
+        } else {
+            // No swap for Team A
+            return uiSide;
         }
     }
 
