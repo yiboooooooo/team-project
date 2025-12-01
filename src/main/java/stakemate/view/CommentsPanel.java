@@ -111,7 +111,7 @@ public class CommentsPanel extends JPanel {
             final String username = marketsFrame.getCurrentUser();
 
             if (marketId == null || username == null) {
-                showMessage("Select a market and log in first.");
+                showMessage("Select a market first.");
             }
             else {
                 postController.postComment(marketId, username, text);
