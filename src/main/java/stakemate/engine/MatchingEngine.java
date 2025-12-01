@@ -21,7 +21,7 @@ import stakemate.use_case.PlaceOrderUseCase.PositionRepository;
  * matching.
  * It produces Trade objects and can render an immutable OrderBook view for UI
  * using OrderBookFactory.
- * 
+ *
  * Updated to support both In-Memory (legacy) and DB-backed (Postgres) modes.
  */
 public class MatchingEngine {
@@ -72,7 +72,6 @@ public class MatchingEngine {
         List<Trade> executedTrades = new ArrayList<>();
         double incomingRemaining = incoming.getRemainingQty();
 
-        // All opposite-side resting orders for this market, best first
         List<BookOrder> opposite = orderRepo.findOppositeSideOrders(incoming.getMarketId(), incoming.getSide());
 
         for (BookOrder resting : opposite) {
@@ -87,55 +86,39 @@ public class MatchingEngine {
             double restingRemaining = resting.getRemainingQty();
             double executedSize = Math.min(incomingRemaining, restingRemaining);
 
-            // --------- Decide who is BUY and who is SELL ---------
             BookOrder buyOrder = (incoming.getSide() == Side.BUY) ? incoming : resting;
             BookOrder sellOrder = (incoming.getSide() == Side.SELL) ? incoming : resting;
 
-            // --------- Compute position "price" as quantity ratios ---------
-            double buyQty = buyOrder.getOriginalQty();
-            double sellQty = sellOrder.getOriginalQty();
-            double totalQty = buyQty + sellQty;
-            if (totalQty <= 0) {
-                totalQty = 1.0; // safety
-            }
-            double buyRatio = buyQty / totalQty;
-            double sellRatio = sellQty / totalQty;
-
-            // Save positions with the ratio stored in the price column
-            positionRepo.savePosition(buyOrder, executedSize, buyRatio);
-            positionRepo.savePosition(sellOrder, executedSize, sellRatio);
-
-            // --------- Compute execution price for balances / trades ---------
+            // --- FIX 1: Calculate Price FIRST (Moved up) ---
             Double restPriceObj = resting.getPrice();
             Double inPriceObj = incoming.getPrice();
-            double executedPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0; // fallback
-                                                                                                                    // for
-                                                                                                                    // true
-                                                                                                                    // market/market
+            double executedPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0;
 
-            // --------- Update remaining_qty in DB ---------
+            // --- FIX 2: Save REAL PRICE to DB (Not Ratio) ---
+            positionRepo.savePosition(buyOrder, executedSize, executedPrice);
+            positionRepo.savePosition(sellOrder, executedSize, executedPrice);
+
+            // Update remaining_qty
             orderRepo.reduceRemainingQty(incoming.getId(), executedSize);
             orderRepo.reduceRemainingQty(resting.getId(), executedSize);
 
-            // Keep in-memory orders in sync (so remainingQty is correct if reused)
             incoming.reduce(executedSize);
             resting.reduce(executedSize);
             incomingRemaining -= executedSize;
 
-            // --------- Apply balances + record Trade ---------
             Trade trade = new Trade(
-                    incoming.getMarketId(),
-                    buyOrder.getId(),
-                    sellOrder.getId(),
-                    executedPrice,
-                    executedSize);
-            accountService.applyTrade(buyOrder, sellOrder, trade);
-            executedTrades.add(trade);
-            trades.add(trade); // Keep in-memory log
+                incoming.getMarketId(),
+                buyOrder.getId(),
+                sellOrder.getId(),
+                executedPrice,
+                executedSize);
 
-            // ********** IMPORTANT **********
-            // Only a single pair should be created per incoming order,
-            // so we stop after the FIRST successful match.
+            // --- FIX 3: NO BALANCE CHANGE ---
+            // accountService.applyTrade(buyOrder, sellOrder, trade); // Disabled
+
+            executedTrades.add(trade);
+            trades.add(trade);
+
             break;
         }
         return executedTrades;

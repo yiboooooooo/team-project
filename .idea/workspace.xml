@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca742551-9d9e-4d5c-a316-ba9d5f5b6210" name="Changes" comment="Rebase Use-Case-2 onto main">
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/data_access/supabase/PostgresOrderBookGateway.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/OrderBookTableModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/app/StakeMateApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/view_market/ViewMarketInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/view/MarketsFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/stakemate/use_case/view_market/ViewMarketInteractorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/engine/MatchingEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/engine/MatchingEngine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderUseCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/stakemate/use_case/PlaceOrderUseCase/PlaceOrderUseCase.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +62,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Use-Case-2",
+    "git-widget-placeholder": "FixForDemo",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -146,9 +141,9 @@
       <list>
         <item itemvalue="Application.StakeMateApp" />
         <item itemvalue="JUnit.ViewMarketInteractorTest" />
+        <item itemvalue="JUnit.stakemate.use_case in TeamProject" />
         <item itemvalue="JUnit.settle_market in TeamProject" />
         <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.stakemate.use_case in TeamProject" />
       </list>
     </recent_temporary>
   </component>
@@ -175,6 +170,7 @@
       <workItem from="1764191040328" duration="18000" />
       <workItem from="1764191066820" duration="1953000" />
       <workItem from="1764460462189" duration="6043000" />
+      <workItem from="1764538788660" duration="5072000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed all Checkstyle issues for all files involved in Use Case 2 and got rid of Refresh button on main View Markets UI in favour of auto-refresh every five seconds, and some other UI fixes in the tables (spacing, symbols, etc.).">
       <option name="closed" value="true" />
