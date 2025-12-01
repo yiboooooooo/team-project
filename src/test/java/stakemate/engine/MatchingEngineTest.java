@@ -177,6 +177,47 @@ class MatchingEngineTest {
         assertEquals(0, trades.size());
     }
 
+    @Test
+    void testLimitOrder_InsufficientFundsAtMatchTime() {
+        // 1. Place Limit Sell: 10 @ 2.0
+        BookOrder sell = createOrder("user1", Side.SELL, 2.0, 10.0);
+        orderRepo.addOrder(sell);
+
+        // 2. User has 0 funds
+        accountService.setBalance("user3", 0.0);
+
+        // 3. Place Limit Buy: 10 @ 2.0
+        BookOrder buy = createOrder("user3", Side.BUY, 2.0, 10.0);
+
+        List<Trade> trades = engine.placeOrder(buy);
+
+        // Should be 0 trades because buyer has no funds
+        assertEquals(0, trades.size());
+        // Buy order should be cancelled (remaining qty 0)
+        assertEquals(0.0, buy.getRemainingQty());
+    }
+
+    @Test
+    void testLimitOrder_SufficientFundsAtMatchTime() {
+        // 1. Place Limit Sell: 10 @ 2.0
+        BookOrder sell = createOrder("user1", Side.SELL, 2.0, 10.0);
+        orderRepo.addOrder(sell);
+
+        // 2. User has funds: 20.0
+        accountService.setBalance("user3", 20.0);
+
+        // 3. Place Limit Buy: 10 @ 2.0
+        BookOrder buy = createOrder("user3", Side.BUY, 2.0, 10.0);
+
+        List<Trade> trades = engine.placeOrder(buy);
+
+        // Should be 1 trade
+        assertEquals(1, trades.size());
+        assertEquals(10.0, trades.get(0).getSize());
+        assertEquals(2.0, trades.get(0).getPrice());
+        assertEquals(0.0, buy.getRemainingQty());
+    }
+
     // --- Helpers ---
 
     private BookOrder createOrder(String userId, Side side, Double price, double qty) {

@@ -137,26 +137,38 @@ public class MatchingEngine {
                 continue;
 
             // --- Dynamic Funds Check for Resting Market Order ---
-            if (resting.isMarket()) {
-                // We are about to match 'resting' (Market) with 'incoming' (Limit).
-                // Price is determined by 'incoming' (Limit) because resting is Market?
-                // Wait, if resting is Market, it takes the price of the Limit order it matches
-                // with.
-                // If incoming is Limit, matchPrice is incoming.getPrice().
+            // --- Dynamic Funds Check ---
+            // We need to check if the BUYER has enough funds to cover this trade.
+            // The price is determined by the resting order if it's a limit order, or
+            // incoming if resting is market.
+            // Actually, executedPrice logic is below:
+            Double restPriceObj = resting.getPrice();
+            Double inPriceObj = incoming.getPrice();
+            double executedPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0;
 
-                Double matchPrice = incoming.getPrice(); // Must be limit if resting is market
-                if (matchPrice == null)
-                    continue; // Should not happen if incoming is limit
+            double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
+            double cost = potentialMatchSize * executedPrice;
 
-                double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
-                double cost = potentialMatchSize * matchPrice;
+            // Identify the buyer
+            String buyerId = (incoming.getSide() == Side.BUY) ? incoming.getUserId() : resting.getUserId();
+            double buyerBalance = accountService.getBalance(buyerId);
 
-                double restingBalance = accountService.getBalance(resting.getUserId());
-                if (restingBalance < cost) {
-                    // Insufficient funds for this match -> Cancel resting order
+            if (buyerBalance < cost) {
+                // Insufficient funds!
+                if (incoming.getSide() == Side.BUY) {
+                    // Incoming BUYER has no funds -> Stop matching this order
+                    // We should probably cancel the remainder of the incoming order so it doesn't
+                    // rest?
+                    // Or just stop matching? If we stop, it might rest.
+                    // If we want "deduct on match", and match fails, we should probably cancel.
+                    orderRepo.updateRemainingQty(incoming.getId(), 0.0);
+                    incoming.reduce(incoming.getRemainingQty());
+                    break; // Stop matching incoming
+                } else {
+                    // Resting BUYER has no funds -> Cancel resting order
                     orderRepo.updateRemainingQty(resting.getId(), 0.0);
                     resting.reduce(resting.getRemainingQty());
-                    continue; // Skip this resting order
+                    continue; // Skip this resting order, try next
                 }
             }
             // ---------------------------------------------------

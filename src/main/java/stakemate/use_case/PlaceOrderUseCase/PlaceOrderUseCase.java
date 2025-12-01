@@ -56,16 +56,8 @@ public class PlaceOrderUseCase {
             return PlaceOrderResponse.fail("Insufficient funds");
         }
 
-        // --- DB Specific: Upfront cost deduction ---
-        if (orderRepository != null && req.price != null) {
-            double calcPrice = req.price;
-            double upfrontCost = calcPrice * req.quantity;
-
-            if (accountService instanceof stakemate.service.DbAccountService) {
-                stakemate.service.DbAccountService dbAcc = (stakemate.service.DbAccountService) accountService;
-                dbAcc.adjustBalance(req.userId, -upfrontCost);
-            }
-        }
+        // --- DB Specific: Upfront cost deduction REMOVED ---
+        // Balance deduction is now handled in MatchingEngine upon execution.
 
         // create internal order (price == null => market)
         final BookOrder incoming = new BookOrder(req.userId, req.marketId, req.side, req.price, req.quantity);
