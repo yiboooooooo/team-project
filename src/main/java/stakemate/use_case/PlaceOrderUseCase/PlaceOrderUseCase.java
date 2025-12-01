@@ -86,8 +86,17 @@ public class PlaceOrderUseCase {
             }
         }
 
-        final String msg = trades.isEmpty() ? "Order placed (no immediate trades)"
-                : String.format("Executed %d trades", trades.size());
+        String msg;
+        if (incoming.isMarket() && trades.isEmpty()) {
+            if (incoming.getRemainingQty() > 0) {
+                msg = "Market order placed (resting)";
+            } else {
+                msg = "Market order cancelled (insufficient funds)";
+            }
+        } else {
+            msg = trades.isEmpty() ? "Order placed (no immediate trades)"
+                    : String.format("Executed %d trades", trades.size());
+        }
         return PlaceOrderResponse.success(msg);
     }
 
