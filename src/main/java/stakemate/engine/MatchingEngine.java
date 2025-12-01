@@ -212,19 +212,11 @@ public class MatchingEngine {
             BookOrder buyOrder = (incoming.getSide() == Side.BUY) ? incoming : resting;
             BookOrder sellOrder = (incoming.getSide() == Side.SELL) ? incoming : resting;
 
-            // --------- Compute position "price" as quantity ratios ---------
-            double buyQty = buyOrder.getOriginalQty();
-            double sellQty = sellOrder.getOriginalQty();
-            double totalQty = buyQty + sellQty;
-            if (totalQty <= 0) {
-                totalQty = 1.0; // safety
-            }
-            double buyRatio = buyQty / totalQty;
-            double sellRatio = sellQty / totalQty;
-
-            // Save positions with the ratio stored in the price column
-            positionRepo.savePosition(buyOrder, executedSize, buyRatio);
-            positionRepo.savePosition(sellOrder, executedSize, sellRatio);
+            // --------- Save positions with execution prices ---------
+            // Buy order: save at execution price
+            // Sell order: save at (1 - execution price)
+            positionRepo.savePosition(buyOrder, executedSize, executionPrice);
+            positionRepo.savePosition(sellOrder, executedSize, 1.0 - executionPrice);
 
             // --------- Update remaining_qty in DB ---------
             orderRepo.reduceRemainingQty(incoming.getId(), executedSize);
