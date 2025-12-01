@@ -122,6 +122,47 @@ public class MatchingEngine {
             }
         }
 
+        // --- Limit Order Pre-Check (for BUY side) ---
+        // Simulate upfront cost for incoming limit BUY orders to avoid balance issues
+        // during matching
+        if (!incoming.isMarket() && incoming.getSide() == Side.BUY) {
+            double simulatedCost = 0;
+            double tempRemaining = incomingRemaining;
+
+            for (BookOrder resting : opposite) {
+                if (tempRemaining <= 0)
+                    break;
+                if (resting.getRemainingQty() <= 0)
+                    continue;
+                if (incoming.isMarket() && resting.isMarket())
+                    continue;
+
+                // Calculate execution price
+                Double restPrice = resting.getPrice();
+                Double inPrice = incoming.getPrice();
+                double execPrice = (restPrice != null) ? restPrice : (inPrice != null) ? inPrice : 1.0;
+
+                // Check if it crosses
+                if (inPrice != null && restPrice != null && inPrice < restPrice)
+                    break; // No more matches possible
+
+                double matchSize = Math.min(tempRemaining, resting.getRemainingQty());
+                simulatedCost += matchSize * execPrice;
+                tempRemaining -= matchSize;
+            }
+
+            // Check if buyer has enough balance for all potential matches
+            if (simulatedCost > 0) {
+                double balance = accountService.getBalance(incoming.getUserId());
+                if (balance < simulatedCost) {
+                    // Cancel order (insufficient funds for immediate matches)
+                    orderRepo.updateRemainingQty(incoming.getId(), 0.0);
+                    incoming.reduce(incoming.getRemainingQty());
+                    return executedTrades;
+                }
+            }
+        }
+
         for (BookOrder resting : opposite) {
 
             if (incomingRemaining <= 0)
@@ -136,25 +177,15 @@ public class MatchingEngine {
             if (!crosses(incoming, resting))
                 continue;
 
-            // --- Calculate execution price for funds check ---
+            // --- Calculate execution price for trade ---
             Double restPriceObj = resting.getPrice();
             Double inPriceObj = incoming.getPrice();
             double executionPrice = (restPriceObj != null) ? restPriceObj : (inPriceObj != null) ? inPriceObj : 1.0;
             double potentialMatchSize = Math.min(incomingRemaining, resting.getRemainingQty());
             double matchCost = potentialMatchSize * executionPrice;
 
-            // --- Dynamic Funds Check for Incoming Order (BUY side only) ---
-            if (incoming.getSide() == Side.BUY) {
-                double incomingBalance = accountService.getBalance(incoming.getUserId());
-                if (incomingBalance < matchCost) {
-                    // Insufficient funds for this match -> Cancel incoming order
-                    orderRepo.updateRemainingQty(incoming.getId(), 0.0);
-                    incoming.reduce(incoming.getRemainingQty());
-                    break; // Exit matching loop
-                }
-            }
-
-            // --- Dynamic Funds Check for Resting Order (BUY side only) ---
+            // --- Dynamic Funds Check for Resting BUY Order Only ---
+            // (Incoming order was already checked upfront if it's a BUY)
             if (resting.getSide() == Side.BUY) {
                 double restingBalance = accountService.getBalance(resting.getUserId());
                 if (restingBalance < matchCost) {
