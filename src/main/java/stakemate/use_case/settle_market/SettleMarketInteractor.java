@@ -58,8 +58,6 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
             final User user = accountRepository.findByUsername(bet.getUsername());
             if (user == null) continue;
 
-            // --- LOGIC: Determine if this specific bet won ---
-            // Assumption: BUY = Backing Home, SELL = Backing Away (Laying Home)
             boolean isWinner = false;
             if (bet.getSide() == stakemate.entity.Side.BUY && homeWon) {
                 isWinner = true;
@@ -67,43 +65,42 @@ public class SettleMarketInteractor implements SettleMarketInputBoundary {
                 isWinner = true;
             }
 
-            // Calculate Payout
             final double payout = calculatePayout(bet, isWinner);
 
-            // Update User Balance
-            final int newBalance = (int) Math.round(user.getBalance() + payout);
-            user.setBalance(newBalance);
-            accountRepository.save(user);
-
-            if (isWinner) {
+            if (payout > 0) {
+                final int newBalance = (int) Math.round(user.getBalance() + payout);
+                user.setBalance(newBalance);
+                accountRepository.save(user);
                 totalPayout += payout;
             }
 
-            // --- Create NEW Bet object with updated status (Since Bet is immutable) ---
             Bet settledBet = new Bet(
                 bet.getUsername(),
                 bet.getMarketId(),
                 bet.getSide(),
                 bet.getStake(),
                 bet.getPrice(),
-                isWinner, // Set the won flag
-                true,     // Set settled flag
+                isWinner,
+                true,
                 bet.getTeamName(),
                 java.time.Instant.now()
             );
 
-            // Save to DB
             saveSettlementRecord(marketId, settledBet, payout, isWinner);
             betRepository.save(settledBet);
 
-            // Add to summary string
+
+            double cost = bet.getStake() * bet.getPrice();
+            double netResult = isWinner ? (payout - cost) : -cost;
+
             summary.append(String.format("- %s: %s ($%.2f)\n",
                 bet.getUsername(),
                 isWinner ? "WON" : "LOST",
-                isWinner ? payout : -bet.getStake() * bet.getPrice())); // Show profit or loss
+                netResult));
 
             settledCount++;
         }
+
 
         final SettleMarketResponseModel response =
             new SettleMarketResponseModel(marketId, settledCount, totalPayout, summary.toString());
