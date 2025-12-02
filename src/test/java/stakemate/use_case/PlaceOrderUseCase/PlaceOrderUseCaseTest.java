@@ -109,6 +109,66 @@ class PlaceOrderUseCaseTest {
         assertEquals(0, accountService.capturedTrades.size());
     }
 
+    @Test
+    void testMarketOrder_Resting() {
+        useCase = new PlaceOrderUseCase(engine, accountService);
+        accountService.setHasFunds(true);
+        // Market order with no matching orders in book
+        PlaceOrderRequest req = new PlaceOrderRequest("user1", "market1", Side.BUY, null, 10.0);
+        PlaceOrderResponse res = useCase.place(req);
+
+        assertTrue(res.ok);
+        assertEquals("Market order placed (resting)", res.message);
+    }
+
+    @Test
+    void testMarketOrder_Cancelled_InsufficientFunds() {
+        // Use stub engine to simulate cancellation
+        StubMatchingEngine stubEngine = new StubMatchingEngine();
+        stubEngine.setCancelMarketOrder(true);
+
+        useCase = new PlaceOrderUseCase(stubEngine, accountService);
+        accountService.setHasFunds(true);
+
+        PlaceOrderRequest req = new PlaceOrderRequest("user1", "market1", Side.BUY, null, 10.0);
+        PlaceOrderResponse res = useCase.place(req);
+
+        assertTrue(res.ok);
+        assertEquals("Market order cancelled (insufficient funds)", res.message);
+    }
+
+    @Test
+    void testSnapshot() {
+        useCase = new PlaceOrderUseCase(engine, accountService);
+        stakemate.entity.OrderBook book = useCase.snapshot("market1");
+        assertEquals("market1", book.getMarketId());
+    }
+
+    @Test
+    void testRecentTrades() {
+        useCase = new PlaceOrderUseCase(engine, accountService);
+        List<Trade> trades = useCase.recentTrades();
+        assertEquals(0, trades.size());
+    }
+
+    @Test
+    void testOpenOrdersForUser_InMemory() {
+        useCase = new PlaceOrderUseCase(engine, accountService);
+        List<BookOrder> orders = useCase.openOrdersForUser("user1");
+        assertTrue(orders.isEmpty());
+    }
+
+    @Test
+    void testOpenOrdersForUser_DB() {
+        useCase = new PlaceOrderUseCase(engine, accountService, orderRepository, positionRepository);
+        BookOrder o = new BookOrder("user1", "m1", Side.BUY, 10.0, 10.0);
+        orderRepository.openOrders.add(o);
+
+        List<BookOrder> orders = useCase.openOrdersForUser("user1");
+        assertEquals(1, orders.size());
+        assertEquals(o, orders.get(0));
+    }
+
     // --- Stubs ---
 
     static class StubAccountService implements AccountService {
@@ -137,6 +197,7 @@ class PlaceOrderUseCaseTest {
 
     static class StubOrderRepository implements OrderRepository {
         List<BookOrder> savedOrders = new ArrayList<>();
+        List<BookOrder> openOrders = new ArrayList<>();
 
         @Override
         public void save(BookOrder order) {
@@ -155,7 +216,7 @@ class PlaceOrderUseCaseTest {
 
         @Override
         public List<BookOrder> findOpenOrdersForUser(String userId) {
-            return new ArrayList<>();
+            return openOrders;
         }
 
         @Override
@@ -175,6 +236,23 @@ class PlaceOrderUseCaseTest {
     static class StubPositionRepository implements PositionRepository {
         @Override
         public void savePosition(BookOrder order, double executedAmount, double executedPrice) {
+        }
+    }
+
+    static class StubMatchingEngine extends MatchingEngine {
+        private boolean cancelMarketOrder = false;
+
+        void setCancelMarketOrder(boolean cancel) {
+            this.cancelMarketOrder = cancel;
+        }
+
+        @Override
+        public List<Trade> placeOrder(BookOrder incoming) {
+            if (cancelMarketOrder && incoming.isMarket()) {
+                incoming.reduce(incoming.getRemainingQty()); // set to 0
+                return new ArrayList<>();
+            }
+            return super.placeOrder(incoming);
         }
     }
 }
